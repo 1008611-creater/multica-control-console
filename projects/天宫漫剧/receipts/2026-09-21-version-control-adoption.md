@@ -21,6 +21,8 @@
 2. 新建 `.gitattributes`，统一 LF 入库、`.cmd` 保持 CRLF、媒体声明为二进制。
 3. 执行 `git init -b main`，仓库首次建立。
 4. 提交前对全部待入库文件做敏感模式扫描。
+5. 创建首次提交 `cc0aa3a`（302 个文件）。
+6. 将 Multica `local_directory` 资源从 `in_place` 原地切换为 `worktree`。
 
 ## 关键判断：62.5 MB 验收候选图不入库
 
@@ -38,11 +40,16 @@
 | 忽略规则生效 | `git check-ignore -v` | PASS（`.venv`、`run/`、`output/`、`archive/`、验收图目录均命中） |
 | 待入库文件数 | `git status --porcelain -uall` | 301 个文件，合计 3.77 MB |
 | 凭据扫描 | 对全部待入库文本文件匹配密钥模式 | PASS（唯一命中为函数参数名，非硬编码密钥） |
+| 提交结果 | `git log --oneline` | `cc0aa3a`，工作区 CLEAN，跟踪 302 文件 |
+| 资源模式切换 | `multica project resource update --execution-mode worktree` | PASS，`execution_mode` 现为 `worktree` |
 
 ## 结论
 
-仓库已纳入版本控制，`worktree` 执行模式所需的 Git 前提成立。Multica 侧的 `local_directory` 资源仍为 `in_place`，切换属外部状态变更，需用户确认后执行。
+仓库已纳入版本控制，Multica 侧 `local_directory` 资源已切换为 `worktree` 模式。资源切换使用原地 `update`，未移除重建，历史绑定关系保留。
+
+需要说明的边界：`worktree` 模式不会把被忽略的媒体纳入版本控制，验收候选图仍以「外部真源 + 索引 sha256」的方式追溯。
 
 ## 下一步
 
-由用户决定是否将 Multica 资源切换为 `worktree` 模式以启用并行运行与变更回滚。
+1. 由用户复核 ANS-21 的闭环结果（任务当前为 `in_review`）。
+2. 由用户拍板 M01–M06、M09、M10 共 8 张已出图资产，这是项目自身的业务门槛。

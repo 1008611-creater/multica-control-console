@@ -76,7 +76,9 @@ Multica Project 通过 `local_directory` 资源绑定本地工作目录。两种
 | `in_place` | 无 | 同一时刻只允许一个运行 | 无 | 目录尚未纳入版本控制时的临时绑定 |
 | `worktree` | 目录必须是 Git 仓库 | 每个运行独立工作树，可并行 | 有 Git 历史可回滚 | 已纳入版本控制的常规开发 |
 
-当前 `E:\codex\multica` 已于 2026-09-21 纳入 Git 版本控制（`main` 分支），Multica 侧的 `local_directory` 资源仍以 `in_place` 模式绑定。切换为 `worktree` 需要移除并重新添加该资源，属于外部状态变更，须经用户确认后执行。在切换完成前，仍不应假设该目录支持并行运行。
+当前 `E:\codex\multica` 已于 2026-09-21 纳入 Git 版本控制（`main` 分支，首次提交 `cc0aa3a`），Multica 侧的 `local_directory` 资源同步切换为 `worktree` 模式（资源 ID `ab12f758-44ca-4562-b74d-74bf6a3c2910`）。
+
+切换通过 `multica project resource update --execution-mode worktree` 原地完成，不需要移除并重建资源，因此历史绑定关系得以保留。`worktree` 模式要求目标目录是 Git 仓库且工作区干净；首次提交时工作区为空，满足该前提。
 
 绑定与执行状态依赖本地执行器：执行器停止时，任务会被派发但无法正常收尾，表现为长期 `running`。执行器在绑定的目录内运行时会在 `.multica\daemon_task_context.json` 留下任务标记，该标记存在期间，在仓库目录内直接执行 Multica CLI 会被判定为代理任务内部调用而报错。
 
