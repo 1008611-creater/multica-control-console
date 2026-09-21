@@ -99,6 +99,17 @@ idea → specified → planned → in_progress → awaiting_review
 - 技能副本入库不代表已授权执行：登录、发布、付费生成仍需用户当次明确授权。
 
 
+## 6.3 脚本编码契约
+
+本仓库的验证脚本由 Windows PowerShell 5.1 执行，它把**无 BOM** 的脚本按系统 ANSI 代码页解析。脚本里只要出现中文路径或中文字面量，就会被读成乱码，检查逻辑随之失效或误报。
+
+规则：
+
+- 含非 ASCII 字符的 `.ps1` 必须带 UTF-8 BOM；纯 ASCII 脚本不加 BOM。
+- 该规则由 `scripts/verify.ps1` 与模板的验证脚本共同检查，缺 BOM 即阻断提交。
+- 优先用动态发现替代中文字面量（例如按 `00_*.md` 匹配归档索引），BOM 只是兜底，不是鼓励把中文写进路径常量。
+
+
 ## 7. 本地目录绑定与执行模式
 
 Multica Project 通过 `local_directory` 资源绑定本地工作目录。两种执行模式的实际差异：

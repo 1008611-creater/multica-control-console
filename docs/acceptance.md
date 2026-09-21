@@ -23,6 +23,7 @@
 - [ ] 依赖环境、运行时目录和生成媒体不参与扫描，扫描不会因超大文件或失效外部链接中断。
 - [ ] Markdown 结构检查生效：空文件、无标题文件、代码围栏不配对均能阻断验证。
 - [ ] 文档内的相对链接必须指向真实存在的文件；断链能阻断验证。
+- [ ] 含非 ASCII 字符的 PowerShell 脚本必须带 UTF-8 BOM；缺少 BOM 时验证命令退出码非 0（Windows PowerShell 5.1 会把无 BOM 脚本按 ANSI 解析，破坏中文路径与字面量）。
 - [ ] 项目状态的 `paths.control_console` 必须与项目控制台实际位置一致；指向错误目录能阻断验证。
 - [ ] `projects/*/project_state.yaml` 均含唯一不可变 `project_id`、有效状态和状态契约字段。
 - [ ] 每个项目状态都能在 `projects/README.md` 找到，并有对应项目 README。

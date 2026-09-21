@@ -121,6 +121,15 @@
 - 验证：`npm run verify` → PASS；在副本中注入重复块、缺 frontmatter、`name` 不匹配、缺 `description`、frontmatter 未闭合 → 退出码均为非 0
 - 完成条件：技能副本不再处于无索引状态，损坏的元数据在提交前被拦截
 
+## Slice 16 · 脚本编码契约与索引登记检查（已完成）
+
+- 修改：`scripts/verify.ps1`、`templates/project-template/scripts/verify.ps1`、`docs/architecture.md`、`docs/acceptance.md`
+- 输入：Slice 15 的技能副本检查，以及在真实运行中暴露的一次验证器自身故障
+- 输出：两项新检查——技能副本必须登记在其所属索引中；含非 ASCII 字符的 `.ps1` 必须带 UTF-8 BOM
+- 修复：技能副本索引查找改为动态发现，不再依赖中文字面量；两个验证脚本补上 UTF-8 BOM
+- 验证：`npm run verify` → PASS；索引改名 → FAIL；探针脚本去掉 BOM 并加中文 → FAIL；模板在仓库外复制后 → PASS
+- 完成条件：验证器不再因自身编码问题误报，且新增技能副本未登记时无法通过提交
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。

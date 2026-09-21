@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$RootOverride
 )
 $ErrorActionPreference = 'Stop'
@@ -223,4 +223,17 @@ foreach ($entry in $skillFiles) {
   }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, and skill-metadata checks succeeded.'
+# ---- PowerShell encoding: non-ASCII scripts must carry a UTF-8 BOM ----
+# Windows PowerShell 5.1 reads BOM-less scripts as ANSI, which corrupts non-ASCII
+# literals. Keeping the check here stops that failure class from coming back.
+$ps1Files = @($scanCandidates | Where-Object { (Test-GovernedPath $_) -and ($_.Extension.ToLowerInvariant() -eq '.ps1') })
+foreach ($file in $ps1Files) {
+  $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
+  if ($bytes.Length -eq 0) { continue }
+  $hasBom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF)
+  $hasNonAscii = $false
+  foreach ($byte in $bytes) { if ($byte -gt 0x7F) { $hasNonAscii = $true; break } }
+  if ($hasNonAscii -and !$hasBom) { Fail ('PowerShell script has non-ASCII text but no UTF-8 BOM: ' + (Get-RelativePath $file)) }
+}
+
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, script-encoding, and skill-metadata checks succeeded.'

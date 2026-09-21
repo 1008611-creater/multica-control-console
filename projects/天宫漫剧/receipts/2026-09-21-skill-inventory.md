@@ -41,6 +41,7 @@
 2. 修复 13 个副本：只删除重复的 frontmatter 块，保留最后一个正确块，正文与文件编码（无 BOM、CRLF 保留）不变。
 3. 新增技能元数据校验，覆盖六项：frontmatter 存在且闭合、`name` 与 `description` 各一次、`name` 与所在目录一致、正文不得残留第二个 frontmatter 块、副本必须登记在其所属索引中。
 4. 同步文档：`docs/architecture.md` 新增 6.2 技能副本层；`docs/INDEX.md` 登记新索引；`docs/acceptance.md` 新增 J 节；`docs/implementation-plan.md` 新增 Slice 15 并修正 Slice 14 的标题错位。
+5. 修复验证器自身缺陷：索引查找改为动态发现，不再依赖中文字面量；两个验证脚本补上 UTF-8 BOM，并新增「含非 ASCII 的脚本必须带 BOM」检查。
 
 ## 验证证据
 
@@ -56,6 +57,8 @@
 | 未闭合能拦截 | 删除 frontmatter 结束标记 | FAIL 如期触发：frontmatter is not closed |
 | 在役副本未登记能拦截 | 在索引中改名，使某个在役副本不再被登记 | FAIL 如期触发：Skill copy is not registered in its index |
 | 封存副本未登记能拦截 | 在归档说明中改名，使某个封存副本不再被登记 | FAIL 如期触发：Skill copy is not registered in its index |
+| 无 BOM 脚本能拦截 | 去掉 BOM 后注入中文注释 | FAIL 如期触发：PowerShell script has non-ASCII text but no UTF-8 BOM |
+| 模板仍可独立使用 | 把模板复制到仓库外运行自身验证脚本 | PASS，退出码 0 |
 | 恢复后正常 | 探针副本还原后重跑 | PASS，退出码 0 |
 
 以上探针均在仓库外快照副本中执行，真实仓库未受影响。
