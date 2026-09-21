@@ -146,6 +146,15 @@
 - 验证：`npm run verify` → PASS；把交付物路径改成不存在的文件 → 退出码非 0，报出项目 ID 与失效路径
 - 完成条件：「已验收」不再能指向一个已经不存在的产物
 
+## Slice 19 · 任务模板契约检查（已完成）
+
+- 修改：`scripts/verify.ps1`、`docs/task-templates/`、`docs/acceptance.md`
+- 输入：`docs/task-templates/README.md` 中「每个模板必须含六项内容」的声明，以及模板实际缺项情况
+- 输出：验证命令自动检查每个带元数据段的任务模板是否含目标、输入、输出、硬约束、验收、失败处理，并声明风险等级与责任角色
+- 修复：`autopilot.md`、`project-state-audit.md` 补目标/失败处理/硬约束；`data-review.md` 补失败处理；`multica-pilot-project-audit.md` 补齐为完整模板结构
+- 验证：`npm run verify` → PASS；在快照副本中删掉 `autopilot.md` 的失败处理段 → 退出码非 0；把 `content-production.md` 的责任角色改名 → 退出码非 0；恢复后 → PASS
+- 完成条件：模板声明与模板实际内容不再脱节，只描述正常路径的模板无法通过提交
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。

@@ -247,6 +247,35 @@ foreach ($entry in $skillFiles) {
   }
 }
 
+# ---- 任务模板契约 ----
+# docs/task-templates/README.md 声明每个模板必须含目标、输入、输出、红线/硬约束、
+# 验收与失败处理、风险等级与责任角色。声明不检查就等于没有。
+$templateDir = Join-Path $root 'docs/task-templates'
+if (!(Test-Path -LiteralPath $templateDir)) { Fail 'Missing docs/task-templates directory' }
+$templateFiles = @(Get-ChildItem -LiteralPath $templateDir -File -Filter '*.md' | Where-Object { $_.Name -ne 'README.md' })
+if ($templateFiles.Count -eq 0) { Fail 'No task templates found under docs/task-templates/' }
+$requiredSections = @('元数据', '目标', '输入', '输出', '硬约束', '验收', '失败处理')
+$contractTemplates = 0
+foreach ($file in $templateFiles) {
+  $relative = Get-RelativePath $file
+  $lines = @(Get-Content -LiteralPath $file.FullName -Encoding UTF8 -ErrorAction SilentlyContinue)
+  $headings = @($lines | Where-Object { $_ -match '^##\s+\S' })
+  # 只有真正的任务输入模板带元数据段；映射类文档不参与契约检查。
+  if (@($headings | Where-Object { $_ -match '^##\s+元数据\s*$' }).Count -eq 0) { continue }
+  $contractTemplates++
+  foreach ($section in $requiredSections) {
+    $pattern = '^##\s+' + [regex]::Escape($section) + '\s*$'
+    if (@($headings | Where-Object { $_ -match $pattern }).Count -eq 0) {
+      Fail ('Task template is missing section ' + $section + ': ' + $relative)
+    }
+  }
+  $raw = Get-Content -Raw -Encoding UTF8 $file.FullName
+  foreach ($field in @('风险等级', '责任角色')) {
+    if ($raw -notmatch [regex]::Escape($field)) { Fail ('Task template metadata is missing ' + $field + ': ' + $relative) }
+  }
+}
+if ($contractTemplates -eq 0) { Fail 'No task template declares a metadata section' }
+
 # ---- PowerShell encoding: non-ASCII scripts must carry a UTF-8 BOM ----
 # Windows PowerShell 5.1 reads BOM-less scripts as ANSI, which corrupts non-ASCII
 # literals. Keeping the check here stops that failure class from coming back.
@@ -260,4 +289,4 @@ foreach ($file in $ps1Files) {
   if ($hasNonAscii -and !$hasBom) { Fail ('PowerShell script has non-ASCII text but no UTF-8 BOM: ' + (Get-RelativePath $file)) }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, script-encoding, and skill-metadata checks succeeded.'
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, task-template-contract, script-encoding, and skill-metadata checks succeeded.'
