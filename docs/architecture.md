@@ -82,6 +82,21 @@ idea → specified → planned → in_progress → awaiting_review
 - 模板不是真源。骨架改进先在本仓库验证，再同步到模板，禁止只改模板而让本仓库规范漂移。
 - `templates/` 参与敏感信息与 Markdown 结构扫描，不得存放凭据、真实项目数据或运行时产物。
 
+## 6.2 技能副本层
+
+`skills/` 是**在役可导入**的技能副本区，`skills-archive/` 是**封存**区。两者都不是技能真源。
+
+| 目录 | 性质 | 索引 |
+|---|---|---|
+| `skills/` | 在役副本，供导入 Multica | `skills/README.md` |
+| `skills-archive/` | 封存副本，只归档不导入 | `skills-archive/转绘线/00_归档说明.md` |
+
+边界规则：
+
+- 真源在各外部技能库（`.workbuddy/skills`、`.codex/skills`、自媒体工作区）；副本与真源不一致时必须写明原因。
+- 每个 `SKILL.md` 只允许一段 YAML frontmatter，`name` 必须与所在目录一致；导入依赖该字段。
+- 技能副本入库不代表已授权执行：登录、发布、付费生成仍需用户当次明确授权。
+
 
 ## 7. 本地目录绑定与执行模式
 

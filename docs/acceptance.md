@@ -66,3 +66,11 @@
 - [ ] 模板含规范文件、`docs/` 骨架、ADR 示例、验证脚本、CI 与忽略规则。
 - [ ] 模板缺少必需文件或含凭据模式时，其验证脚本退出码非 0。
 - [ ] 模板内的规范文件不被误当作本仓库约束，本仓库仍以根目录 `AGENTS.md` 为准。
+
+## J. 技能副本
+
+- [ ] `skills/README.md` 登记了全部在役技能副本的批次、用途、真源和导入状态。
+- [ ] 每个 `SKILL.md` 只有一段 YAML frontmatter，`name` 与 `description` 各出现一次。
+- [ ] 每个 `SKILL.md` 的 `name` 与其所在目录名一致。
+- [ ] 出现重复 frontmatter 块、缺少 frontmatter、`name` 不匹配或 `description` 缺失时，验证命令退出码非 0。
+- [ ] 技能副本索引写明真源位置，并区分在役副本与 `skills-archive/` 封存技能。

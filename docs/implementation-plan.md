@@ -104,8 +104,6 @@
 - 验证：把模板复制到仓库外的新目录后运行验证脚本 → PASS；删除必需文件 → 退出码非 0；植入凭据模式 → 退出码非 0
 - 完成条件：新项目不必从零拼装治理骨架，且模板本身处于本仓库的扫描范围内
 
-## 依赖与风险
-
 ## Slice 14 · 防漂移检查（已完成）
 
 - 修改：`scripts/verify.ps1`、`docs/acceptance.md`、`docs/implementation-plan.md`
@@ -113,6 +111,17 @@
 - 输出：新增两项检查——Markdown 相对链接必须指向真实文件；项目状态的 `paths.control_console` 必须与项目控制台实际位置一致
 - 验证：在真实副本中植入断链 → 退出码非 0；把 `control_console` 改指向错误目录 → 退出码非 0；恢复后 → PASS
 - 完成条件：文档重构或项目迁移后留下的失效引用能在提交前被拦截，而不是等到使用时才发现
+
+## Slice 15 · 技能副本索引与元数据校验（已完成）
+
+- 修改：`skills/README.md`、`scripts/verify.ps1`、`docs/architecture.md`、`docs/INDEX.md`、`docs/acceptance.md`
+- 输入：`skills/` 与 `skills-archive/` 下 23 个 `SKILL.md` 的真实元数据，以及各外部技能库真源
+- 输出：技能副本索引；新增技能元数据校验——frontmatter 必须存在且闭合、`name` 与 `description` 各一次、`name` 与所在目录一致、正文不得残留第二个 frontmatter 块
+- 修复：13 个副本的重复 frontmatter 块（抖音线 6 个、转绘线 7 个），只删除重复块，正文与编码未变
+- 验证：`npm run verify` → PASS；在副本中注入重复块、缺 frontmatter、`name` 不匹配、缺 `description`、frontmatter 未闭合 → 退出码均为非 0
+- 完成条件：技能副本不再处于无索引状态，损坏的元数据在提交前被拦截
+
+## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。
 - Slice 4 依赖 Slice 1 的边界，否则容易把自动发布误写进模板。

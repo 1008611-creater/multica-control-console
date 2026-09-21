@@ -13,6 +13,7 @@
 | `task-templates/` | 可复用的 Multica 任务输入模板 | 创建新任务前 |
 | `../templates/README.md` | 可复制的新工作区骨架与用法 | 开新项目或复用治理方式前 |
 | `../projects/README.md` | 所有项目控制台与状态真源索引 | 新增或切换项目时 |
+| `../skills/README.md` | 在役技能副本的批次、用途、真源与导入状态 | 导入技能或刷新副本前 |
 | `adr/0001-workspace-governance.md` | 为什么采用控制台 + 外部执行现场 | 架构争议或边界变化时 |
 | `adr/0002-project-template-layer.md` | 为什么新增可复制模板层 | 复用治理骨架或调整模板时 |
 

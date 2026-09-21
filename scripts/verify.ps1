@@ -46,7 +46,8 @@ $required = @(
   'templates/project-template/docs/acceptance.md',
   'templates/project-template/scripts/verify.ps1',
   'templates/project-template/.github/workflows/ci.yml',
-  'templates/project-template/.gitignore'
+  'templates/project-template/.gitignore',
+  'skills/README.md'
 )
 
 $missing = @()
@@ -170,4 +171,36 @@ foreach ($file in $markdownFiles) {
   }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, and reference-integrity checks succeeded.'
+# ---- 技能副本元数据 ----
+$skillFiles = @()
+foreach ($skillRoot in @('skills', 'skills-archive')) {
+  $skillPath = Join-Path $root $skillRoot
+  if (!(Test-Path -LiteralPath $skillPath)) { continue }
+  $skillFiles += @(Get-ChildItem -LiteralPath $skillPath -Recurse -File -Filter 'SKILL.md' -ErrorAction SilentlyContinue)
+}
+if ($skillFiles.Count -eq 0) { Fail 'No SKILL.md found under skills/ or skills-archive/' }
+foreach ($file in $skillFiles) {
+  $relative = Get-RelativePath $file
+  $lines = @(Get-Content -LiteralPath $file.FullName -Encoding UTF8 -ErrorAction SilentlyContinue)
+  if ($lines.Count -lt 3 -or $lines[0].Trim() -ne '---') { Fail ('SKILL.md is missing YAML frontmatter: ' + $relative) }
+  $close = -1
+  for ($i = 1; $i -lt $lines.Count; $i++) {
+    if ($lines[$i].Trim() -eq '---') { $close = $i; break }
+  }
+  if ($close -lt 0) { Fail ('SKILL.md frontmatter is not closed: ' + $relative) }
+  if ($close -le 1) { Fail ('SKILL.md frontmatter is empty: ' + $relative) }
+  $block = @($lines[1..($close - 1)])
+  $names = @($block | Where-Object { $_ -match '^name:\s*\S' })
+  $descriptions = @($block | Where-Object { $_ -match '^description:\s*\S' })
+  if ($names.Count -ne 1) { Fail ('SKILL.md must declare exactly one name, found ' + $names.Count + ': ' + $relative) }
+  if ($descriptions.Count -ne 1) { Fail ('SKILL.md must declare exactly one description, found ' + $descriptions.Count + ': ' + $relative) }
+  $declared = ($names[0] -replace '^name:\s*', '').Trim()
+  $expected = Split-Path -Leaf (Split-Path -Parent $file.FullName)
+  if ($declared -ne $expected) { Fail ('SKILL.md name does not match its directory: ' + $relative) }
+  if ($close -lt ($lines.Count - 1)) {
+    $trailing = @($lines[($close + 1)..($lines.Count - 1)] | Where-Object { $_ -match '^name:\s*\S' })
+    if ($trailing.Count -gt 0) { Fail ('SKILL.md has a duplicated frontmatter block: ' + $relative) }
+  }
+}
+
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, and skill-metadata checks succeeded.'
