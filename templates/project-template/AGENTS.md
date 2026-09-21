@@ -48,4 +48,4 @@ DEFINE -> PLAN -> BUILD -> VERIFY -> REVIEW -> SHIP -> RETRO
 npm run verify
 ```
 
-该命令至少检查规范文件完整性、敏感信息模式和 Markdown 基本结构。验证失败时不得声称完成。
+该命令至少检查规范文件完整性（含 `docs/lifecycle.md`、`docs/release-checklist.md`、`docs/retro-template.md`）、敏感信息模式、Markdown 基本结构、相对链接完整性和脚本编码。验证失败时不得声称完成。

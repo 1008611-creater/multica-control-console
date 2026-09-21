@@ -17,6 +17,9 @@ $required = @(
   'docs/architecture.md',
   'docs/implementation-plan.md',
   'docs/acceptance.md',
+  'docs/lifecycle.md',
+  'docs/release-checklist.md',
+  'docs/retro-template.md',
   'scripts/verify.ps1',
   '.gitignore'
 )

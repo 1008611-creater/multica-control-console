@@ -130,6 +130,14 @@
 - 验证：`npm run verify` → PASS；索引改名 → FAIL；探针脚本去掉 BOM 并加中文 → FAIL；模板在仓库外复制后 → PASS
 - 完成条件：验证器不再因自身编码问题误报，且新增技能副本未登记时无法通过提交
 
+## Slice 17 · 模板生命周期补全（已完成）
+
+- 修改：`templates/project-template/docs/lifecycle.md`、`templates/project-template/docs/release-checklist.md`、`templates/project-template/docs/retro-template.md`、`templates/project-template/scripts/verify.ps1`、`templates/README.md`
+- 输入：Slice 13 的模板层，以及模板 `AGENTS.md` 中对 DEFINE→RETRO 生命周期的承诺
+- 输出：模板自带阶段契约、SHIP 入口和 RETRO 产物，三者进入模板验证脚本的必需文件清单
+- 验证：模板在仓库外复制后 `npm run verify` → PASS；删除 `docs/lifecycle.md` → 退出码非 0
+- 完成条件：新工作区不再只有阶段名，而是第一天就具备可执行的阶段门
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。
