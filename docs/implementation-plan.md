@@ -98,7 +98,7 @@
 
 ## Slice 13 · 可复制项目模板（已完成）
 
-- 修改：`templates/`、`scripts/verify.ps1`、`docs/architecture.md`、`docs/INDEX.md`、`docs/acceptance.md`
+- 修改：`templates/`、`scripts/verify.ps1`、`docs/architecture.md`、`docs/INDEX.md`、`docs/acceptance.md`、`docs/adr/0002-project-template-layer.md`
 - 输入：本仓库 Slice 1-12 已经验证过的治理骨架，以及参考架构中「建立可复制项目模板」的结论
 - 输出：`templates/project-template/` 整目录复制单元，含规范文件、`docs/` 骨架、ADR 示例、验证脚本、CI 与忽略规则
 - 验证：把模板复制到仓库外的新目录后运行验证脚本 → PASS；删除必需文件 → 退出码非 0；植入凭据模式 → 退出码非 0
