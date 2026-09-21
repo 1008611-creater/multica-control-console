@@ -88,6 +88,14 @@
 - 验证：`npm run verify` + 提交前敏感模式扫描 + `git status` 确认忽略规则生效
 - 完成条件：控制台内容全部入库，凭据、`.venv`、运行时日志和 62.5 MB 生成媒体不入库；`worktree` 模式所需的 Git 前提成立
 
+## Slice 12 · 质量门补强（已完成）
+
+- 修改：`scripts/verify.ps1`、`docs/acceptance.md`、`docs/implementation-plan.md`
+- 输入：Slice 2 的验证入口，以及 `AGENTS.md` 中对验证内容的承诺
+- 输出：扫描范围覆盖全部受治理目录；补齐 Markdown 基本结构检查
+- 验证：`npm run verify`；并在真实目录中植入凭据模式与未闭合代码围栏，确认退出码非 0
+- 完成条件：`mj-automation/`、`scripts/`、`.github/` 不再处于扫描盲区，验证行为与文档承诺一致
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。

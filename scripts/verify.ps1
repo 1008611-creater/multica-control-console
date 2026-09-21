@@ -31,7 +31,9 @@ $required = @(
   'docs/task-templates/project-state-audit.md',
   'docs/task-templates/multica-pilot-project-audit.md',
   'docs/task-templates/stage-map.md',
-  'docs/adr/0001-workspace-governance.md'
+  'docs/adr/0001-workspace-governance.md',
+  '.gitignore',
+  '.gitattributes'
 )
 
 $missing = @()
@@ -77,18 +79,43 @@ foreach ($prefix in @('04_', '05_', '06_', '07_')) {
   if ($matches.Count -eq 0) { Fail "Mapped stage runbook is missing for prefix: $prefix" }
 }
 
-$scanFiles = @()
-$scanFiles += Get-ChildItem -LiteralPath $root -File -ErrorAction SilentlyContinue
-foreach ($directory in @('docs', 'projects', 'skills', 'skills-archive', 'reference')) {
+# ---- 扫描范围：排除依赖环境、运行时目录和生成媒体 ----
+$sep = [System.IO.Path]::DirectorySeparatorChar
+$altSep = [System.IO.Path]::AltDirectorySeparatorChar
+$excludedSegments = @('node_modules', '.venv', 'venv', '__pycache__', '.browser-profile', '.git', '.cache', 'tmp', 'temp')
+$generatedPrefixes = @(('mj-automation' + $sep + 'output'), ('mj-automation' + $sep + 'archive'), ('mj-automation' + $sep + 'run'))
+$binaryExtensions = @('.png', '.jpg', '.jpeg', '.webp', '.gif', '.ico', '.bmp', '.tif', '.tiff', '.mp4', '.mov', '.webm', '.mkv', '.mp3', '.wav', '.m4a', '.flac', '.zip', '.7z', '.rar', '.gz', '.pdf', '.pyd', '.dll', '.exe', '.so', '.dylib', '.bin', '.woff', '.woff2', '.ttf', '.otf', '.pyc', '.db', '.sqlite')
+function Get-RelativePath([System.IO.FileInfo]$File) {
+  return $File.FullName.Substring($root.Length).TrimStart($sep, $altSep).Replace($altSep, $sep)
+}
+function Test-GovernedPath([System.IO.FileInfo]$File) {
+  $relative = Get-RelativePath $File
+  foreach ($part in $relative.Split($sep)) {
+    if ($excludedSegments -contains $part) { return $false }
+  }
+  foreach ($prefix in $generatedPrefixes) {
+    if ($relative.StartsWith($prefix + $sep, [System.StringComparison]::OrdinalIgnoreCase)) { return $false }
+  }
+  return $true
+}
+function Test-ScannableText([System.IO.FileInfo]$File) {
+  if ($File.Length -eq 0 -or $File.Length -gt 4MB) { return $false }
+  if (!(Test-GovernedPath $File)) { return $false }
+  if ($binaryExtensions -contains $File.Extension.ToLowerInvariant()) { return $false }
+  return $true
+}
+$scanCandidates = @()
+$scanCandidates += Get-ChildItem -LiteralPath $root -File -ErrorAction SilentlyContinue
+foreach ($directory in @('docs', 'projects', 'skills', 'skills-archive', 'reference', 'mj-automation', 'scripts', '.github')) {
   $directoryPath = Join-Path $root $directory
-  if (Test-Path -LiteralPath $directoryPath) {
-    try {
-      $scanFiles += Get-ChildItem -LiteralPath $directoryPath -Recurse -File -ErrorAction SilentlyContinue
-    } catch {
-      # A stale external link must not make the verifier inspect outside the workspace.
-    }
+  if (!(Test-Path -LiteralPath $directoryPath)) { continue }
+  try {
+    $scanCandidates += Get-ChildItem -LiteralPath $directoryPath -Recurse -File -ErrorAction SilentlyContinue
+  } catch {
+    # A stale external link must not make the verifier inspect outside the workspace.
   }
 }
+$scanFiles = @($scanCandidates | Where-Object { Test-ScannableText $_ })
 $allText = $scanFiles | Get-Content -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
 $joined = $allText -join "`n"
 $secretPatterns = @(
@@ -101,4 +128,17 @@ foreach ($pattern in $secretPatterns) {
   if ($joined -match $pattern) { Fail "Potential secret pattern detected: $pattern" }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, and secret-pattern checks succeeded.'
+# ---- Markdown 基本结构 ----
+$markdownFiles = @($scanCandidates | Where-Object { (Test-GovernedPath $_) -and ($_.Extension.ToLowerInvariant() -eq '.md') })
+if ($markdownFiles.Count -eq 0) { Fail 'No Markdown files found under the workspace' }
+$fencePattern = '^\s{0,3}' + ([string][char]96 * 3)
+foreach ($file in $markdownFiles) {
+  $relative = Get-RelativePath $file
+  $lines = @(Get-Content -LiteralPath $file.FullName -Encoding UTF8 -ErrorAction SilentlyContinue)
+  if ($lines.Count -eq 0) { Fail ('Markdown file is empty: ' + $relative) }
+  if (@($lines | Where-Object { $_ -match '^#{1,6}\s+\S' }).Count -eq 0) { Fail ('Markdown file has no ATX heading: ' + $relative) }
+  $fences = @($lines | Where-Object { $_ -match $fencePattern }).Count
+  if ($fences % 2 -ne 0) { Fail ('Markdown code fences are unbalanced (' + $fences + '): ' + $relative) }
+}
+
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, and Markdown structure checks succeeded.'
