@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-00-router
-description: name: mx-shortdrama-00-router
----
-
----
-name: mx-shortdrama-00-router
 description: "Primary router for domestic Chinese short-drama redraw to Mexico through the redraw pipeline: Step 01 frame/audio extraction, Step 02 source reference timeline, Step 04 one-pass Mexico localization plus final asset/video prompt Word package, and Step 05 asset image execution. Step 03 is now an internal Step04 localization binding layer by default, exported only on explicit request. Use for 短剧转绘、墨西哥转绘、西语本土化、分集推进、skill 路由、资产提示词、人物图、场景图、道具图、生视频提示词、Word提示词包、redraw/remake, and batch redraw automation. The optional frame-anchor add-on is explicit-only."
 ---
 

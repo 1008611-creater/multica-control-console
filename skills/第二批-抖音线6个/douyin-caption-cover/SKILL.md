@@ -1,15 +1,5 @@
 ---
 name: douyin-caption-cover
-description: name: douyin-caption-cover
----
-
----
-name: douyin-caption-cover
-description: name: douyin-caption-cover
----
-
----
-name: douyin-caption-cover
 description: Create Douyin publishing packages including titles, captions, hooks, hashtags, cover text, cover frame direction, and variant options. Use when the user needs copywriting, description polishing, topic tags, cover concepts, or final post packaging for a Douyin video.
 ---
 

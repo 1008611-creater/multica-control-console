@@ -1,15 +1,5 @@
 ---
 name: douyin-video-selection
-description: name: douyin-video-selection
----
-
----
-name: douyin-video-selection
-description: name: douyin-video-selection
----
-
----
-name: douyin-video-selection
 description: Select and prioritize Douyin video ideas, source videos, product angles, hooks, and reusable footage from user materials or market research. Use when the user asks which video to make, which draft to publish, how to choose a topic, how to score raw clips, or how to find a Douyin content angle before production.
 ---
 

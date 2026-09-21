@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-production-iteration
-description: name: mx-shortdrama-production-iteration
----
-
----
-name: mx-shortdrama-production-iteration
 description: Record, evaluate, and verify evidence-based quality and throughput improvements for original-footage short-drama redraw jobs. Use after provider outputs, user visual feedback, channel failures, timing measurements, or task completion; also use when updating the redraw router or harness from observed production results.
 ---
 

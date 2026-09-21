@@ -1,15 +1,5 @@
 ---
 name: douyin-video-production
-description: name: douyin-video-production
----
-
----
-name: douyin-video-production
-description: name: douyin-video-production
----
-
----
-name: douyin-video-production
 description: Turn a selected Douyin topic, raw footage, or draft video into a practical production and editing plan with hook, beat sheet, subtitles, asset list, quality checks, and export guidance. Use when the user needs to make, revise, polish, or brief a Douyin short video before upload.
 ---
 

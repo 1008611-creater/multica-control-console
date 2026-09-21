@@ -1,15 +1,5 @@
 ---
 name: douyin-publish-operator
-description: name: douyin-publish-operator
----
-
----
-name: douyin-publish-operator
-description: name: douyin-publish-operator
----
-
----
-name: douyin-publish-operator
 description: Operate Douyin Creator Center upload and publishing preparation with browser assistance, including opening the upload page, handling file upload, filling title/caption/tags/cover settings, checking platform prompts, and stopping for final user confirmation. Use when the user asks Codex to upload, prepare, schedule, or publish a Douyin video.
 ---
 

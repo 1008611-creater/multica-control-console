@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-02-source-timeline
-description: name: mx-shortdrama-02-source-timeline
----
-
----
-name: mx-shortdrama-02-source-timeline
 description: "Step 02 for Chinese short-drama redraw to Mexico: rebuild the original episode source reference timeline from a validated Step 01 evidence package, including frame matching, PaddleOCR API smart selective OCR, ASR, TransNetV2/OpenCV shot evidence, and native-resolution visual review. Use for source timeline, episode pull analysis, original dialogue recovery, source plot reconstruction, continuity evidence after frame extraction, smart OCR QA, and QA reference before localized shot prompt production."
 ---
 

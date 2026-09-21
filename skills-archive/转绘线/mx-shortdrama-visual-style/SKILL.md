@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-visual-style
-description: name: mx-shortdrama-visual-style
----
-
----
-name: mx-shortdrama-visual-style
 description: 为原片转绘任务选择、生成和迭代可直接注入生图与生视频提示词的视觉风格配置。仅在用户明确要求风格，或当前任务配置标记需要风格时使用；支持先启用试运行基调，再依据实际产物和用户反馈迭代。
 ---
 

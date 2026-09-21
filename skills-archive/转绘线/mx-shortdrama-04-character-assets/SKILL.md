@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-04-character-assets
-description: name: mx-shortdrama-04-character-assets
----
-
----
-name: mx-shortdrama-04-character-assets
 description: 为短剧转绘建立证据驱动的人物资产图提示词与生产合同。用于人物定妆母图、角色三视图、角色设定卡、服装状态卡、妆造、发型、配饰、表情、人物一致性、角色图 QA；作为 mx-shortdrama-04-asset-prompts 的人物资产子 Skill，不处理场景、道具或生视频提示词。
 ---
 

@@ -1,15 +1,5 @@
 ---
 name: douyin-fruit-commerce-strategy
-description: name: douyin-fruit-commerce-strategy
----
-
----
-name: douyin-fruit-commerce-strategy
-description: name: douyin-fruit-commerce-strategy
----
-
----
-name: douyin-fruit-commerce-strategy
 description: Plan and operate a Douyin fruit-selling content account, including persona positioning, content pillars, video formats, posting cadence, conversion paths, and iteration metrics. Use when the user asks how to grow a fruit commerce account, mentions 水果带货, 果园产地, 果农, 美女主播吃水果跳舞, 朴素老太太推销, fruit livestream-style short videos, or wants a repeatable Douyin fruit content strategy.
 ---
 

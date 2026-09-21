@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-production-harness
-description: name: mx-shortdrama-production-harness
----
-
----
-name: mx-shortdrama-production-harness
 description: 统筹一项原片短剧转绘任务，从用户提交素材到可播放视频持续推进。用于新线程启动、跨步骤恢复、并发调度、渠道执行或现有转绘 Skill 路由出现缺口时；加载 mx-shortdrama-00-router 作为唯一专业路由，并将真正需要用户判断或需要补全路由的卡点压缩为最多三道选择题。
 ---
 

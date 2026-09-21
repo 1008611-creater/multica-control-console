@@ -1,10 +1,5 @@
 ---
 name: mx-shortdrama-01-frame-extract
-description: name: mx-shortdrama-01-frame-extract
----
-
----
-name: mx-shortdrama-01-frame-extract
 description: "Step 01 for Chinese short-drama redraw to Mexico: extract and enhance a production-complete evidence package from one episode video, including native-resolution reference frames without a fixed frame-count cap, 60-second chunk manifests for long episodes, shot-level start/mid/end frame supplements, TransNetV2 shot segmentation, Baidu OCR API smart hard-subtitle/text QA, audio/ASR handoff, and evidence-pack alignment before source timeline reconstruction and shot prompt production. Use when the user provides a domestic short-drama video and asks for frame extraction, key frames, shot frames, subtitle frames, source evidence frames, OCR, shot detection, or evidence before timeline/prompt reconstruction."
 ---
 

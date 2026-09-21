@@ -1,15 +1,5 @@
 ---
 name: douyin-workflow-orchestrator
-description: name: douyin-workflow-orchestrator
----
-
----
-name: douyin-workflow-orchestrator
-description: name: douyin-workflow-orchestrator
----
-
----
-name: douyin-workflow-orchestrator
 description: Coordinate an end-to-end Douyin content workflow from choosing a video or topic, planning production, preparing captions/covers, and operating the Creator Center upload page. Use when the user asks for a full Douyin publishing workflow, wants Codex to manage multiple Douyin skills, or says to select/make/upload/publish a Douyin video.
 ---
 
