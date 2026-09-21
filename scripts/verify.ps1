@@ -80,6 +80,13 @@ foreach ($stateFile in $stateFiles) {
   }
   $projectDir = Split-Path -Parent $stateFile.FullName
   if (!(Test-Path -LiteralPath (Join-Path $projectDir 'README.md') -PathType Leaf)) { Fail "$projectId is missing project README.md" }
+  $consoleMatch = [regex]::Match($state, '(?m)^\s*control_console:\s*(\S+)')
+  if (!$consoleMatch.Success) { Fail ('Missing paths.control_console for ' + $projectId) }
+  $consoleDeclared = $consoleMatch.Groups[1].Value.Replace('\', '/').TrimEnd('/')
+  $consoleExpected = 'projects/' + (Split-Path -Leaf $projectDir)
+  if (!$consoleDeclared.EndsWith($consoleExpected, [System.StringComparison]::OrdinalIgnoreCase)) {
+    Fail ('control_console does not point at the project console: ' + $projectId)
+  }
   $receiptsDir = Join-Path $projectDir 'receipts'
   if (!(Test-Path -LiteralPath (Join-Path $receiptsDir 'README.md') -PathType Leaf)) { Fail "$projectId is missing receipts/README.md" }
   if ($inventory -notmatch [regex]::Escape($projectId)) { Fail "$projectId is not registered in projects/README.md" }
@@ -152,6 +159,15 @@ foreach ($file in $markdownFiles) {
   if (@($lines | Where-Object { $_ -match '^#{1,6}\s+\S' }).Count -eq 0) { Fail ('Markdown file has no ATX heading: ' + $relative) }
   $fences = @($lines | Where-Object { $_ -match $fencePattern }).Count
   if ($fences % 2 -ne 0) { Fail ('Markdown code fences are unbalanced (' + $fences + '): ' + $relative) }
+  $fileDir = Split-Path -Parent $file.FullName
+  $raw = Get-Content -Raw -Encoding UTF8 $file.FullName -ErrorAction SilentlyContinue
+  foreach ($link in [regex]::Matches($raw, '\]\((\.\.?/[^)\s]+)\)')) {
+    $target = $link.Groups[1].Value.Split('#')[0]
+    if ($target -eq '') { continue }
+    if (!(Test-Path -LiteralPath (Join-Path $fileDir $target))) {
+      Fail ('Markdown relative link is broken: ' + $relative + ' -> ' + $target)
+    }
+  }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, and Markdown structure checks succeeded.'
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, and reference-integrity checks succeeded.'

@@ -106,6 +106,14 @@
 
 ## 依赖与风险
 
+## Slice 14 · 防漂移检查（已完成）
+
+- 修改：`scripts/verify.ps1`、`docs/acceptance.md`、`docs/implementation-plan.md`
+- 输入：Slice 12-13 建立的扫描范围与模板层，以及文档中出现的大量跨文件引用
+- 输出：新增两项检查——Markdown 相对链接必须指向真实文件；项目状态的 `paths.control_console` 必须与项目控制台实际位置一致
+- 验证：在真实副本中植入断链 → 退出码非 0；把 `control_console` 改指向错误目录 → 退出码非 0；恢复后 → PASS
+- 完成条件：文档重构或项目迁移后留下的失效引用能在提交前被拦截，而不是等到使用时才发现
+
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。
 - Slice 4 依赖 Slice 1 的边界，否则容易把自动发布误写进模板。
 - Slice 5 依赖项目状态契约；新增项目必须先登记 `projects/README.md`。

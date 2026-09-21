@@ -17,7 +17,7 @@
 | `docs/implementation-plan.md` | 垂直切片计划与依赖 |
 | `docs/acceptance.md` | 可验证的验收条件 |
 | `docs/adr/` | 架构决策记录 |
-| `scripts/verify.ps1` | 唯一验证入口：必需文件、敏感信息、Markdown 结构 |
+| `scripts/verify.ps1` | 唯一验证入口：必需文件、敏感信息、Markdown 结构、相对链接完整性 |
 | `package.json` | 把验证绑定到 `npm run verify` |
 | `.github/workflows/ci.yml` | 提交与合并时自动跑同一套验证 |
 | `.gitignore` | 凭据、依赖环境、运行时产物的排除规则 |
