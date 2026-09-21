@@ -95,6 +95,30 @@ foreach ($stateFile in $stateFiles) {
 }
 if (!$primaryFound) { Fail 'Main project state is not tiangong-rebuild-v1' }
 
+# ---- 交付物路径必须真实存在 ----
+# 状态文件把某个交付物标成 accepted，但路径已经失效时，状态就在说假话。
+foreach ($stateFile in $stateFiles) {
+  $state = Get-Content -Raw -Encoding UTF8 $stateFile.FullName
+  $projectDir = Split-Path -Parent $stateFile.FullName
+  $idMatch = [regex]::Match($state, '(?m)^project_id:\s*([A-Za-z0-9._-]+)\s*$')
+  $projectId = if ($idMatch.Success) { $idMatch.Groups[1].Value } else { Split-Path -Leaf $projectDir }
+  $lines = @($state -split '\r?\n')
+  $start = -1
+  for ($i = 0; $i -lt $lines.Count; $i++) {
+    if ($lines[$i] -match '^deliverables:\s*$') { $start = $i; break }
+  }
+  if ($start -lt 0) { continue }
+  for ($i = $start + 1; $i -lt $lines.Count; $i++) {
+    if ($lines[$i] -match '^\S') { break }
+    $pathMatch = [regex]::Match($lines[$i], '^\s+path:\s*(\S+)\s*$')
+    if (!$pathMatch.Success) { continue }
+    $relativePath = $pathMatch.Groups[1].Value.TrimEnd('/')
+    if (!(Test-Path -LiteralPath (Join-Path $projectDir $relativePath))) {
+      Fail ('Deliverable path does not exist in ' + $projectId + ': ' + $relativePath)
+    }
+  }
+}
+
 foreach ($prefix in @('04_', '05_', '06_', '07_')) {
   $matches = @(Get-ChildItem -LiteralPath $root -File -Filter "$prefix*.md" -ErrorAction SilentlyContinue)
   if ($matches.Count -eq 0) { Fail "Mapped stage runbook is missing for prefix: $prefix" }

@@ -27,6 +27,7 @@
 - [ ] 项目状态的 `paths.control_console` 必须与项目控制台实际位置一致；指向错误目录能阻断验证。
 - [ ] `projects/*/project_state.yaml` 均含唯一不可变 `project_id`、有效状态和状态契约字段。
 - [ ] 每个项目状态都能在 `projects/README.md` 找到，并有对应项目 README。
+- [ ] `deliverables` 中列出的每个仓库内路径都必须真实存在；路径失效时验证命令退出码非 0，避免用「已验收」描述已经不存在的产物。
 
 ## E. 任务可执行性
 

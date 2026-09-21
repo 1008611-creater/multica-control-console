@@ -138,6 +138,14 @@
 - 验证：模板在仓库外复制后 `npm run verify` → PASS；删除 `docs/lifecycle.md` → 退出码非 0
 - 完成条件：新工作区不再只有阶段名，而是第一天就具备可执行的阶段门
 
+## Slice 18 · 交付物路径真实性检查（已完成）
+
+- 修改：`scripts/verify.ps1`、`docs/acceptance.md`、`docs/project-state-contract.md`
+- 输入：Slice 10 的试跑任务包，其中要求智能体逐条确认交付物路径存在，但此前只有人工检查
+- 输出：验证命令自动遍历每个 `project_state.yaml` 的 `deliverables[].path`，路径不存在即失败
+- 验证：`npm run verify` → PASS；把交付物路径改成不存在的文件 → 退出码非 0，报出项目 ID 与失效路径
+- 完成条件：「已验收」不再能指向一个已经不存在的产物
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。

@@ -33,3 +33,4 @@ idea → specified → planned → in_progress → awaiting_review
 3. 交付物状态只能引用真实文件、索引或用户回执。
 4. 付费生成按批次授权；平台发布按动作授权；最终审美确认归用户。
 5. 阻塞状态必须有原因、影响范围和解除条件；无阻塞仍保留 `blockers: []`。
+6. `deliverables` 的 `path` 必须相对项目控制台真实存在；验证命令会逐条检查，路径失效即阻断提交。
