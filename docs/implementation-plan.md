@@ -155,6 +155,15 @@
 - 验证：`npm run verify` → PASS；在快照副本中删掉 `autopilot.md` 的失败处理段 → 退出码非 0；把 `content-production.md` 的责任角色改名 → 退出码非 0；恢复后 → PASS
 - 完成条件：模板声明与模板实际内容不再脱节，只描述正常路径的模板无法通过提交
 
+## Slice 20 · 验收清单章节顺序检查（已完成）
+
+- 修改：`scripts/verify.ps1`、`templates/project-template/scripts/verify.ps1`、`docs/acceptance.md`
+- 输入：`docs/acceptance.md` 的章节实际顺序为 A/B/C/E/F/G/D/H/I/J，D 节被插到 G 之后
+- 输出：验证命令自动读取验收清单的字母章节并检查是否升序；本仓库与项目模板各检查一份
+- 修复：把 D 节移回 C 节之后，恢复 A→J 顺序
+- 验证：`npm run verify` → PASS；在快照副本中把 D 节移回 G 之后 → 退出码非 0；模板副本单独复制后同样能拦截
+- 完成条件：条款定位依赖的字母编号不再可能静默错乱
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。

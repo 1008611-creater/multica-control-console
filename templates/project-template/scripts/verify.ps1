@@ -92,6 +92,20 @@ foreach ($file in $markdownFiles) {
   }
 }
 
+# ---- 验收清单章节顺序 ----
+# 验收清单用 A/B/C 字母定位条目；字母乱序会让「D 节」指向两处，条款被漏读。
+$acceptancePath = Join-Path $root 'docs/acceptance.md'
+if (!(Test-Path -LiteralPath $acceptancePath -PathType Leaf)) { Fail 'Missing acceptance list: docs/acceptance.md' }
+$acceptanceLines = @(Get-Content -LiteralPath $acceptancePath -Encoding UTF8 -ErrorAction SilentlyContinue)
+$acceptanceLetters = @($acceptanceLines | ForEach-Object {
+  $m = [regex]::Match($_, '^##\s+([A-Z])\.\s+\S')
+  if ($m.Success) { $m.Groups[1].Value }
+})
+if ($acceptanceLetters.Count -eq 0) { Fail 'Acceptance list has no lettered sections: docs/acceptance.md' }
+if (($acceptanceLetters -join ',') -ne ((@($acceptanceLetters | Sort-Object)) -join ',')) {
+  Fail ('Acceptance list sections are out of order: docs/acceptance.md -> ' + ($acceptanceLetters -join ','))
+}
+
 # ---- PowerShell encoding: non-ASCII scripts must carry a UTF-8 BOM ----
 # Windows PowerShell 5.1 reads BOM-less scripts as ANSI, which corrupts non-ASCII
 # literals and paths. Keeping this check here stops that failure class from returning.
@@ -105,4 +119,4 @@ foreach ($file in $ps1Files) {
   if ($hasNonAscii -and !$hasBom) { Fail ('PowerShell script has non-ASCII text but no UTF-8 BOM: ' + (Get-RelativePath $file)) }
 }
 
-Write-Output 'VERIFY PASS: required files, secret patterns, Markdown structure, reference-integrity, and script-encoding checks succeeded.'
+Write-Output 'VERIFY PASS: required files, secret patterns, Markdown structure, reference-integrity, acceptance-order, and script-encoding checks succeeded.'

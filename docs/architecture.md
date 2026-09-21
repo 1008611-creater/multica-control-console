@@ -111,6 +111,16 @@ idea → specified → planned → in_progress → awaiting_review
 - 优先用动态发现替代中文字面量（例如按 `00_*.md` 匹配归档索引），BOM 只是兜底，不是鼓励把中文写进路径常量。
 
 
+## 6.4 验收清单编号契约
+
+`docs/acceptance.md` 用 A/B/C 字母编号定位条款，是复核时引用条目的唯一坐标。编号一旦乱序，「D 节」就会指向两个位置，条款在人工复核中被漏读。
+
+规则：
+
+- 字母章节必须严格升序；插入新章节时按顺序落位，不追加到末尾。
+- 本仓库与 `templates/project-template/docs/acceptance.md` 各检查一份，任一份乱序即阻断提交。
+- 模板副本单独复制到仓库外后，该检查仍由模板自带验证脚本执行。
+
 ## 7. 本地目录绑定与执行模式
 
 Multica Project 通过 `local_directory` 资源绑定本地工作目录。两种执行模式的实际差异：

@@ -276,6 +276,26 @@ foreach ($file in $templateFiles) {
 }
 if ($contractTemplates -eq 0) { Fail 'No task template declares a metadata section' }
 
+# ---- 验收清单章节顺序 ----
+# 验收清单用 A/B/C 字母定位条目；字母乱序会让「D 节」指向两处，条款被漏读。
+$acceptanceFiles = @(
+  (Join-Path $root 'docs/acceptance.md'),
+  (Join-Path $root 'templates/project-template/docs/acceptance.md')
+)
+foreach ($file in $acceptanceFiles) {
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { Fail ('Missing acceptance list: ' + (Get-RelativePath (Get-Item -LiteralPath $file))) }
+  $lines = @(Get-Content -LiteralPath $file -Encoding UTF8 -ErrorAction SilentlyContinue)
+  $letters = @($lines | ForEach-Object {
+    $m = [regex]::Match($_, '^##\s+([A-Z])\.\s+\S')
+    if ($m.Success) { $m.Groups[1].Value }
+  })
+  if ($letters.Count -eq 0) { Fail ('Acceptance list has no lettered sections: ' + (Get-RelativePath (Get-Item -LiteralPath $file))) }
+  $sorted = @($letters | Sort-Object)
+  if (($letters -join ',') -ne ($sorted -join ',')) {
+    Fail ('Acceptance list sections are out of order: ' + (Get-RelativePath (Get-Item -LiteralPath $file)) + ' -> ' + ($letters -join ','))
+  }
+}
+
 # ---- PowerShell encoding: non-ASCII scripts must carry a UTF-8 BOM ----
 # Windows PowerShell 5.1 reads BOM-less scripts as ANSI, which corrupts non-ASCII
 # literals. Keeping the check here stops that failure class from coming back.
@@ -289,4 +309,4 @@ foreach ($file in $ps1Files) {
   if ($hasNonAscii -and !$hasBom) { Fail ('PowerShell script has non-ASCII text but no UTF-8 BOM: ' + (Get-RelativePath $file)) }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, task-template-contract, script-encoding, and skill-metadata checks succeeded.'
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, task-template-contract, acceptance-order, script-encoding, and skill-metadata checks succeeded.'
