@@ -65,6 +65,22 @@ idea → specified → planned → in_progress → awaiting_review
 - 项目身份与生命周期：`docs/project-state-contract.md`。
 - Multica 任务输入：`docs/task-templates/`。
 - 自动检查：`scripts/verify.ps1`。
+- 新工作区起点：`templates/project-template/`。
+
+## 6.1 模板层
+
+`templates/` 是本仓库的「可复制起点」层，不属于运行中的控制台内容。它保存经过验证的骨架，供新工作区整目录复制。
+
+| 类别 | 位置 | 性质 |
+|---|---|---|
+| 新工作区骨架 | `templates/project-template/` | 独立复制单元；复制后成为新仓库的根 |
+| 本仓库内的 Multica 任务模板 | `docs/task-templates/` | 本仓库运行时使用，不是复制单元 |
+
+边界规则：
+
+- 模板内的 `AGENTS.md` 属于被复制出去的新工作区，不约束本仓库；本仓库仍以根目录 `AGENTS.md` 为准。
+- 模板不是真源。骨架改进先在本仓库验证，再同步到模板，禁止只改模板而让本仓库规范漂移。
+- `templates/` 参与敏感信息与 Markdown 结构扫描，不得存放凭据、真实项目数据或运行时产物。
 
 
 ## 7. 本地目录绑定与执行模式

@@ -1,0 +1,9 @@
+{
+  "name": "<project-slug>",
+  "private": true,
+  "version": "0.1.0",
+  "description": "<一句话说明这个工作区负责什么>",
+  "scripts": {
+    "verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1"
+  }
+}

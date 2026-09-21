@@ -96,6 +96,14 @@
 - 验证：`npm run verify`；并在真实目录中植入凭据模式与未闭合代码围栏，确认退出码非 0
 - 完成条件：`mj-automation/`、`scripts/`、`.github/` 不再处于扫描盲区，验证行为与文档承诺一致
 
+## Slice 13 · 可复制项目模板（已完成）
+
+- 修改：`templates/`、`scripts/verify.ps1`、`docs/architecture.md`、`docs/INDEX.md`、`docs/acceptance.md`
+- 输入：本仓库 Slice 1-12 已经验证过的治理骨架，以及参考架构中「建立可复制项目模板」的结论
+- 输出：`templates/project-template/` 整目录复制单元，含规范文件、`docs/` 骨架、ADR 示例、验证脚本、CI 与忽略规则
+- 验证：把模板复制到仓库外的新目录后运行验证脚本 → PASS；删除必需文件 → 退出码非 0；植入凭据模式 → 退出码非 0
+- 完成条件：新项目不必从零拼装治理骨架，且模板本身处于本仓库的扫描范围内
+
 ## 依赖与风险
 
 - Slice 3 依赖 Slice 2，否则状态文件可能被误判为有效。

@@ -1,0 +1,14 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  governance:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify workspace governance
+        shell: pwsh
+        run: npm run verify

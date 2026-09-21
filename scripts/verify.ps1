@@ -33,7 +33,19 @@ $required = @(
   'docs/task-templates/stage-map.md',
   'docs/adr/0001-workspace-governance.md',
   '.gitignore',
-  '.gitattributes'
+  '.gitattributes',
+  'templates/README.md',
+  'templates/project-template/AGENTS.md',
+  'templates/project-template/CONSTRAINTS.md',
+  'templates/project-template/PROJECT_CONTEXT.md',
+  'templates/project-template/docs/INDEX.md',
+  'templates/project-template/docs/product-spec.md',
+  'templates/project-template/docs/architecture.md',
+  'templates/project-template/docs/implementation-plan.md',
+  'templates/project-template/docs/acceptance.md',
+  'templates/project-template/scripts/verify.ps1',
+  'templates/project-template/.github/workflows/ci.yml',
+  'templates/project-template/.gitignore'
 )
 
 $missing = @()
@@ -106,7 +118,7 @@ function Test-ScannableText([System.IO.FileInfo]$File) {
 }
 $scanCandidates = @()
 $scanCandidates += Get-ChildItem -LiteralPath $root -File -ErrorAction SilentlyContinue
-foreach ($directory in @('docs', 'projects', 'skills', 'skills-archive', 'reference', 'mj-automation', 'scripts', '.github')) {
+foreach ($directory in @('docs', 'projects', 'skills', 'skills-archive', 'reference', 'mj-automation', 'scripts', '.github', 'templates')) {
   $directoryPath = Join-Path $root $directory
   if (!(Test-Path -LiteralPath $directoryPath)) { continue }
   try {

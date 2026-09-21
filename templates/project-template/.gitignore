@@ -1,0 +1,44 @@
+# <项目名> 版本控制忽略规则
+# 原则：只跟踪可审计的规范、状态、索引与脚本；环境、日志和生成产物不入库。
+
+# ---- 运行环境与依赖 ----
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+node_modules/
+dist/
+build/
+
+# ---- 本地运行时状态 ----
+.cache/
+tmp/
+temp/
+
+# ---- 凭据与本地配置：绝不入库 ----
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+*.p12
+*.key
+*credential*.json
+*secret*.json
+*_token.json
+cookies*.json
+
+# ---- 运行时日志与生成产物 ----
+*.log
+output/
+archive/
+run/
+
+# ---- 编辑器与系统文件 ----
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
