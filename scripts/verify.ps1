@@ -176,10 +176,29 @@ $skillFiles = @()
 foreach ($skillRoot in @('skills', 'skills-archive')) {
   $skillPath = Join-Path $root $skillRoot
   if (!(Test-Path -LiteralPath $skillPath)) { continue }
-  $skillFiles += @(Get-ChildItem -LiteralPath $skillPath -Recurse -File -Filter 'SKILL.md' -ErrorAction SilentlyContinue)
+  foreach ($found in @(Get-ChildItem -LiteralPath $skillPath -Recurse -File -Filter 'SKILL.md' -ErrorAction SilentlyContinue)) {
+    $skillFiles += [pscustomobject]@{ File = $found; Root = $skillRoot }
+  }
 }
 if ($skillFiles.Count -eq 0) { Fail 'No SKILL.md found under skills/ or skills-archive/' }
-foreach ($file in $skillFiles) {
+$skillIndexes = @{}
+foreach ($skillRoot in @('skills', 'skills-archive')) {
+  $indexPath = $null
+  if ($skillRoot -eq 'skills') {
+    $candidate = Join-Path $root 'skills/README.md'
+    if (Test-Path -LiteralPath $candidate -PathType Leaf) { $indexPath = $candidate }
+  } else {
+    $skillPath = Join-Path $root $skillRoot
+    if (Test-Path -LiteralPath $skillPath) {
+      $candidate = @(Get-ChildItem -LiteralPath $skillPath -Recurse -File -Filter '00_*.md' -ErrorAction SilentlyContinue | Select-Object -First 1)
+      if ($candidate.Count -gt 0) { $indexPath = $candidate[0].FullName }
+    }
+  }
+  if (!$indexPath) { Fail ('Missing skill copy index for ' + $skillRoot) }
+  $skillIndexes[$skillRoot] = Get-Content -Raw -Encoding UTF8 $indexPath
+}
+foreach ($entry in $skillFiles) {
+  $file = $entry.File
   $relative = Get-RelativePath $file
   $lines = @(Get-Content -LiteralPath $file.FullName -Encoding UTF8 -ErrorAction SilentlyContinue)
   if ($lines.Count -lt 3 -or $lines[0].Trim() -ne '---') { Fail ('SKILL.md is missing YAML frontmatter: ' + $relative) }
@@ -197,6 +216,7 @@ foreach ($file in $skillFiles) {
   $declared = ($names[0] -replace '^name:\s*', '').Trim()
   $expected = Split-Path -Leaf (Split-Path -Parent $file.FullName)
   if ($declared -ne $expected) { Fail ('SKILL.md name does not match its directory: ' + $relative) }
+  if ($skillIndexes[$entry.Root] -notmatch [regex]::Escape($expected)) { Fail ('Skill copy is not registered in its index: ' + $expected) }
   if ($close -lt ($lines.Count - 1)) {
     $trailing = @($lines[($close + 1)..($lines.Count - 1)] | Where-Object { $_ -match '^name:\s*\S' })
     if ($trailing.Count -gt 0) { Fail ('SKILL.md has a duplicated frontmatter block: ' + $relative) }

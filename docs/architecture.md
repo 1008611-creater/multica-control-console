@@ -95,6 +95,7 @@ idea → specified → planned → in_progress → awaiting_review
 
 - 真源在各外部技能库（`.workbuddy/skills`、`.codex/skills`、自媒体工作区）；副本与真源不一致时必须写明原因。
 - 每个 `SKILL.md` 只允许一段 YAML frontmatter，`name` 必须与所在目录一致；导入依赖该字段。
+- 每个副本必须登记在其所在区的索引中：在役副本进 `skills/README.md`，封存副本进归档目录下的 `00_*.md`。新增副本未登记时验证失败。
 - 技能副本入库不代表已授权执行：登录、发布、付费生成仍需用户当次明确授权。
 
 

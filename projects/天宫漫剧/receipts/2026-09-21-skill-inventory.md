@@ -39,7 +39,7 @@
 
 1. 新建 `skills/README.md`：登记三批 16 个技能的用途、真源、与真源关系和 Multica 导入状态，并写明元数据规范与刷新规则。
 2. 修复 13 个副本：只删除重复的 frontmatter 块，保留最后一个正确块，正文与文件编码（无 BOM、CRLF 保留）不变。
-3. 新增技能元数据校验，覆盖五项：frontmatter 存在且闭合、`name` 与 `description` 各一次、`name` 与所在目录一致、正文不得残留第二个 frontmatter 块。
+3. 新增技能元数据校验，覆盖六项：frontmatter 存在且闭合、`name` 与 `description` 各一次、`name` 与所在目录一致、正文不得残留第二个 frontmatter 块、副本必须登记在其所属索引中。
 4. 同步文档：`docs/architecture.md` 新增 6.2 技能副本层；`docs/INDEX.md` 登记新索引；`docs/acceptance.md` 新增 J 节；`docs/implementation-plan.md` 新增 Slice 15 并修正 Slice 14 的标题错位。
 
 ## 验证证据
@@ -54,6 +54,8 @@
 | 名称不匹配能拦截 | 把 `name` 改成不存在的名字 | FAIL 如期触发：name does not match its directory |
 | 缺描述能拦截 | 删除 `description` 行 | FAIL 如期触发：must declare exactly one description, found 0 |
 | 未闭合能拦截 | 删除 frontmatter 结束标记 | FAIL 如期触发：frontmatter is not closed |
+| 在役副本未登记能拦截 | 在索引中改名，使某个在役副本不再被登记 | FAIL 如期触发：Skill copy is not registered in its index |
+| 封存副本未登记能拦截 | 在归档说明中改名，使某个封存副本不再被登记 | FAIL 如期触发：Skill copy is not registered in its index |
 | 恢复后正常 | 探针副本还原后重跑 | PASS，退出码 0 |
 
 以上探针均在仓库外快照副本中执行，真实仓库未受影响。
