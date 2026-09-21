@@ -1,0 +1,87 @@
+# continuity_ledger · 《西游之重铸天庭》上集
+# 职责：天宫分镜师01 ｜ 建档 2026-08-26 ｜ 回写 2026-09-13 ｜ 配套 14_S7_上集正式shotlist_v1.md
+# 状态：asset_confirmed —— M07 / M13 均已到位（M07 由 MJ 重出并经老大拍板；M13 属 M11–M17 已验收批次），
+#       S1/S5 及儿歌相关镜头全部解锁。当前仅 M01 柳小念天兵态 / M03 孙悟空弼马温态 人物 v2 待老大拍板。
+# 2026-09-13 回写：P1（M07）已在 2026-09-13 拍板通过；P2（M13）属已验收批次；
+#       P3（M04 命名）/ P4（M14 官印）/ P5（M01 兼 M02 底模）三项已于 2026-08-27 裁决，移入 resolved_items。
+
+drama: 西游之重铸天庭
+episode: 上集《儿歌唤大圣》
+script_version: v1.3
+style_baseline: 12号_§2.8权威版v3.7（极简主义主导+敦煌色彩克制点缀+传统文化之魂，全片统一一个风格）
+
+locked_items:
+  - id: L1
+    item: 天书金色沙漏刻度环"500"
+    scope: 所有含天书镜头（S1-3/S6-2）
+    rule: 天书画面右下角，缓慢流转，不制造倒计时压迫
+    source: 剧本v1.3视觉锁定
+  - id: L2
+    item: 儿歌三百首
+    scope: S2-3/S3-1~3/S4-2
+    rule: 金色封面，书名《儿歌三百首》可读；上集四只唱《小星星》（公有领域）
+    source: 剧本场次三/四
+  - id: L3
+    item: 马鞭交接
+    scope: S5-3
+    rule: 弼马温马鞭（M14）特写交接，埋中集四回收伏笔
+    source: 剧本场次五 + v1.3修订B1
+  - id: L4
+    item: 猴脸砸镜距离
+    scope: S4-4
+    rule: 獠牙猴脸砸至镜头前"四分之一厘米"，眼瞳映柳小念
+    source: 剧本场次四
+
+resolved_items:
+  - id: P1
+    item: M07 南天门场景图
+    shots: S1-1/S1-2/S1-4/S5-4
+    decision: 已出图并拍板通过
+    accepted: true
+    accepted_at: 2026-09-13
+    channel: MJ（mxai 中文版）v8.2
+    job_id: M07_nantianmen_v4_96d5ffd9e0
+    serial_id: "2098938558814359552"
+    aspect: "2:3"
+    dimensions: 1792x2688
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M07_南天门_v4_验收候选_v1.webp
+    unlocks: 上集 S1/S5 分镜
+  - id: P2
+    item: M13 儿歌三百首（封面+内页两态）
+    shots: S2-3/S3-1/S3-2/S3-3/S4-2
+    decision: 属 M11–M17 已验收批次，不返工
+    accepted: true
+    channel: OpenLux（image2 / gpt-image-2-c）
+    files:
+      - M13_儿歌三百首_封面态_验收_v1.png
+      - M13_儿歌三百首_内页态_验收_v1.png
+    unlocks: 上集 S2-3/S3/S4-2 分镜
+  - id: P3
+    item: M04 命名（武元照 vs 武明空）
+    decision: 武明空
+    decided_at: 2026-08-27
+    shots: 上集不涉及，中下集生效
+  - id: P4
+    item: M14 官印是否单独出图
+    decision: 单独出图（下集建庙名分需官印单图；上集 S5-3 仍以马鞭交接为主）
+    decided_at: 2026-08-27
+    shots: S5-3（马鞭）/ 下集 D3-4、D3-2（官印）
+  - id: P5
+    item: M01 兼 M02 凡仙态底模
+    decision: 接受"单人叙事基线"口径，M02 以 M01 作 ref 出图
+    decided_at: 2026-08-27
+    shots: 中集三起生效
+
+pending_items:
+  - id: Q1
+    item: M01 柳小念天兵态 人物 v2（四宫格 3D 仿真人基线）
+    shots: 全集主角基准
+    status: 已出图（9:16 / 1632x2912），待老大看图拍板
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M01_柳小念天兵态_验收候选_v1.png
+    note: 老大 2026-09-13 意见=人物需极致好看且仍属 3D 仿真人范畴；重出卡已建，待授权出图
+  - id: Q2
+    item: M03 孙悟空弼马温态 人物 v2（四宫格 3D 仿真人基线）
+    shots: 上集4–5 · 中集2
+    status: 已出图（9:16 / 1632x2912），待老大看图拍板
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M03_孙悟空_弼马温态_验收候选_v2.png
+    note: 丑萌灵猴标准，不套人类明星脸；提示词已改肯定式，平台不再判失败

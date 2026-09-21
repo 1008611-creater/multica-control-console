@@ -1,0 +1,4 @@
+interface:
+  display_name: "每日自媒体运营"
+  short_description: "制作小红书图文与抖音视频并按确认完成平台发布和回执沉淀"
+  default_prompt: "使用 $daily-self-media-operator 处理今天的自媒体任务，先出草稿和预览。"

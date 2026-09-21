@@ -1,0 +1,248 @@
+# continuity_ledger · 《西游之重铸天庭》中下集 · 状态 v2
+# 职责：天宫分镜师02 ｜ 2026-08-27 ｜ 配套 20_S7_中集/21_S7_下集 正式shotlist v1
+# 状态：M01–M10 十张 MJ 图全部出齐（2026-09-13）—— M07/M08 老大已拍板通过（M07 解锁上集 S1/S5，M08 解锁中集 Z4/下集 D3）；
+#       M04/M05/M06/M09/M10/M01/M02/M03 均已出图，其中人物类（M01-M06）需按「人物四宫格 3D 仿真人基线」重出，**全部待老大看图拍板**；
+#       M11-M17 属已验收批次（不返工）。下方 asset_progress 已按真实进度回写，历史区块仅作留档。
+# 顶层规则 L1-L9 不变；M01→M02 的人物身份连续性仍待 M02 成果与老大验收，不得提前宣称锁定
+# 2026-09-13：老大验收意见已回写——M07/M08 通过；人物类资产（M01-M06）统一改用「人物四宫格设定图·3D仿真人基线 v1」重出，人物需极致好看且仍属 3D 仿真人范畴。
+
+drama: 西游之重铸天庭
+episode: 中集《天书的任务》+ 下集《天命宗》
+script_version: v1.3（含 B1 马鞭回收 / B5 猴哥台词 / B6 下集三余威时间锚点）
+style_baseline: 12号_§2.8权威版v3.7（极简主义主导+敦煌色彩克制点缀+传统文化之魂，全片统一一个风格）
+inherits: 15_continuity_ledger_上集_待确认.yaml 的 L1-L4（上集已锁定项，本文件继续有效且沿用）
+
+# ===== 2026-08-27 老大裁决（已回写；相应 pending 项移出）=====
+#   - M04 命名 = 武明空（确认，去掉占位）
+#   - M14 官印 = 单独出图（下集建庙名分需官印单图，S5-3 仍以马鞭交接为主）
+#   - 三集人眼高度配额 = 放宽（接受"单人叙事基线"口径；上/中/下集同型超配额标注一并合规，退出待裁）
+resolved_by_owner_20260827:
+  - M04 命名确认=武明空
+  - M14 官印=单独出图
+  - 人眼配额放宽=三集统一口径
+
+locked_items:
+  # ----- 继承上集 L1-L4（由上集锁定，本文件补齐 scope 跨集延续声明）-----
+  - id: L1
+    item: 天书金色沙漏刻度环"500"
+    scope: 所有含天书镜头（上集 S1-3/S6-2；中集 Z1-1~Z1-4；下集 D4-5/D5-1）
+    rule: 天书画面右下角，缓慢流转，不制造倒计时压迫；任何天书出现均带此环
+    source: 剧本v1.3视觉锁定（全局）
+  - id: L2
+    item: 儿歌三百首
+    scope: 上集场次三/四（Z/D 不再使用）；中集四猴哥口令改马鞭，儿歌本场不使用
+    rule: 金色封面，书名《儿歌三百首》可读；演唱内容=公有领域《小星星》；中集起不出现
+    source: 剧本场次三/四 + v1.3 B1（儿歌功能边界收回到上集）
+  - id: L3
+    item: 马鞭交接 → 御马监祖制马鞭
+    scope: 上集 S5-3（交接伏笔）；中集 Z4-2/Z4-3（回收伏笔）
+    rule: 弼马温马鞭（M14）特写交接埋中集四回收；中集四以祖制马鞭+猴哥口令喝止头马
+    source: 剧本场次五 + 场次四 + v1.3 B1
+  - id: L4
+    item: 猴脸砸镜距离
+    scope: 上集 S4-4；后续各集不重复出现（仅回望蒙太奇 D6-2 闪回獠牙一帧）
+    rule: 獠牙猴脸砸至镜头前"四分之一厘米"，眼瞳映柳小念；回望时降为闪回一帧不强求此距离
+    source: 剧本场次四 + 下集回望蒙太奇
+
+  # ----- 中集新增锁定项 -----
+  - id: L5
+    item: 天书新增"香火"页
+    scope: Z1-2/Z1-3
+    rule: 天书翻开浮现"香火"二金字与规则细字；"天庭香火早被诸神分尽，人间方是未主之地"为关键可读句
+    source: 剧本场次一（香火功能逐集开发，承接06锚=M11显字）
+  - id: L6
+    item: 猴哥口令喝止头马
+    scope: Z4-3
+    rule: 以猴哥教的口令（画外回响"稳住！"）喝止头马，头马闻令耳竖臣服；猴哥本体不必然同框（画外/联想式）
+    source: 剧本场次四（坐实"猴哥的人"身份，但避免与 M03 中集同框复杂度）
+
+  # ----- 下集新增锁定项 -----
+  - id: L7
+    item: 香火汇聚成光
+    scope: D4-1~D4-4/D6-1
+    rule: 人间四面八方香火光流汇入庙宇成束；庙宇升级灵光从檐角溢出；柳小念感应到地盘力量
+    source: 剧本场次四【主奇观：神庙·香火汇聚成光】
+  - id: L8
+    item: 小世界光门·集尾收束
+    scope: D5-2/D6-4
+    rule: 光门缓缓打开门内轮廓若隐若现；结尾转身迈入、光门合拢，画外"后会有期"
+    source: 剧本场次五/六【主奇观：神庙光门（下集收尾）】
+  - id: L9
+    item: 武明空回眸一帧（视觉回收）
+    scope: D2-2~D2-3 埋（眼神有野心）→ D6-2 回望蒙太奇回收一帧
+    rule: 下集二初遇眼神有野心为伏笔；下集六回望蒙太奇以"少女回眸一帧"回收；命名已裁=武明空
+    source: 剧本场次二 + v1.3 B2 + 2026-08-27 老大裁决
+
+resolved_items:
+  # ----- 2026-08-27 老大已裁决（从 pending 移出保留存档）-----
+  - id: R1
+    item: M04 命名
+    decision: 武明空（确认）
+    shots: 下集 D2-1~D2-4/D6-2
+  - id: R2
+    item: M14 官印是否单独出图
+    decision: 单独出图（下集建庙名分需官印单图；上集 S5-3 仍以马鞭交接）
+    shots: 下集 D3-4/D3-2 建庙名分；上集 S5-3
+  - id: R3
+    item: 三集人眼高度配额
+    decision: 放宽上限（接受"单人叙事基线"口径，三集同型标注一并合规，退出待裁）
+    shots: 全集
+
+# ===== 【历史留档 · 不可作为当前状态】2026-08-27 初版区块 =====
+# 警告：本区块写于渠道纠正之前，把 M01-M10 记成「OpenLux 全部验收」，该结论已于 2026-08-28 被推翻。
+# 保留仅为追溯；M01-M10 的真实渠道是 MJ（mxai），当前状态见上方 asset_progress。
+historical_draft_20260827_superseded:
+  superseded_by: channel_correction_20260828
+  formal_use: forbidden
+  status: 17 资产全部验收（19 张成品图），渠道统一 OpenLux gpt-image-2-c（image2 + ref 图生图）
+  location: output/西游之重铸天庭/S6_MJ8.2资产批次01/验收/
+  identity_lock:
+    method: OpenLux 图生图 ref 锁定
+    M01→M02: M02 凡仙态以 M01 天兵态作 ref 出图，脸型/发型一致性已锁
+    M07→M05/M06: 群像/天官以 M07 南天门作 ref 出图，场景/色调一致性已锁
+    M10→M16/M17: 香火/光门以 M10 神庙作 ref 出图，神庙立柱/飞檐一致性已锁
+  files:
+    - {id: M01,  file: M01_柳小念_天兵态_验收_v1.png,        scope: 全集人物基模}
+    - {id: M02,  file: M02_柳小念_凡仙态_验收_v1.png,        scope: 中集 Z3-2/Z3-3 凡仙突破}
+    - {id: M03,  file: M03_孙悟空_弼马温态_验收_v1.png,      scope: 全集猴哥角色}
+    - {id: M04,  file: M04_武明空_少女态_验收_v1.png,        scope: 下集 D2/D6-2}
+    - {id: M05,  file: M05_天庭天兵群像_验收_v1.png,          scope: 上集 S1-1/S1-2 等}
+    - {id: M06,  file: M06_压迫者天官_验收_v1.png,            scope: 中集 Z5-1~Z5-4}
+    - {id: M07,  file: M07_南天门_验收_v1.png,                  scope: 上集 S1/S5；中集 Z6-1/Z6-2（阻塞解除）}
+    - {id: M08,  file: M08_御马监_验收_v1.png,                  scope: 中集 Z4-1/2/4；下集 D3-1/D3-2}
+    - {id: M09,  file: M09_仙朝大唐_验收_v1.png,                scope: 下集 D1/D2}
+    - {id: M10,  file: M10_神庙天命宗_验收_v1.png,              scope: 下集 D3-4/D4/D5-1/D6}
+    - {id: M11,  file: M11_天书_玉竹简沙漏_验收_v1.png,        scope: 全集核心道具（v1.3 锁定）}
+    - {id: M12,  file: M12_幸运大转盘_验收_v1.png,              scope: 上集 S2-3 奇观}
+    - {id: M13,  file: M13_儿歌三百首_封面态_验收_v1.png,      scope: 上集 S2-3/S3/S4-2}
+    - {id: M13b, file: M13_儿歌三百首_内页态_验收_v1.png,      scope: 上集 S3 内页翻开态}
+    - {id: M14a, file: M14_官印单图_验收_v1.png,                scope: 下集 D3-4/D3-2 建庙名分（按 R2 单独出）}
+    - {id: M14b, file: M14_马鞭单图_验收_v1.png,                scope: 上集 S5-3 交接；中集 Z4-2/Z4-3 回收}
+    - {id: M15,  file: M15_马酒点心_验收_v1.png,                scope: 中集 Z2 猴哥暖场}
+    - {id: M16,  file: M16_香火神庙灵光_验收_v1.png,            scope: 下集 D3-4/D4-1~D4-4}
+    - {id: M17,  file: M17_小世界光门_验收_v1.png,              scope: 下集 D5-2/D5-3/D6-3/D6-4}
+  验收标注: 全部资产图右下"AI生成 WORKBUDDY"水印为 OpenLux 渠道标识（预期内）；按 §2.8 权威版 v3.7 风格基线评审关键图（M07 南天门 / M01 天兵 / M02 凡仙）均达标；其余 M03-M17 待老大浏览验收。
+
+# ===== S6 渠道纠正与实际进度（2026-08-28） =====
+asset_channel_rule:
+  characters_architecture_scenes: MJ_v8.2_via_mxai_mcp
+  props_effects_light_effects_wonder_subjects: OpenLux_image2
+asset_progress:
+  M01:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M01_柳小念天兵态_验收候选_v1.png
+    accepted: false
+    note: 2026-09-13 已出图；四宫格 v2；待老大看图拍板（人物需极致好看且仍属 3D 仿真人范畴）
+    historical_serial_id: "2093005066368716800"
+  M02:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M02_柳小念凡仙态_验收候选_v1.png
+    accepted: false
+    note: 2026-09-13 已出图；四宫格 v1；待老大看图拍板（人物需极致好看且仍属 3D 仿真人范畴）
+    historical_serial_id: "2093268075125149696"
+  M03:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    job_id: M03_孙悟空_重出v2_1a71bd2921
+    serial_id: "2099108663879798784"
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M03_孙悟空_弼马温态_验收候选_v2.png
+    accepted: false
+    note: 2026-09-13 四宫格 v2 改写重出成功（原卡被站内内容过滤误判失败）；待老大看图拍板；丑萌灵猴标准，不套人类明星脸
+    historical_serial_id: "2093276695694938112"
+  M04:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    job_id: M04_wumingkong_10563809ba
+    serial_id: "2098952408750100480"
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M04_武明空_少女态_验收候选_v1.webp
+    accepted: false
+    redo: true
+    redo_reason: 人物不够真实好看；改用四宫格设定图基线重出，保持 3D 仿真人范畴，需极致好看
+    note: 2026-09-13 已出图；老大验收意见=人物需重出（其余通过）
+  M05:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    job_id: M05_tianbing_5d95f42004
+    serial_id: "2098957394129195008"
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M05_天庭天兵群像_验收候选_v1.png
+    accepted: false
+    redo: true
+    redo_reason: 人物不够真实好看；群像是否走四宫格待老大裁决
+    note: 2026-09-13 已出图；老大验收意见=人物需重出（其余通过）；作业曾标 queued，图已免费取回，勿重跑
+  M06:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    job_id: M06_tianguan_37e659a4a5
+    serial_id: "2098947588752412672"
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M06_压迫者天官_验收候选_v1.png
+    accepted: false
+    redo: true
+    redo_reason: 人物不够真实好看；改用四宫格设定图基线重出
+    note: 2026-09-13 已出图；老大验收意见=人物需重出（其余通过）
+  M07:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: accepted_by_owner
+    job_id: M07_nantianmen_v4_96d5ffd9e0
+    serial_id: "2098938558814359552"
+    aspect: "2:3"
+    dimensions: 1792x2688
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M07_南天门_v4_验收候选_v1.webp
+    accepted: true
+    accepted_at: 2026-09-13
+    unlocks: 上集 S1-1/S1-2/S1-4/S5-4；中集 Z6-1/Z6-2
+    note: 2026-09-13 老大看图确认通过；画幅 2:3，是否统一 9:16 待老大裁决
+  M08:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: accepted_by_owner
+    job_id: M08_yumajian_bf6c7cc38e
+    serial_id: "2098942801675816960"
+    aspect: "2:3"
+    dimensions: 1792x2688
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M08_御马监_验收候选_v1.webp
+    accepted: true
+    accepted_at: 2026-09-13
+    unlocks: 中集 Z4-1/Z4-2/Z4-4；下集 D3-1/D3-2
+    note: 2026-09-13 老大看图确认通过；画幅 2:3，是否统一 9:16 待老大裁决
+  M09:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M09_仙朝大唐_验收候选_v1.png
+    accepted: false
+    note: 2026-09-13 已出图；下集风格锚；待老大看图拍板
+  M10:
+    channel: MJ_v8.2_via_mxai_mcp
+    status: generated_pending_owner_acceptance
+    aspect: "9:16"
+    dimensions: 1632x2912
+    file: projects/天宫漫剧/assets/验收图/第一批_MJ重出_20260913/M10_神庙天命宗_验收候选_v1.png
+    accepted: false
+    note: 2026-09-13 已出图；待老大看图拍板
+  M11-M17:
+    channel: OpenLux_image2
+    status: accepted_by_owner_20260827（道具/特效，不返工）
+    formal_use: allowed
+
+# ===== 原错误区块留档（不可作为当前状态） =====
+# 原 confirmed_assets_20260827 曾错误写成：17 资产全部验收、渠道统一 OpenLux。
+# 该结论已被 2026-08-28 渠道纠正覆盖。旧 OpenLux M01-M10 结果降级为错误渠道参考。
+legacy_confirmed_assets_20260827:
+  status: superseded_by_channel_correction_20260828
+  old_channel: OpenLux_image2
+  formal_use: forbidden_until_replaced_and_owner_accepted
+  note: 原始文件仍保留在验收目录用于追溯，不再作为当前 confirmed 资产。

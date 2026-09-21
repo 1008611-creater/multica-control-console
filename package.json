@@ -1,0 +1,9 @@
+{
+  "name": "multica-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Auditable Multica content-production workspace",
+  "scripts": {
+    "verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1"
+  }
+}

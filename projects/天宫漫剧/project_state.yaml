@@ -1,0 +1,87 @@
+# 天宫漫剧 · 权威项目状态（唯一真源）
+# 铁律：项目身份由 project_id 判定，禁止用线程标题判定项目。
+project_id: tiangong-rebuild-v1
+project_name: 西游之重铸天庭
+project_alias: 天宫漫剧
+project_line: 漫剧社（主线）
+status: in_production
+status_changed_at: 2026-09-13
+status_note: 由「_旧剧隔离_20260907_待清理」恢复为在产；恢复动作=新增索引层，不搬动原始生产目录。2026-09-13 全部 10 张 MJ 图出齐（M01–M10），M07/M08 已验收，其余 8 张待老大看图拍板。同日完成：三份分镜资产依赖清单回写、两份连续性账本回写、首条生产包五段目录重建。
+
+# 状态契约字段：这些字段是控制台与 Multica 任务之间的稳定接口。
+source_of_truth: projects/天宫漫剧/project_state.yaml
+deliverables:
+  - id: script-v1.3
+    status: accepted
+    path: scripts/04_三集剧本.md
+  - id: storyboard-trilogy-v1
+    status: accepted
+    path: storyboard/
+  - id: seedance-prompt-pack
+    status: in_progress
+    path: rendered/
+blockers: []
+authorization:
+  paid_generation: required_per_batch
+  platform_publish: required_per_action
+  final_visual_acceptance: user_only
+
+form: 小而美三集漫剧（上中下，每集约3.5分钟）
+source_novel: 西游之重铸天庭（唯我墨黑，274章完结）
+protagonist: 柳小念
+three_acts: 保命（上）→ 接命（中）→ 立命（下）
+episode_spec: 约3.5分钟；6段×30秒 + 尾段
+output_spec: 9:16 / 1080x1920
+
+paths:
+  control_console: E:\codex\multica\projects\天宫漫剧   # 本目录：索引与控制台，唯一权威入口
+  draft_index: E:\codex\multica\reference\自媒体资产\drafts\天宫漫剧-首条-20260825   # 首条生产包索引层（scripts/storyboard/prompts/assets/rendered），2026-09-13 重建
+  production_root: E:\codex\niannianai\zhuanhuiyuangong\_旧剧隔离_20260907_待清理\西游之重铸天庭   # 原始生产目录，只读引用，不搬动
+  delivery_pack: E:\codex\niannianai\zhuanhuiyuangong\天宫漫剧_全流程交付包_20260826
+  multica_workspaces: E:\WORKBUDDY\Claw\SOP\multica-workspaces
+
+style_baseline: 12_S7_四类风格锚_v3_敦煌天宫3D仿真人.md §2.8 权威版 v3.7
+style_formula: 极简的形 + 敦煌的色 + 传统文化的魂（全片统一一个风格）
+
+asset_state:
+  total: 17
+  accepted: [M11, M12, M13, M14, M15, M16, M17]   # 道具/特效，OpenLux渠道，已验收，不返工
+  accepted_mj: [M07, M08]   # 场景，MJ渠道，2026-09-13 老大拍板通过，不返工
+  redo_person: []   # 2026-09-13 已全部重出完毕
+  pending_review: [M01, M02, M03, M04, M05, M06, M09, M10]   # 已出图，待老大看图拍板
+  blocked: []   # MJ 出图环节已全部完成
+  channel_rule: MJ（mxai）= 建筑/场景/人物；OpenLux（image2）= 道具/特效
+  character_baseline: prompts\资产提示词\00_人物四宫格设定图_3D仿真人基线_v1.md   # 人物设定图版式与质感 LOCKED
+  character_cards_20260913:
+    - M01_柳小念_天兵态_角色设定图_四宫格_v2.md
+    - M02_柳小念_凡仙态_角色设定图_四宫格_v1.md
+    - M03_孙悟空_弼马温态_角色设定图_四宫格_v2.md
+    - M04_武明空_少女态_角色设定图_四宫格_v1.md
+    - M06_压迫者天官_角色设定图_四宫格_v1.md
+  character_card_params: "--ar 9:16 --v 8.2 --stylize 750 --quality 2 --chaos 0"
+  ledger_rewrite_20260913:
+    storyboards_updated: [14_S7_上集正式shotlist_v1.md, 20_S7_中集正式shotlist_v1.md, 21_S7_下集正式shotlist_v1.md]
+    ledgers_updated: [15_continuity_ledger_上集_待确认.yaml, 22_continuity_ledger_中下集_待确认.yaml]
+    reason: 原「待补/未验收」标注过期；M07/M08 已拍板，M11–M17 属已验收批次，M01–M10 其余均已出图
+    unlock: 上集 S1/S2-3/S3/S4-2/S5 已解锁；中集场次4/场次6 已解锁；下集场次3-6 道具特效部分已解锁
+    remaining_gate: 人物类 M01–M06 与场景 M09/M10 待老大看图拍板后即可编译 Seedance 2.5 提示词
+
+completed_not_to_redo:
+  - 274章原作全文
+  - 三集剧本 v1.3（04_三集剧本.md）
+  - 上中下三集完整分镜（14 / 20 / 21 号 shotlist v1）
+  - 17项资产编号与提示词（M11-M17 已验收保持不变）
+
+next_batch_authorization:
+  batch_1: [M04, M05, M06, M07, M08]   # 已完成出图（M07/M08 已验收，M04/M05/M06 已重出 v2 待拍板）
+  batch_2: [M09, M10, M01, M02, M03]   # 已完成出图，待验收
+  rewrite_retry: [M03, M04]   # 提示词改写后重出成功，见 prompts\\出图提交卡_M03M04_改写重出_v2.md
+  rule: 付费出图按批次授权，每批只问一次；用户保留最终审美确认权
+
+red_lines:
+  - 不登录、不代发、不自动发布到任何平台
+  - 发布必须用户当次明确授权
+  - 只记真实后台数字，缺失标「缺」
+  - 不编造播放、销量、成交、客户反馈
+  - 不把密钥、Token、Cookie、证书写进工作目录
+  - 付费生成前取得当次明确授权

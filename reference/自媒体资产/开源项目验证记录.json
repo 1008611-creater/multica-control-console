@@ -1,0 +1,68 @@
+[
+  {
+    "Project": "visual-director-skill",
+    "Check": "Codex plugin manifest",
+    "Status": "PASS",
+    "Evidence": "present"
+  },
+  {
+    "Project": "socialforge",
+    "Check": "Codex plugin manifest",
+    "Status": "PASS",
+    "Evidence": "present"
+  },
+  {
+    "Project": "social-video-planner-skill",
+    "Check": "SKILL.md present",
+    "Status": "PASS",
+    "Evidence": "present"
+  },
+  {
+    "Project": "awesome-social-media-skills",
+    "Check": "Skill collection present",
+    "Status": "PASS",
+    "Evidence": "present"
+  },
+  {
+    "Project": "social-push",
+    "Check": "Skill workflow present",
+    "Status": "PASS",
+    "Evidence": "present"
+  },
+  {
+    "Project": "chinese-sensitive-words-mcp",
+    "Check": "build and tests",
+    "Status": "PASS",
+    "Evidence": "> chinese-sensitive-words-mcp@1.0.2 test > npm run build && node --test test/*.test.js > chinese-sensitive-words-mcp@1.0.2 build > tsc -p tsconfig.json ℹ tests 0 ℹ suites 0 ℹ pass 0 ℹ fail 0 ℹ cancelled 0 ℹ skipped 0 ℹ todo 0 ℹ duration_ms 8.3558"
+  },
+  {
+    "Project": "douyin-upload-mcp-skill",
+    "Check": "module import",
+    "Status": "PASS",
+    "Evidence": ""
+  },
+  {
+    "Project": "agent-reach",
+    "Check": "package metadata",
+    "Status": "PASS",
+    "Evidence": "Name: agent-reach Version: 1.5.0 Summary: Give your AI Agent eyes to see the entire internet. Search + Read 10+ platforms. Home-page: https://github.com/Panniantong/agent-reach Author: Neo Reid Author-email: License: MIT Location: E:\\codex\\aisp\\aidaihuo\\.third-party\\self-media-skill-route\\repos\\agent-reach\\.venv\\Lib\\site-packages Editable project location: E:\\codex\\aisp\\aidaihuo\\.third-party\\self-media-skill-route\\repos\\agent-reach Requires: feedparser, loguru, python-dotenv, pyyaml, requests, rich, yt-dlp Required-by:"
+  },
+  {
+    "Project": "douyin-mcp",
+    "Check": "package metadata",
+    "Status": "PASS",
+    "Evidence": "Name: douyin-creator-mcp Version: 0.1.0 Summary: Local Douyin creator MCP server using a persistent browser login session. Home-page: Author: Kuhakucai Author-email: License-Expression: AGPL-3.0-only Location: E:\\codex\\aisp\\aidaihuo\\.third-party\\self-media-skill-route\\repos\\douyin-mcp\\.venv\\Lib\\site-packages Editable project location: E:\\codex\\aisp\\aidaihuo\\.third-party\\self-media-skill-route\\repos\\douyin-mcp Requires: fastmcp, playwright, tzdata Required-by:"
+  },
+  {
+    "Project": "xiaohongshu-mcp",
+    "Check": "go build",
+    "Status": "PASS",
+    "Evidence": ""
+  },
+  {
+    "Project": "clipforge",
+    "Check": "package metadata",
+    "Status": "PASS",
+    "Evidence": "[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.onlyBuiltDependencies\". See https://pnpm.io/settings for the new home of each setting. 11.9.0"
+  }
+]
