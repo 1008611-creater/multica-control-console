@@ -7,7 +7,8 @@ function Fail([string]$Message) {
   exit 1
 }
 
-$root = if ($RootOverride) { (Resolve-Path -LiteralPath $RootOverride).Path } else { Split-Path -Parent $PSScriptRoot }
+$workspaceRoot = if ($env:MULTICA_WORKSPACE_ROOT) { (Resolve-Path -LiteralPath $env:MULTICA_WORKSPACE_ROOT).Path } else { Split-Path -Parent $PSScriptRoot }
+$root = if ($RootOverride) { (Resolve-Path -LiteralPath $RootOverride).Path } else { $workspaceRoot }
 $required = @(
   'AGENTS.md',
   'CONSTRAINTS.md',
@@ -309,4 +310,29 @@ foreach ($file in $ps1Files) {
   if ($hasNonAscii -and !$hasBom) { Fail ('PowerShell script has non-ASCII text but no UTF-8 BOM: ' + (Get-RelativePath $file)) }
 }
 
-Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, task-template-contract, acceptance-order, script-encoding, and skill-metadata checks succeeded.'
+# ---- 工作区绝对路径必须真实存在 ----
+# 文档用反引号写死的本仓库绝对路径一旦失效，读者会按指引走到空目录。
+# 只校验落在本仓库内的路径；外部只读引用不在本仓库控制范围内。
+$pathScanDirs = @('docs', 'projects', 'reference', 'templates', '.github')
+$pathScanFiles = @(Get-ChildItem -LiteralPath $root -File -Filter '*.md' -ErrorAction SilentlyContinue)
+foreach ($directory in $pathScanDirs) {
+  $directoryPath = Join-Path $root $directory
+  if (!(Test-Path -LiteralPath $directoryPath)) { continue }
+  $pathScanFiles += Get-ChildItem -LiteralPath $directoryPath -Recurse -File -Filter '*.md' -ErrorAction SilentlyContinue
+}
+foreach ($file in $pathScanFiles) {
+  if (!(Test-GovernedPath $file)) { continue }
+  $raw = Get-Content -Raw -Encoding UTF8 $file.FullName -ErrorAction SilentlyContinue
+  if (!$raw) { continue }
+  $tick = [string][char]96
+  $pathPattern = [regex]::Escape($tick) + '([A-Za-z]:\\[^' + [regex]::Escape($tick) + ']+)' + [regex]::Escape($tick)
+  foreach ($match in [regex]::Matches($raw, $pathPattern)) {
+    $candidate = $match.Groups[1].Value.TrimEnd('\')
+    if (!$candidate.StartsWith($workspaceRoot, [System.StringComparison]::OrdinalIgnoreCase)) { continue }
+    if (!(Test-Path -LiteralPath $candidate)) {
+      Fail ('Workspace path does not exist: ' + $candidate + ' (referenced by ' + (Get-RelativePath $file) + ')')
+    }
+  }
+}
+
+Write-Output 'VERIFY PASS: governance files, project state, secret-pattern, Markdown structure, reference-integrity, task-template-contract, acceptance-order, workspace-path, script-encoding, and skill-metadata checks succeeded.'
