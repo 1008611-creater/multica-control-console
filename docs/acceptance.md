@@ -48,6 +48,8 @@
 - [ ] 模板缺少「失败处理」或元数据字段被改名时能阻断验证，避免模板只描述正常路径。
 - [ ] DEFINE 的固定产物问题简报（`problem-brief.md`）与 REVIEW 的固定产物复核报告（`review-report.md`）存在，并进入验证器的必需文件清单。
 - [ ] 生命周期文档承诺的每个阶段产物都能在 `docs/task-templates/` 或 `docs/` 找到对应模板，不存在只有承诺没有产物的阶段。
+- [ ] `docs/risk-levels.md` 定义 L0–L3、阶段最低证据和升级规则；风险不确定时能进入 `blocked`。
+- [ ] `docs/task-templates/context-pack.md` 定义必读、可选、禁止读取、缺失字段和停止条件；L1 及以上任务能定位最小上下文。
 
 ## F. 发布与复盘
 

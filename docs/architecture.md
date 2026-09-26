@@ -121,6 +121,14 @@ idea → specified → planned → in_progress → awaiting_review
 - 本仓库与 `templates/project-template/docs/acceptance.md` 各检查一份，任一份乱序即阻断提交。
 - 模板副本单独复制到仓库外后，该检查仍由模板自带验证脚本执行。
 
+## 6.5 风险与上下文契约
+
+风险等级与生命周期不是两套互相替代的流程：`docs/risk-levels.md` 定义 L0–L3 的最低证据，`docs/lifecycle.md` 定义阶段顺序。任务触及跨模块、状态模型、任务接口或架构边界时必须升级风险等级。
+
+L1 及以上任务必须先装载最小上下文：项目 ID、状态真源、根级约束、当前任务模板和验收条件。具体清单使用 `docs/task-templates/context-pack.md`；项目已有 `01_input_packet.md` 等输入包时，它是该契约的项目实例，不是授权证明。
+
+上下文不足、来源冲突或风险等级无法判断时，状态保持 `blocked`。禁止通过扩大扫描范围、读取凭据或引用历史日志来填补缺失事实。
+
 ## 7. 本地目录绑定与执行模式
 
 Multica Project 通过 `local_directory` 资源绑定本地工作目录。两种执行模式的实际差异：

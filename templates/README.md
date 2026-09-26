@@ -9,7 +9,7 @@
 | 路径 | 作用 |
 |---|---|
 | `AGENTS.md` | 项目铁律、生命周期、变更规则、验证入口 |
-| `CONSTRAINTS.md` | 质量、安全、风险分级 |
+| `CONSTRAINTS.md` | 质量、安全、风险分级和最小上下文边界 |
 | `PROJECT_CONTEXT.md` | 当前事实、缺口、非目标 |
 | `docs/INDEX.md` | 文档地图与阅读时机 |
 | `docs/product-spec.md` | 目标、用户、范围、核心流程 |
@@ -17,9 +17,10 @@
 | `docs/implementation-plan.md` | 垂直切片计划与依赖 |
 | `docs/acceptance.md` | 可验证的验收条件 |
 | `docs/lifecycle.md` | DEFINE 到 RETRO 的输入、产物、责任和门槛 |
+| `docs/risk-levels.md` | L0–L3 风险等级与阶段门 |
 | `docs/release-checklist.md` | SHIP 阶段的交付、回执和回滚检查 |
 | `docs/retro-template.md` | RETRO 阶段的事实记录与复盘模板 |
-| `docs/task-templates/` | DEFINE 问题简报与 REVIEW 复核报告模板 |
+| `docs/task-templates/` | DEFINE、REVIEW 与最小上下文装载模板 |
 | `docs/adr/` | 架构决策记录 |
 | `scripts/verify.ps1` | 唯一验证入口：必需文件、敏感信息、Markdown 结构、相对链接完整性 |
 | `package.json` | 把验证绑定到 `npm run verify` |

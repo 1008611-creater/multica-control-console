@@ -24,7 +24,9 @@ $required = @(
   'docs/release-checklist.md',
   'docs/retro-template.md',
   'docs/project-state-contract.md',
+  'docs/risk-levels.md',
   'docs/task-templates/README.md',
+  'docs/task-templates/context-pack.md',
   'docs/task-templates/content-production.md',
   'docs/task-templates/review-and-release.md',
   'docs/task-templates/data-review.md',
@@ -36,6 +38,7 @@ $required = @(
   'docs/task-templates/review-report.md',
   'docs/adr/0001-workspace-governance.md',
   'docs/adr/0002-project-template-layer.md',
+  'docs/adr/0003-risk-and-context-contract.md',
   '.gitignore',
   '.gitattributes',
   'templates/README.md',
@@ -276,8 +279,26 @@ foreach ($file in $templateFiles) {
   foreach ($field in @('风险等级', '责任角色')) {
     if ($raw -notmatch [regex]::Escape($field)) { Fail ('Task template metadata is missing ' + $field + ': ' + $relative) }
   }
+  if ($raw -notmatch '(?m)^-\s*风险等级：L[0-3]\b') { Fail ('Task template has an invalid risk level: ' + $relative) }
 }
 if ($contractTemplates -eq 0) { Fail 'No task template declares a metadata section' }
+
+# ---- 风险与上下文契约 ----
+$riskPath = Join-Path $root 'docs/risk-levels.md'
+$riskText = Get-Content -Raw -Encoding UTF8 $riskPath
+foreach ($level in @('L0', 'L1', 'L2', 'L3')) {
+  if ($riskText -notmatch ('\|\s*' + $level + '\b')) { Fail ('Risk-level contract is missing ' + $level) }
+}
+foreach ($stage in @('DEFINE', 'PLAN', 'BUILD', 'VERIFY', 'REVIEW', 'SHIP', 'RETRO')) {
+  if ($riskText -notmatch ('\|\s*' + $stage + '\b')) { Fail ('Risk-level contract is missing stage ' + $stage) }
+}
+$contextPath = Join-Path $root 'docs/task-templates/context-pack.md'
+$contextText = Get-Content -Raw -Encoding UTF8 $contextPath
+foreach ($section in @('最小上下文', '硬约束', '验收', '失败处理')) {
+  if ($contextText -notmatch ('(?m)^##\s+' + [regex]::Escape($section) + '\s*$')) {
+    Fail ('Context-pack template is missing section ' + $section)
+  }
+}
 
 # ---- 验收清单章节顺序 ----
 # 验收清单用 A/B/C 字母定位条目；字母乱序会让「D 节」指向两处，条款被漏读。

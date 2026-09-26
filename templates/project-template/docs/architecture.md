@@ -50,3 +50,7 @@
 - 阶段契约与门槛：`docs/lifecycle.md`
 - 任务输入模板：<模板目录路径>
 - 自动检查：`scripts/verify.ps1`
+
+## 6. 风险与上下文契约
+
+`docs/risk-levels.md` 定义 L0–L3 的最低证据，`docs/lifecycle.md` 定义阶段顺序。L1 及以上任务必须先装载 `docs/task-templates/context-pack.md` 或项目输入包；缺失或冲突时进入 `blocked`，不得用历史值或扩大扫描范围补齐。

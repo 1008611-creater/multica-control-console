@@ -18,10 +18,12 @@ $required = @(
   'docs/implementation-plan.md',
   'docs/acceptance.md',
   'docs/lifecycle.md',
+  'docs/risk-levels.md',
   'docs/release-checklist.md',
   'docs/retro-template.md',
   'docs/task-templates/problem-brief.md',
   'docs/task-templates/review-report.md',
+  'docs/task-templates/context-pack.md',
   'scripts/verify.ps1',
   '.gitignore'
 )
@@ -106,6 +108,23 @@ $acceptanceLetters = @($acceptanceLines | ForEach-Object {
 if ($acceptanceLetters.Count -eq 0) { Fail 'Acceptance list has no lettered sections: docs/acceptance.md' }
 if (($acceptanceLetters -join ',') -ne ((@($acceptanceLetters | Sort-Object)) -join ',')) {
   Fail ('Acceptance list sections are out of order: docs/acceptance.md -> ' + ($acceptanceLetters -join ','))
+}
+
+# ---- 风险与上下文契约 ----
+$riskPath = Join-Path $root 'docs/risk-levels.md'
+$riskText = Get-Content -Raw -Encoding UTF8 $riskPath
+foreach ($level in @('L0', 'L1', 'L2', 'L3')) {
+  if ($riskText -notmatch ('\|\s*' + $level + '\b')) { Fail ('Risk-level contract is missing ' + $level) }
+}
+foreach ($stage in @('DEFINE', 'PLAN', 'BUILD', 'VERIFY', 'REVIEW', 'SHIP', 'RETRO')) {
+  if ($riskText -notmatch ('\|\s*' + $stage + '\b')) { Fail ('Risk-level contract is missing stage ' + $stage) }
+}
+$contextPath = Join-Path $root 'docs/task-templates/context-pack.md'
+$contextText = Get-Content -Raw -Encoding UTF8 $contextPath
+foreach ($section in @('最小上下文', '硬约束', '验收', '失败处理')) {
+  if ($contextText -notmatch ('(?m)^##\s+' + [regex]::Escape($section) + '\s*$')) {
+    Fail ('Context-pack template is missing section ' + $section)
+  }
 }
 
 # ---- PowerShell encoding: non-ASCII scripts must carry a UTF-8 BOM ----

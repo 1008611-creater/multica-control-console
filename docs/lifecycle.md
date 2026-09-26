@@ -19,6 +19,11 @@
 - REVIEW 的固定产物是复核报告：`docs/task-templates/review-report.md`。
 - RETRO 的固定产物是 `docs/retro-template.md`。
 - 每个阶段的产物都必须落到仓库内的真实文件，不能只存在于对话里。
+- 风险分级与阶段最低证据见 `docs/risk-levels.md`；L1 及以上任务还必须先形成最小上下文装载包。
+
+## 最小上下文装载
+
+任务启动时按 `docs/task-templates/context-pack.md` 装载项目 ID、状态真源、根级约束、任务模板和验收条件。历史回执、外部只读目录和无关技能只能按任务需要追加读取；必读项缺失时进入 `blocked`。
 
 ## 统一失败处理
 
