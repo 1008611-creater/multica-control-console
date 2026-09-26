@@ -14,6 +14,8 @@
 
 ## 阶段入口
 
+- DEFINE 的固定产物是问题简报：`docs/task-templates/problem-brief.md`。
+- REVIEW 的固定产物是复核报告：`docs/task-templates/review-report.md`。
 - SHIP 阶段以 `release-checklist.md` 为唯一入口。
 - RETRO 阶段以 `retro-template.md` 为固定产物。
 - 每个阶段的产物都必须落到仓库内的真实文件，不能只存在于对话里。

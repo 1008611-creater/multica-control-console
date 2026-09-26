@@ -12,6 +12,14 @@
 | SHIP | 已接受产物、发布清单 | 用户执行的发布回执或交付记录 | 用户本人 | 有最终成功回执，或明确保持未发布状态 |
 | RETRO | 真实结果、成本、失败记录 | 复盘记录与状态回写 | 数据复盘 | 结论有来源，下一周期动作可验证 |
 
+## 阶段入口
+
+- DEFINE 的固定产物是问题简报：`docs/task-templates/problem-brief.md`。
+- SHIP 以 `docs/release-checklist.md` 为唯一入口。
+- REVIEW 的固定产物是复核报告：`docs/task-templates/review-report.md`。
+- RETRO 的固定产物是 `docs/retro-template.md`。
+- 每个阶段的产物都必须落到仓库内的真实文件，不能只存在于对话里。
+
 ## 统一失败处理
 
 - 规格不清：回到 `DEFINE`；

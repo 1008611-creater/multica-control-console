@@ -179,3 +179,26 @@
 - Slice 4 依赖 Slice 1 的边界，否则容易把自动发布误写进模板。
 - Slice 5 依赖项目状态契约；新增项目必须先登记 `projects/README.md`。
 - 不在本次范围内重写外部生产目录或 Multica 客户端。
+
+## Slice 22 · 项目状态确定性审计入口（已完成）
+
+- 修改：`scripts/audit_project.ps1`、`docs/task-templates/project-state-audit.md`、项目回执
+- 输入：主线项目状态契约、项目索引和审计模板
+- 输出：只读审计脚本，逐项检查项目 ID、状态、契约字段与交付物路径，并返回可用于自动化的退出码
+- 验证：对天宫项目运行脚本 → `AUDIT PASS`；对缺失交付物的临时副本运行 → 非 0
+- 完成条件：项目审计不再依赖聊天记忆或手工逐项判断，且不修改业务资产与状态文件
+## Slice 23 · 生产审计事实底稿（已完成）
+
+- 修改：`scripts/audit_project.ps1`、`docs/task-templates/project-state-audit.md`、天宫项目审计回执
+- 输入：现有项目状态审计与生产审计所需的项目编号、阶段、冠军和最早缺口
+- 输出：保留控制台契约退出码，同时明确区分控制台通过与生产审计阻塞；只读报告缺失交接文件和已登记的视觉验收门
+- 验证：对天宫项目使用 `-ProjectRoot` 运行 → 报告控制台契约通过、生产审计阻塞，并定位 M01–M06、M09、M10 待拍板
+- 完成条件：生产审计可以先得到可复核事实底稿，同时不改项目状态、不触发出图或发布
+
+## Slice 24 · 阶段产物补齐（已完成）
+
+- 修改：`docs/task-templates/problem-brief.md`、`docs/task-templates/review-report.md`、`docs/lifecycle.md`、`docs/task-templates/README.md`、`docs/INDEX.md`、`docs/acceptance.md`、`scripts/verify.ps1`
+- 输入：`docs/lifecycle.md` 声明的每阶段必须产物，以及参考架构「每阶段必须有产物、不能只有规则」的结论
+- 输出：DEFINE 的问题简报与 REVIEW 的复核报告两个固定产物模板，并把两者写入验证器的必需文件清单和阶段入口表
+- 验证：`npm run verify` → PASS；删除其中一个模板 → 退出码非 0；模板缺少「失败处理」或元数据字段被改名 → 退出码非 0
+- 完成条件：生命周期中每个阶段都指向真实存在的产物模板，不再存在「只声明、无产物」的阶段

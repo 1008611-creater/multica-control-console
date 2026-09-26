@@ -6,6 +6,7 @@
 - [ ] `docs/INDEX.md`、`product-spec.md`、`architecture.md`、`implementation-plan.md`、`acceptance.md` 存在。
 - [ ] `docs/lifecycle.md` 存在，并写明 DEFINE 到 RETRO 各阶段的输入、产物、责任和进入下一阶段条件。
 - [ ] SHIP 阶段有 `release-checklist.md`，RETRO 阶段有 `retro-template.md`。
+- [ ] DEFINE 阶段有问题简报模板，REVIEW 阶段有复核报告模板。
 - [ ] 至少有一条 ADR 记录本次架构选择。
 
 ## B. 边界

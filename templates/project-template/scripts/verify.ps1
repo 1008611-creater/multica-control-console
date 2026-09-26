@@ -20,6 +20,8 @@ $required = @(
   'docs/lifecycle.md',
   'docs/release-checklist.md',
   'docs/retro-template.md',
+  'docs/task-templates/problem-brief.md',
+  'docs/task-templates/review-report.md',
   'scripts/verify.ps1',
   '.gitignore'
 )

@@ -32,6 +32,8 @@ $required = @(
   'docs/task-templates/project-state-audit.md',
   'docs/task-templates/multica-pilot-project-audit.md',
   'docs/task-templates/stage-map.md',
+  'docs/task-templates/problem-brief.md',
+  'docs/task-templates/review-report.md',
   'docs/adr/0001-workspace-governance.md',
   'docs/adr/0002-project-template-layer.md',
   '.gitignore',

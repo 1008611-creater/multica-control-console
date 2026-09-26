@@ -19,6 +19,7 @@
 | `docs/lifecycle.md` | DEFINE 到 RETRO 的输入、产物、责任和门槛 |
 | `docs/release-checklist.md` | SHIP 阶段的交付、回执和回滚检查 |
 | `docs/retro-template.md` | RETRO 阶段的事实记录与复盘模板 |
+| `docs/task-templates/` | DEFINE 问题简报与 REVIEW 复核报告模板 |
 | `docs/adr/` | 架构决策记录 |
 | `scripts/verify.ps1` | 唯一验证入口：必需文件、敏感信息、Markdown 结构、相对链接完整性 |
 | `package.json` | 把验证绑定到 `npm run verify` |

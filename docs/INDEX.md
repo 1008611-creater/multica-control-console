@@ -11,6 +11,8 @@
 | `retro-template.md` | RETRO 阶段的事实记录与复盘模板 | 发布或阶段结束后 |
 | `project-state-contract.md` | 项目状态字段、状态转移和更新规则 | 修改 `project_state.yaml` 前 |
 | `task-templates/` | 可复用的 Multica 任务输入模板 | 创建新任务前 |
+| `task-templates/problem-brief.md` | DEFINE 阶段的问题简报产物 | 写规格或计划前 |
+| `task-templates/review-report.md` | REVIEW 阶段的复核报告产物 | 交付或发布前 |
 | `../templates/README.md` | 可复制的新工作区骨架与用法 | 开新项目或复用治理方式前 |
 | `../projects/README.md` | 所有项目控制台与状态真源索引 | 新增或切换项目时 |
 | `../skills/README.md` | 在役技能副本的批次、用途、真源与导入状态 | 导入技能或刷新副本前 |

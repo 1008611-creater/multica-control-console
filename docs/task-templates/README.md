@@ -22,3 +22,6 @@
 - `stage-map.md`：将旧阶段操作卡映射到新模板。
 - `project-state-audit.md`：审计项目身份、状态、交付物和授权边界。
 - `multica-pilot-project-audit.md`：可直接粘贴到 Multica 的第一条低风险试跑任务包。
+- `aigc-contest-draw.md`：为 AIGC 比赛准备国内版 Midjourney 抽卡批次，付费出图前必须停在人工授权。
+- `problem-brief.md`：DEFINE 阶段的固定产物，先锁定用户、问题、非目标和成功判据。
+- `review-report.md`：REVIEW 阶段的固定产物，用证据把 blocking 问题收敛到 0。
