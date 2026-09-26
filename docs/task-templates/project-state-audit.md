@@ -23,6 +23,10 @@
 - 一份审计回执，包含逐项 PASS/FAIL 证据；
 - 不一致项、影响范围和修复建议；
 - 明确下一步及其授权门。
+- 推荐命令：`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit_project.ps1 -ProjectDir <项目目录>`
+- 兼容入口：同一脚本也接受 `-ProjectRoot <项目目录>`，并额外报告阶段、冠军、缺失交接文件和最早缺口。
+- 最早缺口按上游优先：先报告缺失交接文件，再报告阶段/冠军缺失；这些字段齐备后，才报告待用户验收的资产。
+- `AUDIT PASS` 仅表示控制台契约检查通过；若项目上下文或输入包缺失，必须同时报告生产审计阻塞，不得视为生产就绪。
 
 ## 硬约束
 

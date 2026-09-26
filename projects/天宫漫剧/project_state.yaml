@@ -18,7 +18,7 @@ deliverables:
     status: accepted
     path: storyboard/
   - id: seedance-prompt-pack
-    status: in_progress
+    status: awaiting_review
     path: rendered/
 blockers: []
 authorization:
@@ -64,7 +64,7 @@ asset_state:
     ledgers_updated: [15_continuity_ledger_上集_待确认.yaml, 22_continuity_ledger_中下集_待确认.yaml]
     reason: 原「待补/未验收」标注过期；M07/M08 已拍板，M11–M17 属已验收批次，M01–M10 其余均已出图
     unlock: 上集 S1/S2-3/S3/S4-2/S5 已解锁；中集场次4/场次6 已解锁；下集场次3-6 道具特效部分已解锁
-    remaining_gate: 人物类 M01–M06 与场景 M09/M10 待老大看图拍板后即可编译 Seedance 2.5 提示词
+    remaining_gate: Seedance 2.5 提示词 18 段已于 2026-09-21 落盘；M01–M06、M09、M10 仍待用户看图拍板后，才能进入成片生产
 
 completed_not_to_redo:
   - 274章原作全文
