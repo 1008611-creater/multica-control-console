@@ -1,0 +1,32 @@
+﻿project_id: aigc-contest-draw-v1
+project_name: AIGC比赛抽卡
+status: in_progress
+status_changed_at: 2026-09-26
+status_note: C01 至 C06 已回收真实图片，尺寸均为 2912×1632；C06 由免费补下载取得，序列号 serial-2103726832829337600。C07 至 C15 尚未提交，需用户当次授权后按一次一张串行继续；用户 4 选 1 仍待填写。
+source_of_truth: projects/AIGC比赛抽卡/project_state.yaml
+deliverables:
+  - id: contest-draw-skill
+    status: accepted
+    path: README.md
+  - id: contest-batch-01
+    status: in_progress
+    path: prompts/contest-batch-01.md
+  - id: contest-batch-01-receipt
+    status: in_progress
+    path: receipts/contest-batch-01.md
+blockers: []
+authorization:
+  paid_generation: granted_for_batch_01_on_2026-09-26
+  platform_publish: not_applicable
+  final_visual_acceptance: user_only
+paths:
+  control_console: E:\codex\multica\projects\AIGC比赛抽卡
+  production_root: E:\codex\aigc-motion-portfolio
+  multica_workspaces: E:\WORKBUDDY\Claw\SOP\multica-workspaces
+  draw_bridge: http://127.0.0.1:8765
+red_lines:
+  - 不登录、不代发、不自动发布
+  - 付费出图必须用户当次明确授权
+  - 不读取或保存 Cookie、Token、密钥
+  - 不把未验收候选图写成已入选
+  - 失败或超时时不自动重复扣费

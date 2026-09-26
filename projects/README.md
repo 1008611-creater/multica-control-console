@@ -1,10 +1,11 @@
-# 项目控制台索引
+﻿# 项目控制台索引
 
 本目录保存项目控制台、状态文件、索引，以及发布证据归档，不搬迁外部原始生产目录。
 
 | 项目 ID | 控制台 | 状态真源 | 当前状态 |
 |---|---|---|---|
 | `tiangong-rebuild-v1` | `projects/天宫漫剧/` | `projects/天宫漫剧/project_state.yaml` | `in_production` |
+| `aigc-contest-draw-v1` | `projects/AIGC比赛抽卡/` | `projects/AIGC比赛抽卡/project_state.yaml` | `in_progress` |
 
 ## 非项目目录
 
