@@ -44,8 +44,13 @@ $BrowserLock  = Join-Path $Root 'run\mj-browser.lock'
 $RecoverLog   = Join-Path $LogDir 'redownload.log'
 $RecoverState = Join-Path $LogDir 'redownload-state.json'
 $RecoverLock  = Join-Path $LogDir 'redownload.lock'
+$ControlPause = Join-Path $Root 'run\bridge-control-paused'
 
 if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Force -Path $LogDir | Out-Null }
+if (Test-Path $ControlPause) {
+    Write-Log 'PAUSED' 'local control console pause is active; no bridge start/restart/recovery action'
+    exit 0
+}
 
 # 日志超过 2MB 就滚动一次，避免无限增长
 try {
@@ -362,3 +367,4 @@ try {
     Write-Log 'RESTART' ('safe restart channel unavailable: ' + $_.Exception.Message)
 }
 exit 0
+

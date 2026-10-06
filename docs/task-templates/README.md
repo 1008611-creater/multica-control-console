@@ -23,5 +23,7 @@
 - `project-state-audit.md`：审计项目身份、状态、交付物和授权边界。
 - `multica-pilot-project-audit.md`：可直接粘贴到 Multica 的第一条低风险试跑任务包。
 - `aigc-contest-draw.md`：为 AIGC 比赛准备国内版 Midjourney 抽卡批次，付费出图前必须停在人工授权。
+- `aigc-batch-workflow.md`：可复用的 AIGC 批次状态机、Multica Issue 正文、回执格式和授权门。
 - `problem-brief.md`：DEFINE 阶段的固定产物，先锁定用户、问题、非目标和成功判据。
 - `review-report.md`：REVIEW 阶段的固定产物，用证据把 blocking 问题收敛到 0。
+- `aigc-contest-draw-multica-issue.md`：AIGC 抽卡批次的 Multica Issue 任务包，登记状态、回执和受控并发执行门。

@@ -210,3 +210,21 @@
 - 输出：统一的 L0–L3 阶段门、上下文装载包模板和升级规则；L1 及以上任务不再依赖聊天记忆决定读取范围
 - 验证：`npm run verify`；模板副本验证；对缺失风险契约或上下文包的临时副本验证失败
 - 完成条件：风险等级、生命周期阶段和上下文入口都有固定文件，并能被验证器检查
+## Slice 26 · AIGC 批次工作流状态机（本次完成）
+
+- 修改：`docs/task-templates/aigc-batch-workflow.md`、`docs/architecture.md`、`docs/adr/0004-aigc-batch-workflow-boundary.md`、`docs/task-templates/aigc-contest-draw.md`
+- 输入：AIGC 比赛抽卡的真实批次回执、授权边界和抽卡桥执行约束
+- 输出：可复用的批次配置、`draft → linted → awaiting_authorization → running_bounded_parallel → awaiting_selection → accepted` 状态机、`blocked` 失败出口、单张回执格式和 Multica Issue 正文
+- 验证：`npm run verify`、`git diff --check`、模板章节与状态名定向检查
+- 完成条件：新批次可以复用同一套状态机；付费授权、最终选图和发布授权保持三道独立人工门；不执行任何付费出图或发布动作
+
+
+## Slice 27 · 工作台定位与分发边界收敛（文档与规则已验证）
+
+- 修改：`AGENTS.md`、`CONSTRAINTS.md`、`README.md`、`PROJECT_CONTEXT.md`、`docs/multica-workbench-product-vision.md`、`docs/architecture.md`、`docs/adr/0007-local-draw-workbench.md`、`docs/acceptance.md`、`.gitignore`、`README_FIRST_RUN.md`、`docs/INDEX.md`、`assistant/CURRENT.md`、`assistant/THREADS.md`、`docs/multica-folder-audit.md`
+- 输入：用户明确的 Windows 全中文本地抽卡工作台目标；当前构建、安装和数据目录的源码/清单检查
+- 输出：统一三层职责及根级工程约束；界定源码、本机依赖与身份数据、任务/回执、浏览器证据和分发件；将运行依赖与生成包从 Git 排除，同时保留分发脚本源码；新增安装升级与三并发验收项
+- 验证：`npm run verify`、`npm test`；目录清单和 ZIP 路径名审查；确认本轮没有重建分发件或执行外部平台动作
+- 已验证：规则校验、12 项 Node 与 3 项 Python 测试通过；安装脚本声明的用户数据排除目录已从源码回读
+- 未验证：隔离环境安装/升级、升级数据哈希保留、干净机器启动和真实平台链路；ZIP 包体文件内容未扫描凭据
+- 完成条件：文档方向统一且旧用户数据边界清楚；安装升级和外部生产仍须各自通过独立验收，不用文档声明代替实测

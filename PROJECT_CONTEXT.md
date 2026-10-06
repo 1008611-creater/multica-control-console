@@ -4,7 +4,7 @@
 
 ## 一句话定位
 
-Multica 是内容生产与创收工作的任务编排层；本仓库是它的可审计控制台，连接技能副本、项目状态、任务模板和真实结果。
+本仓库维护 Multica 本地抽卡生产工作台的源码、规则、运行与分发边界及可核验结果。目标产品面向 Windows、全中文，重点是可读的任务队列、最多三并发、真实回执、成品位置、失败原因和重提条件。
 
 ## 当前事实
 
@@ -21,7 +21,12 @@ Multica 是内容生产与创收工作的任务编排层；本仓库是它的可
 - 现有技能副本、阶段操作卡和账号/项目资产索引已存在。
 - 风险等级与生命周期阶段门见 `docs/risk-levels.md`；L1 及以上任务使用 `docs/task-templates/context-pack.md` 或项目输入包启动。
 - Multica 的任务、智能体、运行时、小队和 Autopilot 通过外部桌面端执行。
-- 本仓库没有传统应用运行时，因此质量门槛以文档、状态、索引和脚本验证为主。
+- [已验证，2026-09-26] Multica 本地任务与抽卡桥位于同一主机 `DESKTOP-OMI2AR3`；Issue `ANS-33` 能读取 AIGC 项目的 `project_state.yaml`，且 `GET /health` 返回 HTTP 200、`ok=true`。
+- [已验证，2026-09-26] 项目绑定执行模式为 `worktree`；Multica 任务向主工作区回执路径写入被系统以 `UnauthorizedAccessException` 拒绝。测试结果见 `projects/AIGC比赛抽卡/receipts/multica-connectivity-test-2026-09-26.md`。
+- 本仓库同时包含工作台应用源码和治理材料；桥接服务源码位于 `mj-automation/scripts/`，中文页面位于 `mj-automation/control/`，Windows 安装与构建脚本位于 `installers/`、`scripts/` 和根目录启动器。
+- [已验证，2026-09-27] 主机内有本机运行依赖 `runtime/`、本地回执/任务数据和 `dist/` 分发件；它们不是同一种资产。具体版本控制和保留边界见 `docs/architecture.md`。
+- [用户确认，2026-09-27] 本轮工程目标是围绕 Windows 本地抽卡工作台收敛，仓库中的历史技能和项目材料仅作为支持资产。
+- [待验证] 队列、并发、回执、安装升级要求是否已在真实运行环境完整实现，须逐项按 `docs/acceptance.md` 验收；不能用产品规格或静态源码检查代替。
 
 ## 当前缺口
 

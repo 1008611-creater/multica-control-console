@@ -1,4 +1,4 @@
-"""
+﻿"""
 MJ 生图桥接服务（改造副本）—— 把本机 Midjourney 自动化包装成 OpenAI 兼容接口。
 
 来源: E:\codex\niannianai\zhuanhuiyuangong\infinite-canvas\tools\mj-bridge\server.py
@@ -37,15 +37,19 @@ import mimetypes
 import os
 import re
 import subprocess
+import shutil
+import sys
 import time
 import uuid
 from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+
+from batch_queue import BatchError, BatchManager, JobNotFound
 
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE / "mj_run.js"
@@ -54,11 +58,23 @@ WATCHDOG = HERE / "watchdog_mj_bridge.ps1"
 # 【2026-09-14.4】免管理员自启安装脚本（走登录启动项，不弹 UAC）。
 INSTALL_USER_AUTOSTART = HERE / "install_autostart_user.ps1"
 RESULTS_DIR = Path(os.environ.get("MJ_OUTPUT_DIR", str(HERE.parent / "output")))
+CONTROL_DIR = HERE.parent / "control"
+CONTROL_HTML = CONTROL_DIR / "index.html"
+CONTROL_BROWSER = HERE / "browser_control.js"
+CONTROL_STATE = HERE.parent / "run" / "control-browser.json"
+CONTROL_STOP_FILE = CONTROL_STATE.with_suffix(".stop")
+CONTROL_LOG = HERE.parent / "run" / "logs" / "control-browser.log"
+SLOT_LOGIN_ROOT = HERE.parent / "run" / "slot-login"
+CONTROL_PAUSE = HERE.parent / "run" / "bridge-control-paused"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # 【2026-09-12.3】后台作业目录，必须与 mj_run.js 里的 run/jobs 完全一致，否则查不到结果。
 JOBS_DIR = Path(os.environ.get("MJ_JOBS_DIR", str(HERE.parent / "run" / "jobs")))
 JOBS_DIR.mkdir(parents=True, exist_ok=True)
+BATCHES_DIR = Path(os.environ.get("MJ_BATCHES_DIR", str(HERE.parent / "run" / "batches")))
+BATCHES_DIR.mkdir(parents=True, exist_ok=True)
+BATCH_SLOT_ROOT = Path(os.environ.get("MJ_BATCH_SLOT_ROOT", str(HERE.parent / "run" / "batch-slots")))
+BATCH_SLOT_ROOT.mkdir(parents=True, exist_ok=True)
 
 MODEL_NAME = os.environ.get("MJ_BRIDGE_MODEL", "midjourney")
 DEFAULT_VERSION = os.environ.get("MJ_BRIDGE_VERSION", "v8.2")
@@ -68,7 +84,11 @@ MAX_N = int(os.environ.get("MJ_BRIDGE_MAX_N", "15"))
 # 【2026-09-12】构建标记。用途：外部只能通过 /health 判断"跑的是不是改过之后的代码"。
 # 上一版的 /health 新旧完全一致，导致无法确认重启是否成功（只能靠猜）。
 # 每次改完 server.py 都把这个号 +1，重启后 /health 的 bridge 字段会跟着变。
-BRIDGE_BUILD = "2026-09-14.5"
+BRIDGE_BUILD = "2026-10-03-portable-runtime-01"
+BRIDGE_ID = "multica-local-draw-bridge"
+INSTALL_ROOT = Path(os.environ.get("MULTICA_INSTALL_ROOT", str(HERE.parents[1]))).resolve()
+BUNDLED_NODE = INSTALL_ROOT / "runtime" / "node" / "node.exe"
+NODE_EXE = Path(os.environ.get("MXAI_NODE_EXE", str(BUNDLED_NODE if BUNDLED_NODE.exists() else shutil.which("node") or "node")))
 BRIDGE_FEATURES = [
     "timeout_1200s",
     "queued_202_pending",
@@ -80,26 +100,20 @@ BRIDGE_FEATURES = [
     "ps1_bom_guard",
     "free_redownload",
     "terminal_failure_split",
+    "serial_bound_download",
+    "chinese_output_names",
     "recover_dryrun",
     "user_autostart_no_admin",
     "safe_stop_for_selfheal",
+    "local_workbench",
 ]
 
 # 上游依赖位置，只用于 /health 自检展示
 ADAPTER_PATH = Path(os.environ.get("MXAI_ADAPTER_PATH", str(HERE / "mxai_adapter.js")))
-PROFILE_PATH = Path(
-    os.environ.get(
-        "MXAI_PROFILE",
-        r"E:\codex\niannianai\zhuanhuiyuangong\ai-rpa-console\.browser-profile",
-    )
-)
-NODE_MODULES = Path(
-    os.environ.get(
-        "MXAI_NODE_MODULES",
-        r"E:\codex\niannianai\zhuanhuiyuangong\ai-rpa-console\node_modules",
-    )
-)
+PROFILE_PATH = Path(os.environ.get("MXAI_PROFILE", str(INSTALL_ROOT / "runtime" / "browser-profile")))
+NODE_MODULES = Path(os.environ.get("MXAI_NODE_MODULES", str(INSTALL_ROOT / "runtime" / "node_modules")))
 PROXY = os.environ.get("MXAI_PROXY", "127.0.0.1:7897")
+os.environ.setdefault("MJ_PYTHON", sys.executable)
 
 app = FastAPI(title="MJ Bridge", version="1.1")
 
@@ -121,6 +135,7 @@ class GenerationRequest(BaseModel):
     quality: str | None = None
     aspect: str | None = None
     mode: str | None = None
+    output_name: str | None = None
 
 
 def size_to_aspect(size: str | None, fallback: str = "9:16") -> str:
@@ -155,13 +170,13 @@ def size_to_aspect(size: str | None, fallback: str = "9:16") -> str:
     return name
 
 
-def run_mj(prompt: str, aspect: str, timeout_ms: int, mode: str = "normal") -> dict:
+def run_mj(prompt: str, aspect: str, timeout_ms: int, mode: str = "normal", output_name: str | None = None) -> dict:
     """调 Node 侧跑一次生图，返回解析后的结果字典。"""
     if not RUNNER.exists():
         raise HTTPException(status_code=500, detail=f"缺少 {RUNNER}")
     task_id = f"mj_{uuid.uuid4().hex[:8]}"
     command = [
-        "node",
+        str(NODE_EXE),
         str(RUNNER),
         "--prompt",
         prompt,
@@ -173,6 +188,8 @@ def run_mj(prompt: str, aspect: str, timeout_ms: int, mode: str = "normal") -> d
         str(RESULTS_DIR),
         "--prefix",
         task_id,
+        "--output-name",
+        output_name or "生成结果",
         "--task-id",
         task_id,
         "--version",
@@ -235,8 +252,22 @@ def file_to_b64(path_value: str) -> str:
 
 @app.get("/health")
 def health():
+    node_available = NODE_EXE.is_file() or shutil.which(str(NODE_EXE)) is not None
+    playwright_available = (NODE_MODULES / "playwright" / "package.json").is_file()
+    runner_available = RUNNER.is_file()
+    adapter_available = ADAPTER_PATH.is_file()
+    runtime_ready = node_available and adapter_available and playwright_available and runner_available
     return {
         "ok": True,
+        "bridgeId": BRIDGE_ID,
+        "installRoot": str(INSTALL_ROOT),
+        "runtime": {
+            "ready": runtime_ready,
+            "nodeAvailable": node_available,
+            "playwrightAvailable": playwright_available,
+            "runnerAvailable": runner_available,
+            "adapterAvailable": adapter_available,
+        },
         "model": MODEL_NAME,
         "version": DEFAULT_VERSION,
         "runner": str(RUNNER),
@@ -364,7 +395,7 @@ def maintenance(request: MaintenanceRequest):
     else:
         if not RUNNER.exists():
             raise HTTPException(status_code=500, detail=f"缺少 {RUNNER}")
-        command = ["node", str(RUNNER), "--mode", mode]
+        command = [str(NODE_EXE), str(RUNNER), "--mode", mode]
     if request.file:
         command += ["--file", request.file]
     # 【2026-09-13】免费补下载：serial / prefix 也可以走独立字段，不必挤在 mode 里。
@@ -497,9 +528,34 @@ def read_job(job_id: str) -> dict:
             candidates.append(payload["file"])
         images = [str(item) for item in candidates if item and Path(str(item)).exists()]
 
+    result_payload = payload if isinstance(payload, dict) else {}
+    retry_allowed = result_payload.get("retryAllowed")
+    if not isinstance(retry_allowed, bool):
+        retry_allowed = result_payload.get("retry_allowed")
+    if not isinstance(retry_allowed, bool):
+        retry_allowed = None
+    submitted = result_payload.get("submitted")
+    if not isinstance(submitted, bool):
+        submitted = None
+    billed = result_payload.get("billed")
+    if not isinstance(billed, bool):
+        billed = None
+    deduction = result_payload.get("actual_point_deduction")
+    charge_known = (
+        isinstance(billed, bool)
+        or submitted is False
+        or (isinstance(deduction, (int, float)) and not isinstance(deduction, bool))
+    )
+
     return {
         "jobId": job_id,
         "status": status,
+        "resultStatus": result_payload.get("status"),
+        "retryAllowed": retry_allowed,
+        "submitted": submitted,
+        "billed": billed,
+        "chargeKnown": charge_known,
+        "actualPointDeduction": deduction if isinstance(deduction, (int, float)) and not isinstance(deduction, bool) else None,
         "ok": bool(payload and payload.get("ok")),
         "resultFile": str(result_file),
         "logFile": str(log_file),
@@ -538,6 +594,10 @@ class JobRequest(BaseModel):
     size: str | None = None
     version: str | None = None
     label: str | None = None
+    output_name: str | None = None
+    output_dir: str | None = None
+    profile: str | None = None
+    params: dict | None = None
     force: bool = False   # 显式要求「明知在跑也要再出一张」时才置 true（会再扣一次积分）
 
 
@@ -595,9 +655,30 @@ def create_job(request: JobRequest):
     else:
         job_id = f"mj_{stamp}_{fingerprint}"
 
+    output_dir = Path(request.output_dir or RESULTS_DIR).expanduser()
+    if not output_dir.is_absolute():
+        raise HTTPException(status_code=400, detail="output_dir 必须使用绝对路径")
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        raise HTTPException(status_code=400, detail=f"输出目录不可用：{exc}")
+
+    profile = None
+    if request.profile:
+        candidate = Path(request.profile).expanduser().resolve()
+        slot_root = BATCH_SLOT_ROOT.resolve()
+        if candidate == PROFILE_PATH.resolve():
+            slot_root = candidate
+        try:
+            candidate.relative_to(slot_root)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="浏览器档案只能使用批次槽位目录")
+        candidate.mkdir(parents=True, exist_ok=True)
+        profile = candidate
+
     result_file, log_file = job_paths(job_id)
     command = [
-        "node",
+        str(NODE_EXE),
         str(RUNNER),
         "--mode",
         "bg:" + job_id,
@@ -606,9 +687,11 @@ def create_job(request: JobRequest):
         "--aspect",
         aspect,
         "--out-dir",
-        str(RESULTS_DIR),
+        str(output_dir),
         "--prefix",
         job_id,
+        "--output-name",
+        request.output_name or request.label or "生成结果",
         "--task-id",
         job_id,
         "--version",
@@ -616,9 +699,13 @@ def create_job(request: JobRequest):
         "--timeout",
         str(DEFAULT_TIMEOUT_MS),
     ]
+    child_env = os.environ.copy()
+    if profile is not None:
+        child_env["MXAI_PROFILE"] = str(profile)
+        child_env["MXAI_LOCK_FILE"] = str(profile.parent / (profile.name + ".bridge.lock"))
     try:
         proc = subprocess.run(
-            command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=90,
+            command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=90, env=child_env,
         )
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail={"status": "dispatch_timeout", "jobId": job_id, "message": "派发后台作业超时"})
@@ -640,6 +727,8 @@ def create_job(request: JobRequest):
             "status": "running",
             "deduped": False,
             "aspect": aspect,
+            "outputDir": str(output_dir),
+            "profile": str(profile) if profile else None,
             "pid": dispatch.get("pid"),
             "resultFile": str(result_file),
             "logFile": str(log_file),
@@ -647,6 +736,106 @@ def create_job(request: JobRequest):
             "message": "已开始出图。MJ 本机排队实测 11~15 分钟，请稍后用上面的地址回来查，不要重复提交。",
         },
     )
+
+
+def _slot_login_state_path(batch_id: str, slot: int) -> Path:
+    SLOT_LOGIN_ROOT.mkdir(parents=True, exist_ok=True)
+    return SLOT_LOGIN_ROOT / f"{safe_job_id(batch_id)}-slot-{int(slot)}.json"
+
+
+def _slot_login_snapshot(batch_id: str, slot: int) -> dict:
+    state = _read_control_json(_slot_login_state_path(batch_id, slot))
+    pid = state.get("pid")
+    running = bool(state.get("running")) and _pid_running(pid)
+    return {
+        "running": running,
+        "loggedIn": bool(state.get("loggedIn")) if running else False,
+        "status": state.get("status") if running else "stopped",
+        "checkedAt": state.get("updatedAt"),
+        "slot": int(slot),
+    }
+
+
+def _shared_login_snapshot() -> dict:
+    state = _control_browser_state()
+    return {**state, "slot": 1, "profile": str(PROFILE_PATH.resolve())}
+
+
+def _slot_login_ready(item: dict) -> bool:
+    slot = item.get("slot")
+    if not slot:
+        return False
+    if item.get("profile") and Path(str(item["profile"])).resolve() == PROFILE_PATH.resolve():
+        snapshot = _shared_login_snapshot()
+        # 登录窗口关闭后仍保留已核验的 loginState，不能因为释放锁而把共享登录判成未登录。
+        if not snapshot.get("loggedIn") and snapshot.get("loginState") != "logged_in":
+            return False
+        if not snapshot.get("running"):
+            return True
+        pid = snapshot.get("pid")
+        try:
+            CONTROL_STOP_FILE.write_text("stop\n", encoding="utf-8")
+        except OSError:
+            return False
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            if not _pid_running(pid):
+                return True
+            time.sleep(0.1)
+        return False
+    snapshot = _slot_login_snapshot(str(item.get("batchId") or ""), int(slot))
+    if not snapshot.get("running") or not snapshot.get("loggedIn"):
+        return False
+    pid = _read_control_json(_slot_login_state_path(str(item.get("batchId") or ""), int(slot))).get("pid")
+    stop_file = _slot_login_state_path(str(item.get("batchId") or ""), int(slot)).with_suffix(".stop")
+    try:
+        stop_file.write_text("stop\n", encoding="utf-8")
+    except OSError:
+        return False
+    deadline = time.time() + 10
+    while time.time() < deadline:
+        if not _pid_running(pid):
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def _batch_submit_job(item: dict) -> dict:
+    request = JobRequest(
+        prompt=str(item.get("prompt") or ""),
+        aspect=str(item.get("aspect") or "16:9"),
+        version=str(item.get("version") or DEFAULT_VERSION),
+        label=f"batch-{safe_job_id(str(item.get('batchId') or 'batch'))}-{safe_job_id(str(item.get('id') or 'task'))}-a{int(item.get('attempts') or 1)}",
+        output_name=str(item.get("name") or item.get("label") or item.get("id") or "生成结果"),
+        output_dir=str(item.get("outputDir") or RESULTS_DIR),
+        profile=str(item.get("profile") or "") or None,
+        params=item.get("params") if isinstance(item.get("params"), dict) else {},
+    )
+    response = create_job(request)
+    if isinstance(response, JSONResponse):
+        try:
+            return json.loads(response.body.decode("utf-8"))
+        except (AttributeError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise RuntimeError("桥接派发返回不可解析") from exc
+    return response
+
+
+def _batch_get_job(job_id: str) -> dict:
+    state = read_job(safe_job_id(job_id))
+    if state["status"] == "unknown":
+        raise JobNotFound(job_id)
+    return state
+
+
+batch_manager = BatchManager(
+    BATCHES_DIR,
+    submit_job=_batch_submit_job,
+    get_job=_batch_get_job,
+    default_output_dir=RESULTS_DIR,
+    slot_root=BATCH_SLOT_ROOT,
+    slot_login_ready=_slot_login_ready,
+    shared_profile=PROFILE_PATH,
+)
 
 
 @app.post("/v1/images/generations")
@@ -665,7 +854,7 @@ def generate(request: GenerationRequest):
     pending: list[dict] = []
 
     for index in range(request.n):
-        payload = run_mj(prompt, aspect, DEFAULT_TIMEOUT_MS, mode)
+        payload = run_mj(prompt, aspect, DEFAULT_TIMEOUT_MS, mode, request.output_name)
         statuses.append(str(payload.get("status") or ("ok" if payload.get("ok") else "failed")))
         if payload.get("recordId"):
             records.append(str(payload["recordId"]))
@@ -736,6 +925,295 @@ def generate(request: GenerationRequest):
         "pending": pending,
         "_meta": {"statuses": statuses, "requestedAspect": aspect, "mode": mode},
     }
+
+
+def _read_control_json(path_value: Path) -> dict:
+    try:
+        return json.loads(path_value.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _pid_running(pid: int | None) -> bool:
+    if not pid:
+        return False
+    try:
+        pid_int = int(pid)
+    except (ValueError, TypeError):
+        return False
+    if os.name == "nt":
+        # Windows ? os.kill(pid, 0) ????????????????
+        # ? tasklist ?????????? PID ????????????
+        try:
+            probe = subprocess.run(
+                ["tasklist", "/FI", f"PID eq {pid_int}", "/NH"],
+                capture_output=True, text=True, timeout=5,
+            )
+            return bool(re.search(rf"\b{pid_int}\b", probe.stdout or ""))
+        except (OSError, subprocess.SubprocessError):
+            return False
+    try:
+        os.kill(pid_int, 0)
+        return True
+    except (OSError, ValueError, TypeError):
+        return False
+
+
+def _control_browser_state() -> dict:
+    state = _read_control_json(CONTROL_STATE)
+    pid = state.get("pid")
+    state["pid"] = pid
+    state["running"] = bool(state.get("running")) and _pid_running(pid)
+    if not state["running"]:
+        state["loggedIn"] = False
+        if state.get("status") in {"starting", "logged_in", "not_logged_in", "watching"}:
+            state["status"] = "stopped"
+    return state
+
+
+@app.get("/", include_in_schema=False)
+def root_page():
+    """Open the local workbench when the bridge root URL is visited."""
+    return RedirectResponse(url="/control", status_code=307)
+
+
+@app.get("/control", response_class=HTMLResponse)
+def control_page():
+    if not CONTROL_HTML.exists():
+        raise HTTPException(status_code=404, detail="control console not installed")
+    return HTMLResponse(
+        CONTROL_HTML.read_text(encoding="utf-8", errors="replace"),
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"},
+    )
+
+
+@app.get("/control/batch-template.json")
+def control_batch_template():
+    template = CONTROL_DIR / "batch-template.json"
+    if not template.exists():
+        raise HTTPException(status_code=404, detail="批次模板不存在")
+    return FileResponse(template, media_type="application/json", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/control/batch-ui.js")
+def control_batch_ui():
+    script = CONTROL_DIR / "batch-ui.js"
+    if not script.exists():
+        raise HTTPException(status_code=404, detail="批次前端脚本不存在")
+    return FileResponse(script, media_type="application/javascript", headers={"Cache-Control": "no-store"})
+
+
+def _batch_call(callable_obj, *args, **kwargs):
+    try:
+        return callable_obj(*args, **kwargs)
+    except BatchError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail or exc.message) from exc
+
+
+@app.post("/control/batches/validate")
+def validate_batch(payload: dict):
+    return batch_manager.validate(payload)
+
+
+@app.post("/control/batches")
+def create_batch(payload: dict):
+    return _batch_call(batch_manager.create, payload)
+
+
+@app.get("/control/batches")
+def list_batches():
+    return {"ok": True, "items": batch_manager.list_summaries(), "health": batch_manager.health()}
+
+
+@app.get("/control/batches/{batch_id}")
+def get_batch(batch_id: str):
+    return _batch_call(batch_manager.get_state, batch_id)
+
+
+@app.post("/control/batches/{batch_id}/start")
+def start_batch(batch_id: str, payload: dict | None = None):
+    return _batch_call(batch_manager.start, batch_id, bool((payload or {}).get("paid_confirmed")))
+
+
+@app.post("/control/batches/{batch_id}/pause")
+def pause_batch(batch_id: str, payload: dict | None = None):
+    return _batch_call(batch_manager.pause, batch_id, str((payload or {}).get("reason") or "用户已暂停补位"))
+
+
+@app.post("/control/batches/{batch_id}/resume")
+def resume_batch(batch_id: str, payload: dict | None = None):
+    return _batch_call(batch_manager.resume, batch_id, bool((payload or {}).get("paid_confirmed")))
+
+
+@app.get("/control/batches/{batch_id}/items/{item_id}/login")
+def batch_item_login_status(batch_id: str, item_id: str):
+    state = _batch_call(batch_manager.get_state, batch_id)
+    item = next((row for row in state.get("items", []) if row.get("id") == item_id), None)
+    if not item or item.get("status") != "login_required" or not item.get("slot"):
+        raise HTTPException(status_code=409, detail="\u6b64\u4efb\u52a1\u5f53\u524d\u4e0d\u9700\u8981\u5de5\u4f5c\u4f4d\u767b\u5f55\u6838\u9a8c")
+    if item.get("profile") and Path(str(item["profile"])).resolve() == PROFILE_PATH.resolve():
+        return _shared_login_snapshot()
+    return _slot_login_snapshot(batch_id, int(item["slot"]))
+
+
+@app.post("/control/batches/{batch_id}/items/{item_id}/login")
+def batch_item_login_start(batch_id: str, item_id: str):
+    state = _batch_call(batch_manager.get_state, batch_id)
+    item = next((row for row in state.get("items", []) if row.get("id") == item_id), None)
+    if not item or item.get("status") != "login_required" or not item.get("slot"):
+        raise HTTPException(status_code=409, detail="\u6b64\u4efb\u52a1\u5f53\u524d\u4e0d\u9700\u8981\u5de5\u4f5c\u4f4d\u767b\u5f55")
+    if item.get("profile") and Path(str(item["profile"])).resolve() == PROFILE_PATH.resolve():
+        result = control_browser_start()
+        return {**result, "slot": 1, "profile": str(PROFILE_PATH.resolve()), "message": "已打开 Multica 共享登录槽位；登录一次即可供三路并发使用。"}
+    slot = int(item["slot"])
+    if any(row.get("status") == "running" and row.get("slot") == slot for row in state.get("items", [])):
+        raise HTTPException(status_code=409, detail="\u8be5\u5de5\u4f5c\u4f4d\u4ecd\u6709\u4efb\u52a1\u8fd0\u884c\uff0c\u6682\u4e0d\u80fd\u6253\u5f00\u767b\u5f55\u7a97\u53e3")
+    snapshot = _slot_login_snapshot(batch_id, slot)
+    if snapshot.get("running"):
+        return {"ok": True, **snapshot, "message": f"\u6279\u6b21\u5de5\u4f5c\u4f4d {slot} \u7684\u6d4f\u89c8\u5668\u5df2\u6253\u5f00\u3002"}
+    profile = (BATCH_SLOT_ROOT / f"{batch_id}-slot-{slot}").resolve()
+    profile.parent.mkdir(parents=True, exist_ok=True)
+    control_state = _slot_login_state_path(batch_id, slot)
+    log_path = HERE.parent / "run" / "logs" / f"login-{safe_job_id(batch_id)}-slot-{slot}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy()
+    env["MXAI_PROFILE"] = str(profile)
+    env["MXAI_LOCK_FILE"] = str(profile.parent / (profile.name + ".bridge.lock"))
+    env["MXAI_CONTROL_STATE"] = str(control_state)
+    env["MXAI_CONTROL_STOP_FILE"] = str(control_state.with_suffix(".stop"))
+    try:
+        control_state.with_suffix(".stop").unlink(missing_ok=True)
+    except OSError:
+        pass
+    with log_path.open("a", encoding="utf-8") as log_handle:
+        flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
+        proc = subprocess.Popen([str(NODE_EXE), str(CONTROL_BROWSER)], cwd=str(HERE), env=env, stdin=subprocess.DEVNULL, stdout=log_handle, stderr=subprocess.STDOUT, creationflags=flags)
+    return {"ok": True, "status": "started", "slot": slot, "pid": proc.pid, "message": f"\u5df2\u6253\u5f00\u672c\u6279\u6b21\u5de5\u4f5c\u4f4d {slot} \u4f7f\u7528\u7684\u6d4f\u89c8\u5668\u6863\u6848\uff0c\u8bf7\u4f60\u672c\u4eba\u767b\u5f55\u3002\u767b\u5f55\u540e\u70b9\u201c\u68c0\u67e5\u767b\u5f55\u72b6\u6001\u201d\uff0c\u518d\u70b9\u201c\u7ee7\u7eed\u6279\u6b21\u201d\u3002"}
+
+
+@app.post("/control/batches/{batch_id}/cancel")
+def cancel_batch(batch_id: str):
+    return _batch_call(batch_manager.cancel, batch_id)
+
+
+@app.post("/control/batches/{batch_id}/recover")
+def recover_batch(batch_id: str):
+    return _batch_call(batch_manager.recover, batch_id)
+
+
+@app.post("/control/batches/{batch_id}/items/{item_id}/skip")
+def skip_batch_item(batch_id: str, item_id: str):
+    return _batch_call(batch_manager.skip, batch_id, item_id)
+
+
+@app.post("/control/batches/{batch_id}/items/{item_id}/resubmit")
+def resubmit_batch_item(batch_id: str, item_id: str, payload: dict | None = None):
+    body = payload or {}
+    return _batch_call(batch_manager.resubmit, batch_id, item_id, bool(body.get("paid_confirmed")), bool(body.get("confirm_repeat_charge")))
+
+
+@app.post("/control/batches/{batch_id}/items/{item_id}/open-output")
+def open_batch_output(batch_id: str, item_id: str):
+    state = _batch_call(batch_manager.get_state, batch_id)
+    item = next((row for row in state.get("items", []) if row.get("id") == item_id), None)
+    if not item:
+        raise HTTPException(status_code=404, detail="找不到任务")
+    files = [Path(value) for value in item.get("outputFiles", []) if value]
+    existing = next((path for path in files if path.is_file()), None)
+    if not existing:
+        raise HTTPException(status_code=404, detail="没有可打开的成品文件")
+    try:
+        if os.name == "nt":
+            subprocess.Popen(["explorer.exe", "/select,", str(existing)])
+        else:
+            subprocess.Popen(["xdg-open", str(existing.parent)])
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail=f"打开成品位置失败：{exc}")
+    return {"ok": True, "path": str(existing), "message": "已打开成品所在文件夹"}
+
+
+@app.get("/control/state")
+def control_state():
+    state = _control_browser_state()
+    watch_process = False
+    try:
+        import subprocess as _sp
+        probe = _sp.run(
+            ["powershell.exe", "-NoProfile", "-Command", "@(Get-CimInstance Win32_Process | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -like '*mj-automation\\scripts\\watchdog_loop.ps1*' }).Count"],
+            capture_output=True, text=True, timeout=5,
+        )
+        watch_process = int((probe.stdout or "0").strip() or "0") > 0
+    except Exception:
+        watch_process = False
+    return {
+        "ok": True,
+        "health": health(),
+        "browser": state,
+        "watchdog": {"paused": CONTROL_PAUSE.exists(), "processRunning": watch_process, "pauseFile": str(CONTROL_PAUSE)},
+        "jobs": list_jobs(40),
+        "receipts": receipts(15),
+        "batches": batch_manager.list_summaries(),
+        "batchScheduler": batch_manager.health(),
+    }
+
+
+@app.post("/control/browser/start")
+def control_browser_start():
+    current = _control_browser_state()
+    if current.get("running"):
+        return {"ok": True, "status": "already_running", "pid": current.get("pid"), "message": "可见登录浏览器已经打开。"}
+    if not CONTROL_BROWSER.exists():
+        raise HTTPException(status_code=500, detail="缺少浏览器控制脚本")
+    CONTROL_LOG.parent.mkdir(parents=True, exist_ok=True)
+    log_handle = CONTROL_LOG.open("a", encoding="utf-8")
+    flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
+    env = os.environ.copy()
+    env["MXAI_PROFILE"] = str(PROFILE_PATH)
+    env["MXAI_CONTROL_STATE"] = str(CONTROL_STATE)
+    env["MXAI_CONTROL_STOP_FILE"] = str(CONTROL_STOP_FILE)
+    try:
+        CONTROL_STOP_FILE.unlink(missing_ok=True)
+    except OSError:
+        pass
+    proc = subprocess.Popen(
+        [str(NODE_EXE), str(CONTROL_BROWSER)], cwd=str(HERE), stdin=subprocess.DEVNULL,
+        stdout=log_handle, stderr=subprocess.STDOUT, creationflags=flags, env=env,
+    )
+    log_handle.close()
+    time.sleep(0.5)
+    return {"ok": True, "status": "started", "pid": proc.pid, "message": "可见 Edge 已打开，请在窗口中手动登录。工作台不会自动提交生成。"}
+
+
+@app.post("/control/browser/stop")
+def control_browser_stop():
+    current = _control_browser_state()
+    pid = current.get("pid")
+    if not pid or not current.get("running"):
+        return {"ok": True, "status": "already_stopped", "message": "登录浏览器当前未运行。"}
+    try:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/PID", str(int(pid)), "/T", "/F"], capture_output=True, timeout=15)
+        else:
+            os.kill(int(pid), 15)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=500, detail=f"关闭浏览器失败：{exc}")
+    return {"ok": True, "status": "stopping", "message": "已请求关闭登录浏览器。"}
+
+
+@app.post("/control/watchdog/pause")
+def control_watchdog_pause():
+    CONTROL_PAUSE.parent.mkdir(parents=True, exist_ok=True)
+    CONTROL_PAUSE.write_text("paused by local control console\n", encoding="utf-8")
+    return {"ok": True, "status": "paused", "message": "自动看护已暂停。"}
+
+
+@app.post("/control/watchdog/resume")
+def control_watchdog_resume():
+    try:
+        CONTROL_PAUSE.unlink()
+    except FileNotFoundError:
+        pass
+    return {"ok": True, "status": "resumed", "message": "自动看护已恢复。"}
 
 
 if __name__ == "__main__":

@@ -1,0 +1,199 @@
+{
+  "batch_id": "whale-pilot-batch-01-retry-03",
+  "manifest": "E:\\codex\\multica\\projects\\whale-pilot\\prompts\\whale-pilot-batch-01-retry-03.json",
+  "started_at": "2026-09-27T00:56:17.077Z",
+  "finished_at": "2026-09-27T02:19:51.697Z",
+  "planned_count": 6,
+  "terminal_count": 10,
+  "success_count": 2,
+  "failed_count": 8,
+  "concurrency": 3,
+  "results": [
+    {
+      "time": "2026-09-27T01:16:18.412Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "FF_T04_32S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-03-FF_T04_32S_4e3af7ba94",
+      "status": "done",
+      "ok": true,
+      "serial": "serial-2104012783975665664",
+      "images": [
+        {
+          "file": "E:\\codex\\multica\\mj-automation\\output\\whale-pilot-batch-01-retry-03-FF_T04_32S_4e3af7ba94_2104012783975665664_hi.png",
+          "exists": true,
+          "width": 2912,
+          "height": 1632,
+          "sha256": "c4b3507b36d9b8fdfe3e2c0e12a15a664bf13756d83a7659808e0c1fa32f2e10"
+        }
+      ],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:16:48.661Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "FF_T08_78S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-03-FF_T08_78S_189cf6fed4",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:36:19.353Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "FF_T10_105S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-03-FF_T10_105S_5156b6da16",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:36:49.616Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "FF_T08_78S",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-03-FF_T08_78S_189cf6fed4",
+      "job_id": "whale-pilot-batch-01-retry-03-FF_T08_78S-r2_189cf6fed4",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:38:49.894Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "FF_T06_55S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-03-FF_T06_55S_adee4d7dec",
+      "status": "done",
+      "ok": true,
+      "serial": "serial-2104017768738197504",
+      "images": [
+        {
+          "file": "E:\\codex\\multica\\mj-automation\\output\\whale-pilot-batch-01-retry-03-FF_T06_55S_adee4d7dec_2104017768738197504_hi.webp",
+          "exists": true,
+          "width": 2912,
+          "height": 1632,
+          "sha256": "e0b5712ba597839044f6642e5788c45bf311f9ac2cf03516557f6c84b2845166"
+        }
+      ],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:57:20.658Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "CHAR_LAMBERT_MASTER",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-03-CHAR_LAMBERT_MASTER_c58e49c6ea",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:59:20.941Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "FF_T10_105S",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-03-FF_T10_105S_5156b6da16",
+      "job_id": "whale-pilot-batch-01-retry-03-FF_T10_105S-r2_5156b6da16",
+      "status": "done",
+      "ok": false,
+      "serial": "serial-2104023533158928384",
+      "images": [],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T01:59:20.941Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "SCENE_CABIN",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-03-SCENE_CABIN_650f8f43dc",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T02:07:51.437Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "CHAR_LAMBERT_MASTER",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-03-CHAR_LAMBERT_MASTER_c58e49c6ea",
+      "job_id": "whale-pilot-batch-01-retry-03-CHAR_LAMBERT_MASTER-r2_c58e49c6ea",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T02:19:51.697Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-03",
+      "item_id": "SCENE_CABIN",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-03-SCENE_CABIN_650f8f43dc",
+      "job_id": "whale-pilot-batch-01-retry-03-SCENE_CABIN-r2_650f8f43dc",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    }
+  ]
+}

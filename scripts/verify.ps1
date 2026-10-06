@@ -39,6 +39,7 @@ $required = @(
   'docs/adr/0001-workspace-governance.md',
   'docs/adr/0002-project-template-layer.md',
   'docs/adr/0003-risk-and-context-contract.md',
+  'docs/multica-workbench-product-vision.md',
   '.gitignore',
   '.gitattributes',
   'templates/README.md',
@@ -67,6 +68,14 @@ if ($missing.Count -gt 0) {
   Fail "Missing or empty required files: $($missing -join ', ')"
 }
 
+# ADRs are decisions that affect future work; every current ADR must be discoverable from the docs index.
+$adrDirectory = Join-Path $root 'docs/adr'
+$adrIndex = Get-Content -Raw -Encoding UTF8 (Join-Path $root 'docs/INDEX.md')
+foreach ($adr in @(Get-ChildItem -LiteralPath $adrDirectory -File -Filter '*.md')) {
+  $indexReference = '`adr/' + $adr.Name + '`'
+  if (!$adrIndex.Contains($indexReference)) { Fail ('ADR is missing from docs/INDEX.md: ' + $adr.Name) }
+}
+
 $stateFiles = @(Get-ChildItem -LiteralPath (Join-Path $root 'projects') -Recurse -File -Filter 'project_state.yaml' |
   Where-Object { $_.FullName -notmatch '\\(node_modules|\.git)\\' })
 if ($stateFiles.Count -eq 0) { Fail 'No project_state.yaml found under projects/' }
@@ -81,7 +90,8 @@ foreach ($stateFile in $stateFiles) {
   $projectId = $idMatch.Groups[1].Value
   if ($knownIds.ContainsKey($projectId)) { Fail "Duplicate project_id: $projectId" }
   $knownIds[$projectId] = $stateFile.FullName
-  if ($state -notmatch '(?m)^status:\s*(idea|specified|planned|in_production|in_progress|awaiting_review|accepted|shipped|measured|blocked)\s*$') { Fail "Invalid lifecycle status in $($stateFile.FullName)" }
+  $statusMatch = [regex]::Match($state, '(?m)^status:\s*(idea|specified|planned|in_production|in_progress|awaiting_review|accepted|shipped|measured|blocked)\s*$')
+  if (!$statusMatch.Success) { Fail "Invalid lifecycle status in $($stateFile.FullName)" }
   foreach ($field in @('source_of_truth', 'deliverables', 'blockers', 'authorization', 'paths', 'red_lines')) {
     if ($state -notmatch "(?m)^${field}:\s*") { Fail "$projectId is missing contract field: $field" }
   }
@@ -97,6 +107,12 @@ foreach ($stateFile in $stateFiles) {
   $receiptsDir = Join-Path $projectDir 'receipts'
   if (!(Test-Path -LiteralPath (Join-Path $receiptsDir 'README.md') -PathType Leaf)) { Fail "$projectId is missing receipts/README.md" }
   if ($inventory -notmatch [regex]::Escape($projectId)) { Fail "$projectId is not registered in projects/README.md" }
+  $rowPattern = '(?m)^\|\s*' + [regex]::Escape('`' + $projectId + '`') + '\s*\|\s*`[^`]+`\s*\|\s*`[^`]+`\s*\|\s*`([^`]+)`\s*\|'
+  $inventoryRow = [regex]::Match($inventory, $rowPattern)
+  if (!$inventoryRow.Success) { Fail "$projectId has no valid status row in projects/README.md" }
+  if ($inventoryRow.Groups[1].Value -ne $statusMatch.Groups[1].Value) {
+    Fail ("Project status mismatch for " + $projectId + ": project_state.yaml=" + $statusMatch.Groups[1].Value + ', projects/README.md=' + $inventoryRow.Groups[1].Value)
+  }
   if ($projectId -eq 'tiangong-rebuild-v1') { $primaryFound = $true }
 }
 if (!$primaryFound) { Fail 'Main project state is not tiangong-rebuild-v1' }

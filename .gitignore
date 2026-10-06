@@ -47,3 +47,9 @@ Thumbs.db
 desktop.ini
 .DS_Store
 *.swp
+
+# Local runtime dependencies and user browser profile; required by packaging, but not source.
+/runtime/
+
+# Generated release folders and archives; keep source installer scripts under installers/.
+/dist/

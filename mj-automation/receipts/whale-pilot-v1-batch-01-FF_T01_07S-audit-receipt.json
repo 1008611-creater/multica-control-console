@@ -1,0 +1,46 @@
+{
+  "audit_type": "single_real_job_runtime_acceptance",
+  "observed_at_utc": "2026-09-27T18:51:09Z",
+  "project_id": "whale-pilot-v1",
+  "batch": "batch-01",
+  "item_id": "FF_T01_07S",
+  "kind": "first_frame",
+  "version": "v8.2",
+  "aspect": "16:9",
+  "prompt_sha256": "c4d1a360cdd72aeefda004b3fcdfca60882b91e16e2993ae4f1e3ef06b3182a1",
+  "label": "whale-pilot-v1-batch-01-FF_T01_07S-audit",
+  "job_id": "whale-pilot-v1-batch-01-FF_T01_07S-audit_c4d1a360cd",
+  "submission": {
+    "http_status": 202,
+    "status": "running",
+    "deduped": false,
+    "second_submission": false
+  },
+  "terminal": {
+    "execution_status": "done",
+    "result_status": "need_login",
+    "ok": false,
+    "retry_allowed": null,
+    "submitted": null,
+    "billed": null,
+    "charge_known": false,
+    "actual_point_deduction": null,
+    "images": [],
+    "record_id": null,
+    "need_login": true
+  },
+  "safety_actions": {
+    "automatic_retry": false,
+    "download_attempt": false,
+    "login_attempt": false,
+    "restart_attempt": false,
+    "second_job_submission": false
+  },
+  "post_job_control_state": {
+    "watchdog_paused": true,
+    "browser_running": true,
+    "browser_status": "not_logged_in",
+    "jobs_count": 1
+  },
+  "source_job_file": "E:\\Multica-Control-Console\\mj-automation\\run\\jobs\\whale-pilot-v1-batch-01-FF_T01_07S-audit_c4d1a360cd.json"
+}

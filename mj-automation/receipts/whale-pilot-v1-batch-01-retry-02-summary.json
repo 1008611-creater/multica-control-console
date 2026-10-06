@@ -1,0 +1,262 @@
+{
+  "batch_id": "whale-pilot-batch-01-retry-02",
+  "manifest": "E:\\codex\\multica\\projects\\whale-pilot\\prompts\\whale-pilot-batch-01-retry-02.json",
+  "started_at": "2026-09-27T00:05:41.333Z",
+  "finished_at": "2026-09-27T00:55:15.858Z",
+  "planned_count": 8,
+  "terminal_count": 14,
+  "success_count": 3,
+  "failed_count": 11,
+  "concurrency": 3,
+  "results": [
+    {
+      "time": "2026-09-27T00:10:42.340Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T04_32S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T04_32S_4e3af7ba94",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:11:12.572Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T06_55S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T06_55S_adee4d7dec",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:16:12.929Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T04_32S",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-02-FF_T04_32S_4e3af7ba94",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T04_32S-r2_4e3af7ba94",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:16:43.169Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T06_55S",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-02-FF_T06_55S_adee4d7dec",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T06_55S-r2_adee4d7dec",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:21:43.493Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T08_78S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T08_78S_189cf6fed4",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:22:13.730Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T10_105S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T10_105S_5156b6da16",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:27:14.075Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T08_78S",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-02-FF_T08_78S_189cf6fed4",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T08_78S-r2_189cf6fed4",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:27:44.326Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T03_22S",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T03_22S_b91d19a872",
+      "status": "done",
+      "ok": true,
+      "serial": "serial-2104000769182142464",
+      "images": [
+        {
+          "file": "E:\\codex\\multica\\mj-automation\\output\\whale-pilot-batch-01-retry-02-FF_T03_22S_b91d19a872_2104000769182142464_hi.png",
+          "exists": true,
+          "width": 2912,
+          "height": 1632,
+          "sha256": "637222746d7bde354490315a8dfbf4e06c2b0f0127a091ffb1fa227557ff1798"
+        }
+      ],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:27:44.327Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "FF_T10_105S",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-02-FF_T10_105S_5156b6da16",
+      "job_id": "whale-pilot-batch-01-retry-02-FF_T10_105S-r2_5156b6da16",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:33:14.911Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "SCENE_CABIN",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-SCENE_CABIN_650f8f43dc",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:33:14.911Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "SCENE_HARBOR",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-SCENE_HARBOR_c44332f674",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:36:15.462Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "CHAR_LAMBERT_MASTER",
+      "attempt": 1,
+      "retry_of": "缺",
+      "job_id": "whale-pilot-batch-01-retry-02-CHAR_LAMBERT_MASTER_c58e49c6ea",
+      "status": "done",
+      "ok": true,
+      "serial": "缺",
+      "images": [
+        {
+          "file": "E:\\codex\\multica\\mj-automation\\output\\whale-pilot-batch-01-retry-02-CHAR_LAMBERT_MASTER_c58e49c6ea_2104000769182142464_hi.png",
+          "exists": true,
+          "width": 2912,
+          "height": 1632,
+          "sha256": "637222746d7bde354490315a8dfbf4e06c2b0f0127a091ffb1fa227557ff1798"
+        }
+      ],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:38:45.526Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "SCENE_CABIN",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-02-SCENE_CABIN_650f8f43dc",
+      "job_id": "whale-pilot-batch-01-retry-02-SCENE_CABIN-r2_650f8f43dc",
+      "status": "done",
+      "ok": false,
+      "serial": "缺",
+      "images": [],
+      "aspect": "缺",
+      "actual_point_deduction": "缺"
+    },
+    {
+      "time": "2026-09-27T00:55:15.858Z",
+      "event": "terminal",
+      "batch_id": "whale-pilot-batch-01-retry-02",
+      "item_id": "SCENE_HARBOR",
+      "attempt": 2,
+      "retry_of": "whale-pilot-batch-01-retry-02-SCENE_HARBOR_c44332f674",
+      "job_id": "whale-pilot-batch-01-retry-02-SCENE_HARBOR-r2_c44332f674",
+      "status": "done",
+      "ok": true,
+      "serial": "serial-2104007548033044480",
+      "images": [
+        {
+          "file": "E:\\codex\\multica\\mj-automation\\output\\whale-pilot-batch-01-retry-02-SCENE_HARBOR-r2_c44332f674_2104007548033044480_hi.webp",
+          "exists": true,
+          "width": 2912,
+          "height": 1632,
+          "sha256": "1a29719e1f1d535bd51f051c6feb0a1533a008ffea1392d63646964ed7b7bfb3"
+        }
+      ],
+      "aspect": {
+        "ok": true,
+        "requested": "16:9",
+        "applied": "16:9",
+        "note": "已选择尺寸 16:9"
+      },
+      "actual_point_deduction": "缺"
+    }
+  ]
+}

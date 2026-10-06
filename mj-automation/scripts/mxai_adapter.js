@@ -56,7 +56,7 @@ const { inspectFile, describe: describeImg } = require(path.join(__dirname, 'ver
 // 这里用文件锁（原子 wx 创建）把「启动浏览器 -> 出图/下载 -> 关闭浏览器」整段串行化。
 // ---------------------------------------------------------------------------
 const LOCK_FILE = process.env.MXAI_LOCK_FILE || path.join(__dirname, '..', 'run', 'mj-browser.lock');
-const LOCK_WAIT_MS = Number(process.env.MXAI_LOCK_WAIT_MS || 300000);
+const LOCK_WAIT_MS = Number(process.env.MXAI_LOCK_WAIT_MS || 1200000);
 const LOCK_STALE_MS = Number(process.env.MXAI_LOCK_STALE_MS || 120000);
 const LOCK_HEARTBEAT_MS = Number(process.env.MXAI_LOCK_HEARTBEAT_MS || 15000);
 
@@ -102,7 +102,10 @@ function installLockExitHook() {
 
 const TRACE_FILE = process.env.MXAI_TRACE_FILE || path.join(__dirname, '..', 'run', 'adapter-trace.log');
 function trace(msg) {
-  const line = new Date().toISOString() + ' [' + process.pid + '] ' + msg + '\n';
+  const safeMessage = String(msg)
+    .replace(/https?:\/\/[^\s\"'<>]+/gi, '[url]')
+    .replace(/\b(cookie|token|password|authorization|api[_-]?key|secret)\s*[:=]\s*[^,\s;]+/gi, '$1=[redacted]');
+  const line = new Date().toISOString() + ' [' + process.pid + '] ' + safeMessage + '\n';
   try {
     fs.mkdirSync(path.dirname(TRACE_FILE), { recursive: true });
     fs.appendFileSync(TRACE_FILE, line);
@@ -132,6 +135,18 @@ function stripAspectParams(prompt) {
   // 极端情况：提示词只有尺寸参数，剥完为空 —— 保留原文，交给上层报错，不静默改变语义。
   if (!trimmed) return { prompt: text, removed: [] };
   return { prompt: trimmed, removed };
+}
+
+// 输出文件名只使用任务名称，不把提示词写进文件名。保留中文，清理 Windows
+// 非法字符和空白，并限制长度，避免深层批次目录下超过路径上限。
+function safeOutputStem(value, fallback = '生成结果') {
+  const text = String(value == null ? '' : value)
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_')
+    .replace(/\s+/g, '_')
+    .replace(/[. ]+$/g, '')
+    .trim();
+  const stem = text || fallback;
+  return (/[㐀-鿿]/.test(stem) ? stem : `抽卡_${stem}`).slice(0, 80);
 }
 
 async function acquireBrowserLock(label) {
@@ -342,11 +357,19 @@ class MxaiAdapter {
   /**
    * 导航到 MXAI 生图页并等待加载
    */
-  async navigate() {
+  async navigate(options = {}) {
     if (!this.page) await this.launch();
 
     console.log('[MXAI] 导航到生图页...');
     await this.page.goto(this.mxaiUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+    // Manual login mode: navigate once and leave the page to the user.
+    // Do not wait for the creation workspace or run popup cleanup here.
+    if (options.waitForWorkspace === false) {
+      await this.page.waitForTimeout(1200);
+      console.log('[MXAI] \u767b\u5f55\u9875\u9762\u5df2\u6253\u5f00\uff0c\u7b49\u5f85\u7528\u6237\u624b\u52a8\u767b\u5f55\uff1b\u4e0d\u4f1a\u81ea\u52a8\u91cd\u8f7d\u6216\u5173\u95ed\u767b\u5f55\u5f39\u7a97');
+      return;
+    }
 
     // 等待 SPA 真正挂载出 MJ 创作面板（不是仅 DOMContentLoaded，也不是别的 tab 的隐藏 textarea）。
     // 必须等到「可见」的 .mj-left-tool 或「可见」的提示词文本域，否则后续交互会落空。
@@ -500,33 +523,20 @@ class MxaiAdapter {
    * 检查是否已登录
    * @returns {boolean}
    */
-  async isLoggedIn() {
+  async getLoginState() {
+    if (!this.page || this.page.isClosed()) return "unknown";
     try {
-      // 获取页面文本，用多个标志判断
-      const pageText = await this.page.evaluate(() => document.body.innerText).catch(() => '');
-      
-      // 已登录标志：有积分数字、已签到、头像等
-      const hasPoints = /\d+\s*积分/.test(pageText) || /已签到/.test(pageText) || /积分/.test(pageText);
-      // 未登录标志
-      const hasNotLogin = /未登录/.test(pageText);
-      
-      if (hasPoints && !hasNotLogin) return true;
-      if (hasNotLogin && !hasPoints) return false;
-      // 模糊情况：再检查右上角区域
-      try {
-        const headerText = await this.page.evaluate(() => {
-          const header = document.querySelector('header') || document.querySelector('.header') || document.body;
-          return header ? header.innerText : '';
-        });
-        if (/已签到|积分|\d{3,}/.test(headerText) && !/未登录/.test(headerText)) return true;
-      } catch (e) { /* 忽略 */ }
-      
-      // 默认返回 true（避免误判）
-      return !hasNotLogin;
-    } catch (e) {
-      return true;
-    }
+      const text = await this.page.evaluate(() => document.body.innerText);
+      if (typeof text !== "string" || !text.trim()) return "unknown";
+      const out = /\u672a\u767b\u5f55|\u8bf7\u767b\u5f55|\u7acb\u5373\u767b\u5f55|\u767b\u5f55\/\u6ce8\u518c/.test(text);
+      const inside = /\d+\s*\u79ef\u5206|\u5df2\u7b7e\u5230/.test(text);
+      if (inside && !out) return "logged_in";
+      if (out && !inside) return "not_logged_in";
+      return "unknown";
+    } catch (_) { return "unknown"; }
   }
+
+  async isLoggedIn() { return (await this.getLoginState()) === "logged_in"; }
 
   /**
    * 确保已登录，未登录则抛出异常
@@ -965,6 +975,7 @@ class MxaiAdapter {
     // 让上层能拿着 serial 走免费的 dl-serial 补下载，而不是盲目重跑（会重复扣积分）。
     let queueSeen = false;
     let queueText = '';
+    let unassociatedSeen = false;
 
     while (Date.now() - startTime < timeout) {
       await this.page.waitForTimeout(3000);
@@ -1044,14 +1055,14 @@ class MxaiAdapter {
           return { success: true, message: '生成完成（任务完成信号未出现，下载阶段将重试）', recordId: newest, warn: 'finish_timeout' };
         }
 
-        // 完成判定：新增图片达到阈值，或新增图 + 完成文案
-        if (newSrcs.length >= requiredNew) {
-          console.log(`[MXAI] 生成完成！新增图片: ${newSrcs.length}（已等待 ${elapsed}s）`);
-          return { success: true, message: '生成完成', recordId: null };
-        }
-        if (newSrcs.length > 0 && /绘制完成|生成成功|已生成|出图完成/.test(pageText)) {
-          console.log(`[MXAI] 生成完成（文案确认）！新增图片: ${newSrcs.length}（已等待 ${elapsed}s）`);
-          return { success: true, message: '生成完成', recordId: null };
+        // 不能只凭 img src 变化判定本次任务完成。页面会懒加载历史图片，
+        // 这会把旧图误报成“新增图”，随后下载最新卡片就会串图。
+        // 必须拿到本次点击生成后新增的 serial；没有可信 serial 就进入人工核查。
+        if (newSrcs.length >= requiredNew || (newSrcs.length > 0 && /绘制完成|生成成功|已生成|出图完成/.test(pageText))) {
+          if (!unassociatedSeen) {
+            console.log(`[MXAI] 检测到图片变化但暂未找到本次 serial，继续等待关联（新增图 ${newSrcs.length}，已等待 ${elapsed}s）`);
+            unassociatedSeen = true;
+          }
         }
 
         // 仍处于进行中
@@ -1066,6 +1077,17 @@ class MxaiAdapter {
       } catch (e) {
         console.log(`[MXAI] 等待中检查异常: ${e.message}`);
       }
+    }
+
+    if (unassociatedSeen) {
+      return {
+        success: false,
+        status: 'unassociated_result',
+        retry_allowed: false,
+        recordId: null,
+        message: '平台页面出现图片变化，但没有找到本次任务对应的 serial，已停止抓图以防串图',
+        warning: '请人工核查平台记录；系统不会自动重提或下载页面最新旧图',
+      };
     }
 
     // 【2026-09-12】超时也要分性质：排队中 != 失败。
@@ -1226,6 +1248,15 @@ class MxaiAdapter {
    */
   async downloadLatestViaButton(outputDir, prefix = 'latest', timeout = 30000, recordId = null) {
     if (!this.page) return { ok: false, success: false, downloaded: [], rejected: [], error: '浏览器未启动' };
+    if (this._submissionStarted && !recordId) {
+      return {
+        ok: false,
+        success: false,
+        downloaded: [],
+        rejected: [],
+        error: '本次任务没有可信 serial，拒绝选择页面最新记录以防串图',
+      };
+    }
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
     const downloaded = [];
     const rejected = [];
@@ -1480,6 +1511,7 @@ class MxaiAdapter {
     // 接收槽：页面把字节推过来时直接落盘（缺陷 G）。
     this._blobSink = { outputDir, prefix, files: [] };
     const sniffed = [];
+    const serialNum = String(serialId || '').replace(/^serial-/, '');
 
     const hooked = await this.page.evaluate(() => {
       try {
@@ -1540,6 +1572,10 @@ class MxaiAdapter {
         if (/^data:|^blob:/.test(u)) return;
         netLog.push({ t: Date.now(), m: req.method(), u: u.slice(0, 200), r: req.resourceType() });
         if (!/\/draw\/outputs\//.test(u) || !/auth_key=/.test(u)) return;
+        if (serialNum && !u.includes(serialNum)) {
+          trace('fastlane: 忽略非本次 serial 的原图直链');
+          return;
+        }
         if (fastLane.some((x) => x.url === u)) return;
         const entry = { url: u, size: 0, file: null, done: false };
         fastLane.push(entry);
@@ -1553,7 +1589,6 @@ class MxaiAdapter {
             const ct = String((r.headers() || {})['content-type'] || '');
             const ext = /jpe?g/.test(ct) ? 'jpg' : (/webp/.test(ct) ? 'webp' : 'png');
             // 文件名带上 serial：prefix 由任务 id 决定，重试时会变，serial 不会变。
-            const serialNum = String(serialId || '').replace(/^serial-/, '');
             const fp = path.join(outputDir, prefix + (serialNum ? '_' + serialNum : '') + '_hi.' + ext);
             fs.writeFileSync(fp, body);
             entry.size = body.length; entry.file = fp; entry.done = true;
@@ -1568,6 +1603,8 @@ class MxaiAdapter {
     // 安全网：站点若改用 fetch 拉原图，这里能直接截到大图响应体。
     const onResp = (resp) => {
       try {
+        const respUrl = String(resp.url() || '');
+        if (serialNum && !respUrl.includes(serialNum) && /\/draw\/outputs\//.test(respUrl)) return;
         const ct = String((resp.headers() || {})['content-type'] || '');
         if (!/image\//.test(ct)) return;
         const len = Number((resp.headers() || {})['content-length'] || 0);
@@ -1920,6 +1957,7 @@ class MxaiAdapter {
       mode = 'normal',
       outputDir = process.env.MJ_OUTPUT_DIR || path.join(__dirname, '..', 'output'),
       filePrefix = 'mxai_result',
+      outputName = null,
       timeout = 240000,
       taskId = null,
       // 比例档位未切换成功时是否允许带着错误比例继续出图。
@@ -1927,11 +1965,17 @@ class MxaiAdapter {
       allowAspectDegrade = false,
     } = options;
 
+    const outputStem = safeOutputStem(outputName || filePrefix);
     const startedAt = new Date().toISOString();
     const t0 = Date.now();
     const promptHash = crypto.createHash('sha256').update(String(prompt)).digest('hex').slice(0, 16);
     const adapter = this;
-    const baseReceipt = { task_id: taskId, prompt_hash: promptHash, requested_aspect: aspect };
+    const baseReceipt = {
+      task_id: taskId,
+      prompt_hash: promptHash,
+      requested_aspect: aspect,
+      output_name: outputStem,
+    };
 
     const finish = (res) => {
       const files = (res.images || []).map((f) => {
@@ -2034,14 +2078,28 @@ class MxaiAdapter {
             warning: '平台已判定本次生成失败（未出图）。不会自动重试；如需重出请先人工确认（会重新扣积分）',
           });
         }
-        return finish({ ...result, status: 'receipt_pending', retry_allowed: false, warning: '已点击生成但尚未拿到确定回执，禁止自动重试' });
+        return finish({ ...result, status: result.status || 'receipt_pending', retry_allowed: false, warning: result.warning || '已点击生成但尚未拿到确定回执，禁止自动重试' });
       }
       if (!result.success) {
         return finish({ ...result, status: result.status || 'failed' });
       }
 
+      // 没有本次 serial 就不能选择“最新卡片”。最新卡片可能属于历史任务，
+      // 这是本次真实测试抓到错误波形图的根因。
+      if (!result.recordId) {
+        return finish({
+          ...result,
+          success: false,
+          status: 'unassociated_result',
+          images: [],
+          retry_allowed: false,
+          message: '生成信号未关联到本次任务 serial，已停止下载以防串图',
+          warning: '请人工核查平台记录；不会自动重提或抓取最新旧图',
+        });
+      }
+
       // 8. 通过页面「下载」按钮获取高清原图，并强制内容校验
-      const dl = await this.downloadLatestViaButton(outputDir, filePrefix, 120000, result.recordId)
+      const dl = await this.downloadLatestViaButton(outputDir, outputStem, 120000, result.recordId)
         .catch((e) => ({ ok: false, success: false, downloaded: [], rejected: [], error: e.message }));
 
       if (dl.ok && dl.downloaded && dl.downloaded.length) {
@@ -2090,6 +2148,8 @@ module.exports = MxaiAdapter;
 //       require('./mxai_adapter').stripAspectParams('正文 --ar 9:16')
 module.exports.stripAspectParams = stripAspectParams;
 MxaiAdapter.stripAspectParams = stripAspectParams;
+module.exports.safeOutputStem = safeOutputStem;
+MxaiAdapter.safeOutputStem = safeOutputStem;
 
 // 命令行测试入口
 if (require.main === module) {

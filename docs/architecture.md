@@ -160,3 +160,53 @@ Multica Project 通过 `local_directory` 资源绑定本地工作目录。两种
 | `.env`、证书、Cookie、Token | 忽略 | 凭据绝不入库 |
 
 被忽略的媒体真源在外部执行现场；仓库通过 `assets/验收图/资产索引.md` 中的 sha256 和路径指针保持可追溯，而不是复制二进制。
+
+## 9. AIGC 批次工作流边界
+
+AIGC 抽卡采用“一批一个 Multica 任务”的方式。Multica 保存批次配置、状态、授权、受控并发进度、用户选图和回执；本地抽卡桥负责实际提交、等待、序列号补下载和文件校验；平台登录、最终选图和发布由用户本人完成。通用状态机和回执格式见 [`docs/task-templates/aigc-batch-workflow.md`](task-templates/aigc-batch-workflow.md)。
+
+付费生成授权、最终选图确认、发布授权必须分开记录。单张生成失败不再自动阻断整批；保留原始失败回执后，可在本批付费授权范围内在最多三个并发槽位内重提交，每次重提必须记录新的作业号、序列号和扣费状态。桥离线、授权不足或扣费状态不明仍进入 `blocked`，不得静默重试。
+
+
+
+## 10. [待核验] 损坏的工作台说明（2026-09-27）
+
+本节原说明正文含实际问号替代字符，无法可靠恢复；为保留历史证据，乱码原文暂留本节，不作为当前功能事实。当前功能状态以源代码、运行回读和验收清单为准。
+
+?????? `http://127.0.0.1:8765/control`????????????????????????????????????????????????????
+
+???????????????????????????????????????????????? `POST /v1/jobs`???????? `jobId` ???????????
+
+## 11. Windows 工作台源码、运行数据与分发边界
+
+仓库、已安装的本地控制台和外部执行现场各自承担不同职责：仓库存放可审查源码、规则与构建脚本；安装目录运行中文控制台并保管本机任务数据；Multica 与图像平台属于外部执行现场，登录、付费提交和发布由用户本人操作。仓库文档不代表外部平台当前状态。
+
+| 类别 | 当前路径 | 处理规则 |
+|---|---|---|
+| 可维护源码 | `mj-automation/control/`、`mj-automation/scripts/`、`installers/install.ps1`、根目录启动器与构建脚本 | 作为源文件审查；安装包从这里复制程序文件。 |
+| 本机依赖与身份数据 | `runtime/python/`、`runtime/node_modules/`、`runtime/node/`、`runtime/browser-profile/`、`runtime/setup.json` | 保留在本机；不纳入 Git。浏览器档案是用户数据，禁止打包或分享。 |
+| 本机任务数据与回执 | `mj-automation/run/`、`mj-automation/output/`、`mj-automation/archive/`、`mj-automation/receipts/`、`config/local.ps1` | 与程序升级分开保留；回执可能含真实任务事实，不能当依赖清理。 |
+| 本机验证证据 | `.playwright-cli/` | 当前截图与页面快照保留原位；不要把它们作为源码或分发内容。日志仍由通用 `*.log` 规则排除。 |
+| 构建与发布件 | `dist/` 下带版本号的目录、ZIP 和安装器 | 由构建脚本生成，不能视为源码。重建同版本会覆盖同名目录与压缩包；操作前须先备份并验证恢复。 |
+| 分发安装器源码 | `installers/install.ps1`、`scripts/build_multica_portable.ps1`、`scripts/build_multica_installer.ps1` | 属于可维护源码，应纳入审查；不得因 `dist/` 忽略规则一起排除。 |
+
+安装器当前采用合并复制，并明确跳过浏览器档案、任务、回执、输出、归档和本地配置；现有运行时若已存在则不会由新包替换。该路径已从源码检查，尚未在隔离的临时安装目录完成备份、恢复和升级实测，因此数据保留行为仍标为待验证。首次运行环境准备可能调用 pip/npm 安装依赖并访问网络，本轮不执行该步骤。
+
+## 桌面产品入口（2026-09-28）
+
+当前可交付包已经包含真正的 Windows 桌面主程序 `Multica.exe`。它不是安装脚本的别名，而是一个独立的 WinForms 程序，负责：
+
+- 启动或接管本机抽卡桥；
+- 显示本地服务、可见浏览器和任务队列状态；
+- 一键打开中文工作台、登录浏览器、成品目录和安装目录；
+- 关闭窗口时只停止本程序自己启动的服务，不读取或显示密码、Cookie、Token。
+
+构建入口：`scripts/build_multica_portable.ps1`。它会先发布 `desktop/Multica.Desktop.csproj` 的自包含 `win-x64` EXE，再把 EXE 放进版本化分发目录；`scripts/build_multica_installer.ps1` 会把同一目录封装成 Windows 安装器。
+
+本轮已生成并完成本机启动回读的产物：
+
+- `dist/Multica-Control-Console-2026-09-28-product/Multica.exe`
+- `dist/Multica-Control-Console-2026-09-28-product.zip`
+- `dist/Multica-Control-Console-Setup-2026-09-28-product.exe`
+
+仍待验证：另一台 Windows 首次安装、代码签名、真实平台登录、真实付费提交和真实成品回收。

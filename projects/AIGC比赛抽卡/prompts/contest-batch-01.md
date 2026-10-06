@@ -1,4 +1,4 @@
-# contest-batch-01
+﻿# contest-batch-01
 
 - 比赛名称：RunningHub 全球 AIGC 长片创作大赛
 - 投稿用途：先导片关键帧与 16:9 封面抽卡
@@ -6,7 +6,7 @@
 - 比例：16:9
 - 版本：v8.2
 - 预计积分：约 90
-- 付费状态：用户已于 2026-09-26 授权本批 15 张；C01 至 C06 已提交并回收，C07 至 C15 尚未提交
+- payment status: user authorized 15 paid generations on 2026-09-26; C01-C06 and C08-C15 have verified results; C07 is a user-verified failed item with no output. Strict rule: while the batch is not terminal and an executable or retryable item exists, keep three active job slots; immediately refill any terminal slot; use authorized failed-item retries to fill short slots; never retry C07.
 - 资料缺口：作品集目录没有比赛名称、画面清单、比例、数量或成绩；本批内容来自负责画面的任务返回结果
 
 ## 画面清单
@@ -93,6 +93,6 @@ photoreal dawn wide shot, Lambert and Zuo Xiaoyue clinging to one oil drum amid 
 
 ## 状态
 
-- 批次状态：in_progress，C01 至 C06 已回收真实图片，C07 至 C15 等待当次授权后按一次一张串行提交
+- batch status: in_progress; all candidate images are recovered and the batch awaits the user 4-of-1 selection. C14-r9 serial serial-2103944396905910272; image E:\codex\multica\mj-automation\output\contest-batch-01-C14-r9_08c51fa65d_2103944396905910272_hi.png; 2912x1632. Strict three-concurrent execution applies to every non-terminal batch with an executable or retryable item.
 - 付费授权：用户已于 2026-09-26 授权本批 15 张
 - 用户 4 选 1：缺

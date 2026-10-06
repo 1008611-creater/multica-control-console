@@ -1,8 +1,8 @@
-﻿project_id: aigc-contest-draw-v1
+project_id: aigc-contest-draw-v1
 project_name: AIGC比赛抽卡
 status: in_progress
 status_changed_at: 2026-09-26
-status_note: C01 至 C06 已回收真实图片，尺寸均为 2912×1632；C06 由免费补下载取得，序列号 serial-2103726832829337600。C07 至 C15 尚未提交，需用户当次授权后按一次一张串行继续；用户 4 选 1 仍待填写。
+status_note: Offline no-fee dry-run asset added and locally validated on 2026-09-27; C01-C06 and C08-C15 have verified image files; C07 was user-verified as an in-site failure with no output and remains no-retry; C14-r9 completed with serial serial-2103944396905910272 and image E:\codex\multica\mj-automation\output\contest-batch-01-C14-r9_08c51fa65d_2103944396905910272_hi.png at 2912x1632; there are no active jobs and the batch awaits the user 4-of-1 selection. The strict three-concurrent rule is now - while the batch is not terminal and an executable or retryable item exists, keep three active jobs; fill short slots with authorized retries; never retry C07.
 source_of_truth: projects/AIGC比赛抽卡/project_state.yaml
 deliverables:
   - id: contest-draw-skill
@@ -14,7 +14,47 @@ deliverables:
   - id: contest-batch-01-receipt
     status: in_progress
     path: receipts/contest-batch-01.md
+  - id: contest-batch-01-workflow-map
+    status: in_progress
+    path: batches/contest-batch-01.yaml
+  - id: aigc-dry-run-acceptance
+    status: in_progress
+    path: dry-run/README.md
 blockers: []
+open_items:
+  - item: C12
+    status: recovered_after_retry
+    evidence: 原作业 contest-batch-01-C12-r3_9f30953c53、contest-batch-01-C12-r4_9f30953c53、contest-batch-01-C12-r5_9f30953c53、contest-batch-01-C12-r6_9f30953c53 均因浏览器锁超时失败；重提作业 contest-batch-01-C12-r7_9f30953c53_9f30953c53 成功；序列号 serial-2103931954947690496；图片 2912×1632 已回收
+    next_action: 无
+  - item: C14
+    status: recovered_after_retry
+    evidence: historical C14 and r3-r5/r8 jobs failed on browser-lock timeout; r6/r7 duplicated the C12-r7 image; retry job contest-batch-01-C14-r9_08c51fa65d completed successfully; serial serial-2103944396905910272; image E:\codex\multica\mj-automation\output\contest-batch-01-C14-r9_08c51fa65d_2103944396905910272_hi.png; dimensions 2912x1632; deduction unknown
+    next_action: retain receipt and wait for the user 4-of-1 selection
+  - item: C15
+    status: recovered_after_retry
+    evidence: 历史作业 contest-batch-01-C15_2f0283ae32 因浏览器锁超时；contest-batch-01-C15-r2_2f0283ae32_2f0283ae32 在浏览器锁等待阶段由控制器停止，contest-batch-01-C15-r3_2f0283ae32 与 contest-batch-01-C15-r4_2f0283ae32、contest-batch-01-C15-r5_2f0283ae32 因浏览器锁超时；重提作业 contest-batch-01-C15-r6_2f0283ae32 成功；序列号缺；图片 E:\codex\multica\mj-automation\output\contest-batch-01-C15-r6_2f0283ae32_blob.png，2912×1632
+    next_action: 保留图片回执，序列号和扣费状态记缺
+  - item: C10
+    status: recovered_after_retry
+    evidence: 原作业 contest-batch-01-C10-r3_40177525c3 因浏览器锁超时失败；重提作业 contest-batch-01-C10-r4_40177525c3 成功；序列号 serial-2103922237408022528；图片 2912×1632 已回收
+    next_action: 无
+  - item: C13
+    status: recovered_after_retry
+    evidence: 原作业 contest-batch-01-C13-r3_9b3e6d5f49 因共享浏览器锁超时失败；重提作业 contest-batch-01-C13-r4_9b3e6d5f49 成功；序列号 serial-2103927025361227776；图片 E:\codex\multica\mj-automation\output\contest-batch-01-C13-r4_9b3e6d5f49_2103927025361227776_hi.webp，2912×1632
+    next_action: 无
+  - item: C07
+  - strict three-concurrent rule: while the batch is not terminal and an executable or retryable item exists, keep three active jobs; fill short slots with authorized retries; never retry C07
+    status: failed_exception_no_retry
+    evidence: 用户已核实站内失败且无成品；序列号 serial-2103846648898654208；实际扣积分数值缺
+    next_action: 保留原始失败回执；此前明确的不重试决定继续有效
+  - item: C09
+    status: recovered_after_retry
+    evidence: 原作业 contest-batch-01-C09-r2_460dbd57d9 page_reported_failed；重提作业 contest-batch-01-C09-r3_460dbd57d9；序列号 serial-2103910138304794624；图片 2912×1632 已回收
+    next_action: 保留 retry_of 关联和扣费状态缺记录
+  - item: C11
+    status: recovered
+    evidence: 作业 contest-batch-01-C11-r3_88fd22558f；序列号 serial-2103915522050494464；图片 2912×1632 已回收
+    next_action: 无
 authorization:
   paid_generation: granted_for_batch_01_on_2026-09-26
   platform_publish: not_applicable
@@ -26,7 +66,8 @@ paths:
   draw_bridge: http://127.0.0.1:8765
 red_lines:
   - 不登录、不代发、不自动发布
-  - 付费出图必须用户当次明确授权
+  - 付费生成必须用户当次明确授权
   - 不读取或保存 Cookie、Token、密钥
   - 不把未验收候选图写成已入选
-  - 失败或超时时不自动重复扣费
+  - strict three-concurrent rule: while the batch is non-terminal and an executable or retryable item exists, keep three active jobs; fill short slots with authorized failed-item retries; never retry C07
+  - 不静默无限重试；桥离线、授权不足或扣费状态不明时进入 blocked

@@ -1,0 +1,818 @@
+{
+  "project_id": "whale-pilot-v1",
+  "source_type": "original_script",
+  "model": "midjourney",
+  "version": "v8.2",
+  "default_aspect_ratio": "16:9",
+  "concurrency_policy": "strict_three_concurrent_while_active",
+  "failure_policy": "resubmit_within_batch_authorization",
+  "authorization": "user_confirmed_2026-09-26",
+  "source_readonly": "E:\\codex\\aigc\\whale-project",
+  "items": [
+    {
+      "item_id": "FF_T01_07S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "7秒硬切进入船舱首帧",
+      "source_basis": [
+        "storyboard 7-15秒",
+        "0-7到7-15硬切"
+      ],
+      "creative_fill": "屏幕冷光承接52赫兹声波",
+      "required_shot_ids": [
+        "T01"
+      ],
+      "continuity_state": "兰伯特、毛衣、旧探测仪连续",
+      "depends_on": [],
+      "reference_role": "7-15秒图生视频起点，锁构图与初始状态",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，狭窄兔子洞号船舱内兰伯特前倾盯住旧探测仪，屏幕冷光切过疲惫半脸，圆窗外只有暗海微光，深海军蓝厚羊毛毛衣、潮湿棕发和短胡茬清楚可见，低位中近景，冷钢蓝主导，暖橙只在极小仪器灯，真实盐雾与羊毛纤维 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T01"
+      ]
+    },
+    {
+      "item_id": "FF_T02_15S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "15秒慢叠化进入挪威港口夜海首帧",
+      "source_basis": [
+        "storyboard 15-22秒",
+        "7-15到15-22慢叠化"
+      ],
+      "creative_fill": "船舱微光过渡成港口夜色",
+      "required_shot_ids": [
+        "T02"
+      ],
+      "continuity_state": "兰伯特仍穿深海军蓝毛衣，暖光仅在身后",
+      "depends_on": [],
+      "reference_role": "15-22秒图生视频起点，锁人物、酒杯与海面方向",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，挪威北部港口露天酒吧，兰伯特独坐潮湿木桌旁，厚玻璃酒杯在手边，他望向漆黑海面，身后窄窗灯给出克制暖边，海雾贴着栏杆，冷钢蓝占大部画面，人物左下方，右侧留出海面与星空上摇空间 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T02"
+      ]
+    },
+    {
+      "item_id": "FF_T03_22S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "22秒叠化进入档案监视器首帧",
+      "source_basis": [
+        "storyboard 22-32秒",
+        "15-22到22-32叠化"
+      ],
+      "creative_fill": "木星光点接成监视器画面",
+      "required_shot_ids": [
+        "T03"
+      ],
+      "continuity_state": "监视器边框、反光和扫描噪点固定",
+      "depends_on": [],
+      "reference_role": "22-32秒图生视频起点，锁档案设备与视线",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，老式科研档案监视器边框占据前景，厚玻璃有细微反光与轻薄扫描噪点，屏幕内是巨大木星与翻卷云带，磨损混凝土灰金属外壳，角落仅一枚暖色状态灯，镜头正对屏幕略偏左，冷蓝工作站暗部包围 --ar 16:9 --v 8.2 --raw --stylize 140 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T03"
+      ]
+    },
+    {
+      "item_id": "FF_T04_32S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "32秒硬切进入木卫二撞击段首帧",
+      "source_basis": [
+        "storyboard 32-45秒",
+        "22-32到32-45运动跟随"
+      ],
+      "creative_fill": "朱诺飞行方向承接到探测器接近冰壳",
+      "required_shot_ids": [
+        "T04"
+      ],
+      "continuity_state": "木卫二白冰面、探测器尺度与接近方向固定",
+      "depends_on": [],
+      "reference_role": "32-45秒图生视频起点，锁探测器与冰壳关系",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实太空电影首帧，木卫二白色冰封弧面横贯远景，小型探测器从右上高速接近冰壳，蓝灰裂纹像细河，木星反射光形成冷白边缘，镜头沿飞行方向低角度追随，撞击尚未发生，冷钢蓝与云层白主导，极小警示橙反光 --ar 16:9 --v 8.2 --raw --stylize 140 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T04"
+      ]
+    },
+    {
+      "item_id": "FF_T05_45S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "45秒声音前置后硬切回地球首帧",
+      "source_basis": [
+        "storyboard 45-55秒",
+        "32-45到45-55声音前置"
+      ],
+      "creative_fill": "仪器滴声先出现，再用瞳孔收缩冲击",
+      "required_shot_ids": [
+        "T05"
+      ],
+      "continuity_state": "兰伯特脸、湿发、胡茬与船舱冷光和T01连续",
+      "depends_on": [],
+      "reference_role": "45-55秒图生视频起点，锁反应表情",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，兰伯特船舱极近脸部特写，瞳孔刚收缩，疲惫表情被震惊替代，湿棕发贴额、短胡茬与自然皮肤纹理清楚，冷蓝屏幕光照亮一侧脸颊，眼中倒映剧烈波形，背景失焦旧探测仪和圆窗蓝光，镜头固定，情绪克制但有冲击 --ar 16:9 --v 8.2 --raw --stylize 130 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T05"
+      ]
+    },
+    {
+      "item_id": "FF_T06_55S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "55秒波形匹配成海浪首帧",
+      "source_basis": [
+        "storyboard 55-68秒",
+        "45-55到55-68图形匹配"
+      ],
+      "creative_fill": "屏幕波纹转译成真实海浪，不展示未知存在全貌",
+      "required_shot_ids": [
+        "T06"
+      ],
+      "continuity_state": "兔子洞号磨损船体、盐霜栏杆和冷海天气固定",
+      "depends_on": [],
+      "reference_role": "55-68秒图生视频起点，锁风暴方向与遮挡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，阴云北海巨浪正面拍向旧极地科考木船兔子洞号，深色船漆磨损，盐霜栏杆，船身明显倾斜，泡沫形成声波弧线，水面低位贴近船舷，冷钢蓝海面与灰白天空占主导，人物不入镜，未知物只留水下扰动 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T06"
+      ]
+    },
+    {
+      "item_id": "FF_T07_68S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "68秒故障闪白进入远古残像首帧",
+      "source_basis": [
+        "storyboard 68-78秒",
+        "55-68到68-78闪白噪点"
+      ],
+      "creative_fill": "冷银水下反光成为失真全息触发纹理",
+      "required_shot_ids": [
+        "T07"
+      ],
+      "continuity_state": "飞船只露局部结构，战争不完整，档案噪点固定",
+      "depends_on": [],
+      "reference_role": "68-78秒图生视频起点，锁星云、局部残骸与扫描线",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实科幻档案首帧，冷银水下反光像闪白故障铺满画面后，过渡到阴冷星云深处一小段巨大飞船结构，局部边缘带扫描线与轻微颜色漂移，黑色深空包围主体，一点受控警示橙撞击光尚未完全亮起，镜头远而静，像损坏旧记录正在显影 --ar 16:9 --v 8.2 --raw --stylize 140 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T07"
+      ]
+    },
+    {
+      "item_id": "FF_T08_78S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "78秒慢叠化进入地球海难首帧",
+      "source_basis": [
+        "storyboard 78-92秒",
+        "68-78到78-92慢叠化"
+      ],
+      "creative_fill": "先落到地球海难首镜，再切木卫二深海黑影",
+      "required_shot_ids": [
+        "T08"
+      ],
+      "continuity_state": "兔子洞号已倾覆，人物服装保持原状态，黑影不露全貌",
+      "depends_on": [],
+      "reference_role": "78-92秒交叉剪辑地球端首帧，锁海难与碎片",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，破晓前黑蓝海面上兔子洞号已经侧翻，船底与断裂木板露出水面，海水灌入倾斜船舱，漂浮碎片被巨浪推向镜头，远处雾层压住地平线，水面高度贴近残骸，冷钢蓝和近黑占主导，人物暂不出现，右侧留出后续切入木卫二深海黑影的空白 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T08"
+      ]
+    },
+    {
+      "item_id": "FF_T09_92S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "92秒慢叠化进入破晓漂流首帧",
+      "source_basis": [
+        "storyboard 92-105秒",
+        "78-92到92-105降速慢叠化"
+      ],
+      "creative_fill": "动荡海面转成柔和曙光与共同仰望",
+      "required_shot_ids": [
+        "T09"
+      ],
+      "continuity_state": "两人湿透但服装可辨，油桶和碎片为稳定道具锚点",
+      "depends_on": [],
+      "reference_role": "92-105秒图生视频起点，锁漂浮姿态与地平线",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，破晓前平静海面，兰伯特和左小月浑身湿透，肩靠肩抱住旧橙色油桶漂浮在船只碎片之间，同时抬头望向刚泛橙红的海平线与稀薄星辰，水面低位中远景，冷蓝海水占大部，暖色只压在远处地平线，人物疲惫而安静 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T09"
+      ]
+    },
+    {
+      "item_id": "FF_T10_105S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "105秒进入纯黑声波抽象段首帧",
+      "source_basis": [
+        "storyboard 105-114秒",
+        "92-105到105-114渐暗"
+      ],
+      "creative_fill": "上升镜头最后一点光收束成黑场中央单一波形",
+      "required_shot_ids": [
+        "T10"
+      ],
+      "continuity_state": "黑场无人物无字幕，一条波形随后分成两条",
+      "depends_on": [],
+      "reference_role": "105-114秒抽象段图生视频起点，锁黑场、声波位置和留白",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实科幻抽象首帧，整幅画面接近纯黑，中央偏下悬浮一条细而明亮的蓝白发光声波线，波峰规律而克制，周围只有极轻冷蓝雾状光晕，线条边缘有真实光学散射，极大留白，不出现人物、场景和可读文字，构图正中稳定，情绪空旷 --ar 16:9 --v 8.2 --raw --stylize 180 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T10"
+      ]
+    },
+    {
+      "item_id": "CHAR_LAMBERT_MASTER",
+      "kind": "character",
+      "asset_stage": "identity_master",
+      "priority": "P0",
+      "purpose": "锁定兰伯特身份、脸、发型与服装",
+      "source_basis": [
+        "storyboard 7-15、45-55、78-105秒",
+        "导演板全片锁定"
+      ],
+      "creative_fill": "自然眉高不对称与疲惫眼神为辨识点",
+      "required_shot_ids": [
+        "T01",
+        "T05",
+        "T08",
+        "T09"
+      ],
+      "continuity_state": "36岁欧洲男性，偏胖结实，潮湿中长棕发，短胡茬，深海军蓝厚羊毛毛衣、旧工装裤、磨损帆布鞋",
+      "depends_on": [],
+      "reference_role": "人物身份母图，只作身份参考，不冒充已通过角色设定卡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实影视定妆身份母图，单人半身到四分之三身的36岁欧洲男性，偏胖结实体型，轻微眉高不对称，深陷疲惫但专注的眼睛，乱而潮湿的中长棕发，短胡茬，深海军蓝厚羊毛毛衣与旧深色工装裤，衣料有受力褶皱和海盐细痕，冷静中性表情，灰蓝中性背景，左侧柔和冷窗光勾出发丝与鼻梁，真实皮肤毛孔和年龄纹理，单人无文字无道具 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T01",
+        "T05",
+        "T08",
+        "T09"
+      ]
+    },
+    {
+      "item_id": "CHAR_ZUO_MASTER",
+      "kind": "character",
+      "asset_stage": "identity_master",
+      "priority": "P0",
+      "purpose": "锁定左小月身份、脸、短发与服装",
+      "source_basis": [
+        "storyboard 22-32、78-105秒",
+        "导演板全片锁定"
+      ],
+      "creative_fill": "短发轮廓与克制眼神为辨识点",
+      "required_shot_ids": [
+        "T08",
+        "T09"
+      ],
+      "continuity_state": "28岁东亚女性，利落黑色短发，柔和五官，天蓝色厚羽绒服、深灰内层、深色长裤",
+      "depends_on": [],
+      "reference_role": "人物身份母图，只作身份参考，不冒充已通过角色设定卡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实影视定妆身份母图，单人半身到四分之三身的28岁东亚女性，柔和而清楚的五官比例，利落黑色短发形成干净轮廓，眉眼沉静克制，天蓝色厚羽绒服有清晰绗缝、磨损拉链和真实蓬松度，深灰内层与深色长裤露出必要层次，灰蓝中性背景，右侧柔和冷光照亮发丝和衣料，真实皮肤纹理，单人无文字无道具 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T08",
+        "T09"
+      ]
+    },
+    {
+      "item_id": "SCENE_OCEAN",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "地球海面与深海统一空间母板",
+      "source_basis": [
+        "storyboard 0-7、55-68、78-105秒"
+      ],
+      "creative_fill": "把薄雾、入水层次和深海黑水放进同一开放海洋空间",
+      "required_shot_ids": [
+        "T01",
+        "T06",
+        "T08",
+        "T09"
+      ],
+      "continuity_state": "阴云海面、薄雾、冷蓝水体、深海悬浮颗粒统一",
+      "depends_on": [],
+      "reference_role": "场景母板；下游只引用空间几何、天气和光线，不引用人物",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，北海极地开放海域从海面延伸到深海，前景是贴着缓浪的薄雾和盐雾，中景是暗蓝海水的入水层次，远景沉入近黑深海与悬浮颗粒，冷天光从水面向下衰减，海面和水下共享同一方向轴线，真实水体折射与雾层厚度，宽幅横向构图，无人物无船只无生物 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T01",
+        "T06",
+        "T08",
+        "T09"
+      ]
+    },
+    {
+      "item_id": "SCENE_CABIN",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "兔子洞号船舱空间母板",
+      "source_basis": [
+        "storyboard 7-15、45-55秒",
+        "导演板03、07"
+      ],
+      "creative_fill": "固定圆窗、仪器桌、狭窄过道与冷屏幕光方向",
+      "required_shot_ids": [
+        "T01",
+        "T05"
+      ],
+      "continuity_state": "旧极地科考木船内部，木板磨损，海盐潮气重",
+      "depends_on": [],
+      "reference_role": "场景母板；不放人物和剪影，人物位置由首帧单独决定",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，旧的小型极地科考木船兔子洞号内部，狭窄船舱由深色磨损木板和少量冷灰金属构成，左侧圆形舷窗外只有暗蓝海面微光，中央固定旧仪器桌与布线，右侧留出低矮过道，潮湿盐雾附着木板边缘，冷屏幕光从前方打入，空间轴线清楚，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T01",
+        "T05"
+      ]
+    },
+    {
+      "item_id": "SCENE_HARBOR",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "挪威港口露天酒吧与夜海空间母板",
+      "source_basis": [
+        "storyboard 15-22秒",
+        "导演板04"
+      ],
+      "creative_fill": "固定湿木桌、港口栏杆、海面和上摇到木星的视线轴",
+      "required_shot_ids": [
+        "T02"
+      ],
+      "continuity_state": "夜海冷蓝，酒吧暖光受控在室内边缘",
+      "depends_on": [],
+      "reference_role": "场景母板；不放人物与酒杯，人物和道具由首帧加入",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，挪威北部港口露天酒吧靠近黑色海面，前景潮湿粗木桌和低矮栏杆，中景稀疏港口灯火与薄雾，远景海平面自然连接到星空，酒吧内部暖光只在左后方形成窄边，外部保持冷钢蓝，木材、水汽、金属栏杆与夜海反光真实可见，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01",
+      "used_by_shots": [
+        "T02"
+      ]
+    },
+    {
+      "item_id": "SCENE_ARCHIVE",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "科研档案工作站空间母板",
+      "source_basis": [
+        "storyboard 22-32秒",
+        "导演板05"
+      ],
+      "creative_fill": "固定监视器、控制台、冷顶灯与屏幕反光轴线",
+      "required_shot_ids": [
+        "T03"
+      ],
+      "continuity_state": "老式档案设备、混凝土灰工作台、屏幕冷光与扫描噪点",
+      "depends_on": [],
+      "reference_role": "场景母板；不放左小月和可读字幕",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，安静科研档案工作站，老式监视器与控制台沿水平轴线排列，磨损混凝土灰金属外壳，顶灯极弱，屏幕冷光在桌面留下长条反射，空气里有轻微设备尘粒，背景层层退入暗灰，镜头从监视器正前方看向工作台，冷钢蓝和混凝土灰为主，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T03"
+      ]
+    },
+    {
+      "item_id": "SCENE_EUROPA",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "木卫二冰原与冰下黑海剖面母板",
+      "source_basis": [
+        "storyboard 32-45、78-92秒",
+        "导演板06、10"
+      ],
+      "creative_fill": "以冰壳厚度、撞击洞口和纯黑海洋建立统一剖面",
+      "required_shot_ids": [
+        "T04",
+        "T08"
+      ],
+      "continuity_state": "白色冰壳、蓝灰裂纹、近黑海水和极低能见度统一",
+      "depends_on": [],
+      "reference_role": "场景母板；不放探测器和完整未知存在",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，木卫二白色冰原与冰层下黑色海洋剖面，冰壳厚度清楚，表面自然蓝灰裂纹与霜层，剖面下方几乎吞没光线的深海，少量悬浮颗粒和微弱冷蓝折射，空间从冰面垂直延伸到海底，宽幅横向构图，无人物无探测器无生物 --ar 16:9 --v 8.2 --raw --stylize 380 --chaos 7 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T04",
+        "T08"
+      ]
+    },
+    {
+      "item_id": "SCENE_DEEPSPACE",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "一亿年前残像的深空空间母板",
+      "source_basis": [
+        "storyboard 68-78秒",
+        "导演板09"
+      ],
+      "creative_fill": "固定冷星云、黑色深空和两条分离轨迹",
+      "required_shot_ids": [
+        "T07"
+      ],
+      "continuity_state": "档案残像有扫描线和轻微颜色失真，飞船结构不完整",
+      "depends_on": [],
+      "reference_role": "场景母板；只供远景和碎片镜头引用",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，极深黑色宇宙中的阴冷蓝灰星云，星云后方大片空黑区域，前中景可容纳一小段巨大飞船结构和两条向不同方向分开的残骸轨迹，光线极少，只有冷星云反射与一次受控橙色闪光，画面带轻微旧档案扫描线和真实光学噪点，宽幅横向构图，无人物无完整飞船无文字 --ar 16:9 --v 8.2 --raw --stylize 380 --chaos 7 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T07"
+      ]
+    },
+    {
+      "item_id": "PROP_RABBITHOLE",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定兔子洞号船体与船名牌",
+      "source_basis": [
+        "storyboard 全片船体出现",
+        "导演板01、08、10"
+      ],
+      "creative_fill": "船名牌仅允许确认文字“兔子洞号”，其余表面不出现随机文字",
+      "required_shot_ids": [
+        "T06",
+        "T08"
+      ],
+      "continuity_state": "旧小型极地科考木船，深色磨损船漆，盐霜金属栏杆，船名牌固定右舷",
+      "depends_on": [],
+      "reference_role": "关键地标道具；首帧可引用船体倾斜、栏杆和船名牌材质",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，旧的小型极地科考木船兔子洞号右舷局部，深色船漆大片磨损，木板吸饱海水，金属栏杆结盐霜，船名牌清楚呈现已确认中文“兔子洞号”，不添加其他文字，海水泡沫刮过船舷，三分之二角度中近景，冷阴天光，真实木材盐渍和金属反射，无人物 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T06",
+        "T08"
+      ]
+    },
+    {
+      "item_id": "PROP_DETECTOR",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定旧探测仪外观与操作状态",
+      "source_basis": [
+        "storyboard 7-15、45-55秒",
+        "导演板01、03、07"
+      ],
+      "creative_fill": "模拟旋钮、划痕玻璃、琥珀指示灯和潮湿盐渍固定",
+      "required_shot_ids": [
+        "T01",
+        "T05"
+      ],
+      "continuity_state": "旧模拟频率探测仪，海上长期使用，旋钮和表面划痕保持",
+      "depends_on": [],
+      "reference_role": "关键仪器道具；不生成品牌或随机界面文字",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，旧模拟频率探测仪放在潮湿木质仪器桌上，深灰金属外壳有细密划痕和盐渍，前面板有不同尺寸旋钮、老式刻度窗和两枚微弱琥珀指示灯，玻璃反射船舱冷蓝光，按键和线路真实可见，略微俯视中近景，不出现品牌随机数字和人物 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T01",
+        "T05"
+      ]
+    },
+    {
+      "item_id": "PROP_WAVEFORM",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定52赫兹波形屏幕图形",
+      "source_basis": [
+        "storyboard 7-15、45-55、105-114秒",
+        "导演板03、07、10"
+      ],
+      "creative_fill": "只允许图形和确认的52赫兹信息，不生成网页或长文字",
+      "required_shot_ids": [
+        "T01",
+        "T05",
+        "T10"
+      ],
+      "continuity_state": "波形先稳定再剧烈震荡，黑场中最后分成两条",
+      "depends_on": [],
+      "reference_role": "关键视觉道具；不作为真实字幕使用",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实屏幕道具状态卡，旧频率仪器显示区占据画面中央，一条清楚蓝白声波线在深灰玻璃上形成稳定波形，旁边只出现已确认的“52赫兹”小读数，其他区域无字，屏幕有划痕冷蓝反光与极小琥珀灯点，正面微距，图形边缘带真实扫描质感 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T01",
+        "T05",
+        "T10"
+      ]
+    },
+    {
+      "item_id": "PROP_ARCHIVE_MONITOR",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定木星存档监视器与屏幕反光",
+      "source_basis": [
+        "storyboard 22-32秒",
+        "导演板05"
+      ],
+      "creative_fill": "监视器外壳、玻璃反光、扫描噪点和木星画面固定",
+      "required_shot_ids": [
+        "T03"
+      ],
+      "continuity_state": "老式档案监视器播放木星存档，除木星画面外不出现可读文字",
+      "depends_on": [],
+      "reference_role": "关键道具；用于由木星光点过渡到木星与木卫二方向",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，老式科研档案监视器正面与右侧边框，磨损混凝土灰金属外壳，厚玻璃屏幕播放木星云带与巨大红色风暴，玻璃反射工作站冷光并带轻扫描噪点，边角一枚微弱琥珀灯，屏幕内不出现可读字幕和随机界面，正面近景，真实旧电子设备材质 --ar 16:9 --v 8.2 --raw --stylize 240 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T03"
+      ]
+    },
+    {
+      "item_id": "PROP_EUROPA_PROBE",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定木卫二探测器局部与冷白光束",
+      "source_basis": [
+        "storyboard 32-45秒",
+        "导演板06"
+      ],
+      "creative_fill": "只展示局部外壳、磨损金属和一束冷白光，不扩展完整型号",
+      "required_shot_ids": [
+        "T04"
+      ],
+      "continuity_state": "白色与银灰外壳，撞击前完整，深海中只剩冷白光束",
+      "depends_on": [],
+      "reference_role": "关键道具；用于撞击、下潜和冰层封闭镜头",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，木卫二探测器局部外壳与前端照明组件，白色隔热板、银灰金属接缝和细小防护结构清楚可见，前方投出唯一冷白光，表面有微粒和冰霜，略微仰视近景，深空和黑海可作失焦背景，不出现品牌文字，不展示完整蓝图 --ar 16:9 --v 8.2 --raw --stylize 240 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T04"
+      ]
+    },
+    {
+      "item_id": "PROP_SILVER_FIN",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定冷银色金属侧翼局部",
+      "source_basis": [
+        "storyboard 55-68秒",
+        "导演板01、08"
+      ],
+      "creative_fill": "用切面和水下运动锁定材质，完整未知存在不可见",
+      "required_shot_ids": [
+        "T06"
+      ],
+      "continuity_state": "宽大侧翼像金属鳍，冷银反光窄而短促，边缘带水流",
+      "depends_on": [],
+      "reference_role": "关键未知道具局部；严禁完整生物或机械外形",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具局部状态卡，巨大未知物一小段宽大冷银色金属侧翼切面，边缘像鱼鳍但材质明确为磨损金属，细密划痕、盐水薄膜和窄长冷光反射清楚，深蓝黑水高速掠过形成轻微运动模糊，贴近侧翼边缘，只保留局部，不出现头部主体完整轮廓或可识别生物解剖 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T06"
+      ]
+    },
+    {
+      "item_id": "PROP_BLACK_CORE",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定尾部裂口与漆黑破损内核局部",
+      "source_basis": [
+        "storyboard 55-68秒",
+        "导演板01、08"
+      ],
+      "creative_fill": "裂口只出现瞬间，黑色内核破损、未知且不完整",
+      "required_shot_ids": [
+        "T06"
+      ],
+      "continuity_state": "冷银外壳断裂，内部漆黑破碎内核，水流切过裂口",
+      "depends_on": [],
+      "reference_role": "关键未知道具局部；严禁完整生物和飞船结构",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具局部状态卡，冷银外壳一处破损尾部裂口，断裂边缘被海水冲刷，内部露出漆黑碎裂的非透明内核，没有发光器官和可识别结构，只有不规则黑色碎片与深处阴影，极短促近景，冷银反光与近黑对比强烈，水流横向切过画面，只展示裂口局部 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T06"
+      ]
+    },
+    {
+      "item_id": "PROP_OILDRUM",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定破晓漂流用旧油桶",
+      "source_basis": [
+        "storyboard 92-105秒",
+        "导演板10"
+      ],
+      "creative_fill": "橙色只服务于破晓和道具识别，桶身无品牌或伪字",
+      "required_shot_ids": [
+        "T09"
+      ],
+      "continuity_state": "旧橙色油桶，盐腐蚀、凹痕和浮力状态固定",
+      "depends_on": [],
+      "reference_role": "关键生存道具；用于两人漂浮与破晓构图",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，一只旧橙色金属油桶漂浮在冷蓝海水中，桶身有凹痕、盐腐蚀、褪色漆面和旧麻绳，表面不出现品牌文字和随机标记，清晨微弱橙光只落在桶的上缘，海水泡沫与湿润金属反射真实可见，水面高度近景，背景留出空旷海平线 --ar 16:9 --v 8.2 --raw --stylize 220 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02",
+      "used_by_shots": [
+        "T09"
+      ]
+    }
+  ]
+}

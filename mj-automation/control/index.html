@@ -1,0 +1,79 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Multica 本地抽卡工作台</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0c0f13;--panel:#151a21;--panel2:#1b222b;--line:#2b3440;--text:#edf1f5;--muted:#9ca8b5;--accent:#c9ef78;--blue:#87c9ff;--good:#8fe0b0;--warn:#f3ca7d;--bad:#ff938c;--radius:16px;font-family:"Segoe UI Variable","Segoe UI","Microsoft YaHei UI","Microsoft YaHei",sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#213021 0,transparent 34rem),var(--bg);color:var(--text);font-size:14px;line-height:1.55}button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 13px;min-height:40px}button:hover:not(:disabled){border-color:#607080;background:#24303b}button:disabled{cursor:not-allowed;opacity:.42}.primary{background:var(--accent);border-color:var(--accent);color:#16200d;font-weight:700}.danger{background:#3a2022;border-color:#71373b;color:var(--bad)}.ghost{background:transparent}.app{max-width:1500px;margin:0 auto;padding:28px 28px 60px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:20px}.brand{display:flex;gap:12px;align-items:center}.mark{width:34px;height:34px;border-radius:11px;background:var(--accent);position:relative}.mark:before,.mark:after{content:"";position:absolute;width:15px;height:5px;border-radius:5px;background:#243016;left:9px}.mark:before{top:10px;transform:rotate(-30deg)}.mark:after{top:19px;transform:rotate(30deg)}h1{margin:0;font-size:30px;letter-spacing:-.04em}h2{margin:0;font-size:18px}h3{margin:0;font-size:15px}.sub{margin:5px 0 0;color:var(--muted)}.health{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px}.dot{width:9px;height:9px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 4px #f3ca7d1b}.dot.good{background:var(--good);box-shadow:0 0 0 4px #8fe0b01b}.dot.bad{background:var(--bad);box-shadow:0 0 0 4px #ff938c1b}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}.card{grid-column:span 12;background:linear-gradient(155deg,#171d24f5,#12171df5);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 18px 50px #0005}.half{grid-column:span 6}.third{grid-column:span 4}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.toolbar .spacer{flex:1}.label{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}.notice{padding:13px 15px;border:1px solid #87c9ff32;background:#87c9ff0c;color:#dcefff;border-radius:11px;font-size:12px}.notice.warn{border-color:#f3ca7d3a;background:#f3ca7d0c;color:#f8dfb0}.notice.bad{border-color:#ff938c40;background:#ff938c0c;color:#ffd3d0}.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:12px;color:#dbe2e8}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:#0e1318;color:var(--text);padding:10px 12px;outline:0}input:focus,select:focus,textarea:focus{border-color:#9ccf63;box-shadow:0 0 0 3px #c9ef7817}textarea{min-height:180px;resize:vertical;line-height:1.7}pre{white-space:pre-wrap;word-break:break-word;overflow:auto;color:#dce6ef;font:12px/1.65 Consolas,monospace;margin:8px 0 0}.check{display:flex;gap:9px;align-items:flex-start;color:#d8e0e6;font-size:12px;margin-top:14px}.check input{width:16px;min-height:16px;margin-top:3px;accent-color:var(--accent)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:16px}.kpi{border:1px solid var(--line);border-radius:11px;padding:12px;background:#0e1318}.kpi .value{font-size:22px;font-weight:700;margin-top:3px}.small{font-size:12px;color:var(--muted)}.status-chip{display:inline-flex;align-items:center;border:1px solid #87c9ff2e;background:#87c9ff10;color:var(--blue);padding:4px 9px;border-radius:99px;font-size:11px;white-space:nowrap}.status-chip.good{border-color:#8fe0b02e;background:#8fe0b010;color:var(--good)}.status-chip.warn{border-color:#f3ca7d2e;background:#f3ca7d10;color:var(--warn)}.status-chip.bad{border-color:#ff938c35;background:#ff938c10;color:var(--bad)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:11px;margin-top:15px}.table{width:100%;min-width:1080px;border-collapse:collapse;font-size:12px}.table th{padding:11px 12px;background:#1b232c;color:var(--muted);text-align:left;font-size:11px;white-space:nowrap}.table td{padding:11px 12px;border-top:1px solid var(--line);vertical-align:top}.table tr:hover td{background:#ffffff05}.mono{font-family:Consolas,"Cascadia Mono",monospace;font-size:11px;overflow-wrap:anywhere}.link{color:var(--blue);overflow-wrap:anywhere}.empty{padding:18px 4px;color:var(--muted);font-size:12px}.detail{margin-top:15px;border:1px solid var(--line);border-radius:11px;padding:15px;background:#0e1318}.detail-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:13px}.detail-item{border:1px solid var(--line);border-radius:9px;padding:10px}.detail-item b{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.detail-item span{font-size:12px;overflow-wrap:anywhere}.footer{margin-top:22px;color:var(--muted);font-size:12px}.monitor{display:grid;grid-template-columns:1.1fr 1.9fr;gap:16px;margin-top:16px}.monitor-main{border:1px solid var(--line);border-radius:12px;background:#0e1318;padding:15px}.monitor-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.monitor-phase{font-size:20px;font-weight:700;margin-top:4px}.progress-track{height:9px;background:#28313a;border-radius:99px;overflow:hidden;margin-top:14px}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#94d8ff);border-radius:99px;transition:width .35s ease}.progress-meta{display:flex;justify-content:space-between;gap:10px;margin-top:8px}.monitor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.slot-card{border:1px solid var(--line);border-radius:11px;background:#0e1318;padding:12px;min-height:112px}.slot-card.active{border-color:#87c9ff70;box-shadow:0 0 0 1px #87c9ff18 inset}.slot-card.review{border-color:#f3ca7d70}.slot-title{display:flex;justify-content:space-between;gap:8px}.slot-title b{font-size:12px}.slot-task{margin-top:8px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.slot-meta{margin-top:5px;font-size:11px;color:var(--muted);line-height:1.5}.monitor-timeline{margin-top:14px;border-top:1px solid var(--line);padding-top:11px;display:grid;gap:7px}.timeline-row{display:grid;grid-template-columns:118px 1fr;gap:10px;font-size:11px}.timeline-time{color:var(--muted);font-family:Consolas,"Cascadia Mono",monospace}.timeline-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.phase-chip{display:inline-flex;align-items:center;border:1px solid #87c9ff35;background:#87c9ff0c;color:var(--blue);padding:3px 8px;border-radius:99px;font-size:11px;white-space:nowrap}.phase-chip.good{border-color:#8fe0b035;background:#8fe0b00c;color:var(--good)}.phase-chip.warn{border-color:#f3ca7d35;background:#f3ca7d0c;color:var(--warn)}.phase-chip.bad{border-color:#ff938c35;background:#ff938c0c;color:var(--bad)}.estimate-box{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#11171d;font-size:12px}.alert-list{margin-top:12px;display:grid;gap:7px}.alert-row{display:flex;align-items:flex-start;gap:8px;border:1px solid #f3ca7d45;background:#f3ca7d0b;color:var(--warn);border-radius:9px;padding:8px 10px;font-size:12px}.alert-row.bad{border-color:#ff938c50;background:#ff938c0d;color:var(--bad)}.alert-row.bad .alert-dot{background:var(--bad);box-shadow:0 0 0 3px #ff938c1f}.alert-dot{width:7px;height:7px;flex:0 0 7px;margin-top:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px #f3ca7d1f}
+.hidden{display:none!important}@media(max-width:1050px){.half,.third{grid-column:span 12}.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.monitor{grid-template-columns:1fr}}@media(max-width:640px){.app{padding:17px 12px 38px}.top{display:block}.health{margin-top:13px}.form{grid-template-columns:1fr}.field.full{grid-column:auto}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:15px}.monitor-grid{grid-template-columns:1fr}.timeline-row{grid-template-columns:92px 1fr}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand"><span class="mark" aria-hidden="true"></span><div><h1>Multica 本地抽卡工作台</h1><p class="sub">真实桥接、可见浏览器、最多三并发、逐项回读真实回执</p></div></div>
+      <div class="health"><span id="healthDot" class="dot"></span><span id="healthText">正在检查本地桥</span></div>
+    </header>
+
+    <section class="grid">
+      <article class="card third"><div class="label">本地桥</div><h2 id="bridgeValue">检查中</h2><p id="bridgeMeta" class="small">等待状态回读</p></article>
+      <article class="card third"><div class="label">可见浏览器</div><h2 id="browserValue">检查中</h2><p id="browserMeta" class="small">登录由你本人完成</p></article>
+      <article class="card third"><div class="label">并发槽位</div><h2 id="concurrencyValue">0 / 3</h2><p id="concurrencyMeta" class="small">只有正在提交或平台处理的任务占槽</p></article>
+
+      <article class="card half" id="batchEditor">
+        <div class="toolbar"><div><div class="label">第一步</div><h2>导入真实批次</h2></div><span class="status-chip">只保存到本机</span></div>
+        <div class="notice" style="margin-top:14px">这里不放演示任务。请粘贴你要真正提交的任务清单。检查只做格式和提示词校验，不会登录、提交、扣费或生成图片。</div>
+        <div class="form">
+          <div class="field"><label for="batchName">批次名称</label><input id="batchName" placeholder="例如：先导片首帧-20260928" /></div>
+          <div class="field"><label for="maxActive">并发上限</label><select id="maxActive"><option value="3">3（固定上限）</option><option value="2">2</option><option value="1">1</option></select></div>
+          <div class="field full"><label for="outputDir">默认输出目录</label><input id="outputDir" placeholder="留空使用本机默认输出目录" /></div>
+          <div class="field full"><label for="taskInput">任务清单（JSON 数组或一行一条 JSON）</label><textarea id="taskInput" placeholder='例如：[{"id":"C09","type":"首帧图","prompt":"...","aspect":"16:9","version":"v8.2"}]'></textarea></div>
+        </div>
+        <div class="actions"><button class="primary" id="validateBtn" type="button">检查批次</button><button class="ghost" id="clearBtn" type="button">清空</button></div>
+        <div id="validationMsg" class="small" style="margin-top:12px" aria-live="polite">尚未导入批次。</div>
+        <div id="validatedPreview" class="detail hidden"></div>
+      </article>
+
+      <article class="card half">
+        <div class="toolbar"><div><div class="label">第二步</div><h2>连接与授权</h2></div><span id="gateChip" class="status-chip warn">未满足提交条件</span></div>
+        <div class="notice warn" style="margin-top:14px">真正提交会触发外部平台操作并可能扣费。工作台不会替你登录，也不会在失败后自动重提。</div>
+        <div class="actions"><button id="openBrowserBtn" type="button">打开可见浏览器</button><button id="stopBrowserBtn" class="ghost" type="button">关闭浏览器</button><button id="refreshBtn" class="ghost" type="button">刷新状态</button></div>
+        <label class="check"><input id="paidConfirm" type="checkbox" />我已确认当前批次、提示词、版本和画幅，允许工作台按清单提交真实任务，并接受平台可能产生的费用。</label>
+        <div class="actions"><button id="startBatchBtn" class="primary" type="button" disabled>开始真实提交</button><button id="pauseBatchBtn" class="ghost" type="button" disabled>暂停补位</button><button id="resumeBatchBtn" class="ghost" type="button" disabled>继续批次</button><button id="cancelBatchBtn" class="ghost" type="button" disabled>取消后续</button></div>
+        <div id="actionMsg" class="small" style="margin-top:12px" aria-live="polite">完成批次检查并登录后，按钮才会可用。</div>
+      </article>
+
+      <article class="card" id="queueCard">
+        <div class="toolbar"><div><div class="label">第三步</div><h2>真实批次队列</h2></div><div class="spacer"></div><button id="focusLatestBtn" class="primary" type="button">继续最近批次</button><select id="batchHistory" aria-label="批次历史"><option value="">批次历史</option></select><span id="batchBadge" class="status-chip">没有批次</span></div>
+        <div class="kpis"><div class="kpi"><div class="label">批次</div><div id="batchIdValue" class="value">缺</div></div><div class="kpi"><div class="label">总任务</div><div id="totalValue" class="value">0</div></div><div class="kpi"><div class="label">已完成</div><div id="doneValue" class="value">0</div></div><div class="kpi"><div class="label">处理中</div><div id="runningValue" class="value">0</div></div><div class="kpi"><div class="label">待提交</div><div id="queuedValue" class="value">0</div></div><div class="kpi"><div class="label">失败/阻塞</div><div id="blockedValue" class="value">0</div></div></div>
+        <div id="queueTable" class="table-wrap"><div class="empty">&#x5bfc;&#x5165;&#x6279;&#x6b21;&#x540e;&#xff0c;&#x8fd9;&#x91cc;&#x663e;&#x793a;&#x5b9e;&#x65f6;&#x4efb;&#x52a1;&#x72b6;&#x6001;&#x3002;</div></div>
+        <section class="monitor" aria-label="&#x8fd0;&#x884c;&#x76d1;&#x63a7;">
+          <div class="monitor-main">
+            <div class="monitor-head"><div><div class="label">&#x5b9e;&#x65f6;&#x76d1;&#x63a7;</div><div id="monitorPhase" class="monitor-phase">&#x7b49;&#x5f85;&#x6279;&#x6b21;</div></div><span id="monitorPhaseChip" class="phase-chip">&#x672a;&#x8fd0;&#x884c;</span></div>
+            <div class="progress-track" aria-label="&#x6279;&#x6b21;&#x8fdb;&#x5ea6;"><div id="monitorProgressBar" class="progress-fill"></div></div>
+            <div class="progress-meta"><span id="monitorProgressText" class="small">0 / 0 &#x5df2;&#x5b8c;&#x6210;</span><span id="monitorUpdated" class="small">&#x7b49;&#x5f85;&#x72b6;&#x6001;&#x56de;&#x8bfb;</span></div>
+            <div id="monitorEstimate" class="estimate-box">&#x7b49;&#x5f85;&#x6279;&#x6b21;</div>
+            <div id="monitorSlowest" class="notice" style="margin-top:14px">&#x5f53;&#x524d;&#x6ca1;&#x6709;&#x8fd0;&#x884c;&#x4e2d;&#x7684;&#x4efb;&#x52a1;&#x3002;</div>
+            <div id="monitorAlerts" class="alert-list"><div class="empty">&#x6ca1;&#x6709;&#x5f02;&#x5e38;</div></div>
+          </div>
+          <div>
+            <div id="monitorSlots" class="monitor-grid"><div class="slot-card"><div class="empty">&#x6682;&#x65e0;&#x5de5;&#x4f5c;&#x4f4d;&#x8fd0;&#x884c;</div></div></div>
+            <div id="monitorTimeline" class="monitor-timeline"><div class="empty">&#x6279;&#x6b21;&#x4e8b;&#x4ef6;&#x4f1a;&#x663e;&#x793a;&#x5728;&#x8fd9;&#x91cc;&#x3002;</div></div>
+          </div>
+        </section>
+        <div id="selectedTask" class="detail"><div class="empty">点击任务编号查看提示词、作业号、回执和成品位置。</div></div>
+      </article>
+
+      <article class="card half"><div class="toolbar"><div><div class="label">本机控制</div><h2>运行维护</h2></div></div><div class="actions"><button id="lintBtn" type="button">免费自检</button><button id="pauseWatchBtn" class="ghost" type="button">暂停看护</button><button id="resumeWatchBtn" class="ghost" type="button">恢复看护</button></div><div id="maintenanceMsg" class="small" style="margin-top:12px">自检不会提交任务，也不会扣费。</div></article>
+      <article class="card half"><div class="toolbar"><div><div class="label">真实数据</div><h2>最近回执</h2></div></div><div id="receiptsTable" style="margin-top:14px"><div class="empty">正在读取本机回执台账。</div></div></article>
+
+      <article class="card"><div class="toolbar"><div><div class="label">作业记录</div><h2>最近真实作业</h2></div></div><div id="jobsTable" class="table-wrap"><div class="empty">正在读取本机作业。</div></div></article>
+    </section>
+    <p class="footer">本工作台只连接本机桥地址。Cookie、Token、密码和浏览器登录态不会写入页面或仓库。</p>
+  </main>
+<script src="/control/batch-ui.js?v=20261002-monitor"></script>
+</body>
+</html>
+

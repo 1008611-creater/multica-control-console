@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "mode": "dry_run",
+  "project_id": "aigc-contest-draw-v1",
+  "batch_id": "dry-run-batch-01",
+  "bridge_policy": {
+    "endpoint": "http://127.0.0.1:8765",
+    "allow_network": false,
+    "network_requests": 0,
+    "paid_calls": 0,
+    "images_generated": false
+  },
+  "authorization": {
+    "paid_generation": "not_authorized",
+    "dry_run_only": true
+  },
+  "execution": {
+    "main_workspace_write_attempts": 0,
+    "worktree_output": "isolated-test-output"
+  },
+  "items": [
+    {
+      "item_id": "D01",
+      "scenario": "success",
+      "attempts": [
+        {
+          "attempt_id": "D01-a1",
+          "attempt_number": 1,
+          "retry_of": "none",
+          "attempt_status": "succeeded",
+          "retry_allowed": "no",
+          "charge_status": "not_charged",
+          "image_paths": "缺",
+          "evidence_ref": "fixture://D01/success"
+        }
+      ]
+    },
+    {
+      "item_id": "D02",
+      "scenario": "retry_success",
+      "attempts": [
+        {
+          "attempt_id": "D02-a1",
+          "attempt_number": 1,
+          "retry_of": "none",
+          "attempt_status": "failed",
+          "retry_allowed": "yes",
+          "charge_status": "not_charged",
+          "image_paths": "缺",
+          "evidence_ref": "fixture://D02/failed"
+        },
+        {
+          "attempt_id": "D02-a2",
+          "attempt_number": 2,
+          "retry_of": "D02-a1",
+          "attempt_status": "succeeded",
+          "retry_allowed": "no",
+          "charge_status": "not_charged",
+          "image_paths": "缺",
+          "evidence_ref": "fixture://D02/retry-success"
+        }
+      ]
+    },
+    {
+      "item_id": "D03",
+      "scenario": "no_retry",
+      "attempts": [
+        {
+          "attempt_id": "D03-a1",
+          "attempt_number": 1,
+          "retry_of": "none",
+          "attempt_status": "failed_no_retry",
+          "retry_allowed": "no",
+          "charge_status": "unknown",
+          "image_paths": "缺",
+          "evidence_ref": "fixture://D03/no-retry"
+        }
+      ]
+    },
+    {
+      "item_id": "D04",
+      "scenario": "blocked_unknown_charge",
+      "attempts": [
+        {
+          "attempt_id": "D04-a1",
+          "attempt_number": 1,
+          "retry_of": "none",
+          "attempt_status": "blocked",
+          "retry_allowed": "unknown",
+          "charge_status": "unknown",
+          "image_paths": "缺",
+          "evidence_ref": "fixture://D04/unknown-charge"
+        }
+      ]
+    }
+  ]
+}

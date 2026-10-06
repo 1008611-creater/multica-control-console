@@ -36,6 +36,11 @@ const toStderr = (...args) =>
 console.log = toStderr;
 
 // 默认指向本目录下的改造副本；可用 MXAI_ADAPTER_PATH 覆盖。
+const requestedLockWaitMs = Number(process.env.MXAI_LOCK_WAIT_MS || 0);
+// Batch policy requires queued jobs to keep their slots through one full bridge task.
+// Clamp stale inherited environments so an old 180/300s value cannot reintroduce lock failures.
+process.env.MXAI_LOCK_WAIT_MS = String(Math.max(1200000, requestedLockWaitMs || 0));
+
 const ADAPTER_PATH =
     process.env.MXAI_ADAPTER_PATH || path.join(__dirname, 'mxai_adapter.js');
 
@@ -216,7 +221,8 @@ async function runMaintenance(args) {
             if (!fs.existsSync(file)) { results.push({ file, ok: false, error: 'not_found' }); continue; }
             let res = null;
             if (ext === '.py') {
-                res = spawnSync('python', ['-m', 'py_compile', file], { encoding: 'utf8', timeout: 60000 });
+                const pythonBin = process.env.MJ_PYTHON || (process.platform === 'win32' ? 'py' : 'python3');
+                res = spawnSync(pythonBin, ['-m', 'py_compile', file], { encoding: 'utf8', timeout: 60000 });
             } else if (ext === '.js') {
                 res = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8', timeout: 60000 });
             } else if (ext === '.ps1') {
@@ -356,6 +362,7 @@ async function runMaintenance(args) {
             '--aspect', String(args.aspect || '9:16'),
             '--out-dir', outputDir,
             '--prefix', prefix,
+            '--output-name', String(args['output-name'] || args.outputName || args.prefix || prefix),
             '--task-id', prefix,
             '--version', String(args.version || 'v8.2'),
             '--timeout', String(args.timeout || process.env.MJ_BRIDGE_TIMEOUT_MS || '1200000'),
@@ -560,7 +567,7 @@ async function runMaintenance(args) {
         await adapter.navigate();
         const loggedIn = await adapter.isLoggedIn();
         if (!loggedIn) {
-            emit({ ok: false, status: 'need_login', needLogin: true, error: 'MXAI 未登录，请在弹出的浏览器窗口里登录后重试' });
+            emit({ ok: false, status: 'need_login', resultStatus: 'need_login', submitted: false, billed: false, chargeKnown: true, needLogin: true, error: 'MXAI 未登录，请在弹出的浏览器窗口里登录后重试' });
             process.exitCode = 2;
             return;
         }
@@ -775,7 +782,7 @@ async function main() {
         await adapter.navigate();
         const loggedIn = await adapter.isLoggedIn();
         if (!loggedIn) {
-            emit({ ok: false, status: 'need_login', error: 'MXAI 未登录，请在弹出的浏览器窗口里登录后重试', needLogin: true });
+            emit({ ok: false, status: 'need_login', resultStatus: 'need_login', submitted: false, billed: false, chargeKnown: true, error: 'MXAI 未登录，请在弹出的浏览器窗口里登录后重试', needLogin: true });
             process.exitCode = 2;
             return;
         }
@@ -785,6 +792,7 @@ async function main() {
             mode: args.mode || 'normal',
             outputDir,
             filePrefix: args.prefix || args['task-id'] || `mj_${Date.now()}`,
+            outputName: args['output-name'] || args.outputName || args.prefix || args['task-id'] || `生成结果_${Date.now()}`,
             // 与 MJ_BRIDGE_TIMEOUT_MS 默认值保持一致；MJ 本机队列实测 11–15 分钟，900s 会掐断。
             timeout: Number(args.timeout) || Number(process.env.MJ_BRIDGE_TIMEOUT_MS) || 1200000,
             taskId: args['task-id'] || null,
@@ -800,7 +808,11 @@ async function main() {
             recordId: (result && result.recordId) || null,
             rejected: (result && result.rejected) || [],
             aspect: (result && result.aspect) || null,
-            retryAllowed: result && result.retry_allowed === false ? false : undefined,
+            retryAllowed: result && typeof result.retryAllowed === 'boolean'
+                ? result.retryAllowed
+                : (result && typeof result.retry_allowed === 'boolean' ? result.retry_allowed : undefined),
+            submitted: result && typeof result.submitted === 'boolean' ? result.submitted : undefined,
+            billed: result && typeof result.billed === 'boolean' ? result.billed : undefined,
             message: (result && result.message) || undefined,
             warning: (result && result.warning) || undefined,
             error: ok ? undefined : ((result && result.message) || '生成失败，没有拿到通过校验的图片'),
@@ -833,7 +845,8 @@ main()
         () => {
             if (process.exitCode === undefined) process.exitCode = 0;
         },
-        () => {
+        (error) => {
+            process.stderr.write(String(error && error.stack || error || '维护检查意外退出') + '\n');
             if (process.exitCode === undefined) process.exitCode = 1;
         },
     )

@@ -1,0 +1,14 @@
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.Desktop.GeneratedMSBuildEditorConfig.editorconfig
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.Desktop.AssemblyInfoInputs.cache
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.Desktop.AssemblyInfo.cs
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.Desktop.csproj.CoreCompileInputs.cache
+E:\codex\multica\desktop\bin\Release\net8.0-windows\Multica.exe
+E:\codex\multica\desktop\bin\Release\net8.0-windows\Multica.deps.json
+E:\codex\multica\desktop\bin\Release\net8.0-windows\Multica.runtimeconfig.json
+E:\codex\multica\desktop\bin\Release\net8.0-windows\Multica.dll
+E:\codex\multica\desktop\bin\Release\net8.0-windows\Multica.pdb
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.dll
+E:\codex\multica\desktop\obj\Release\net8.0-windows\refint\Multica.dll
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.pdb
+E:\codex\multica\desktop\obj\Release\net8.0-windows\Multica.Desktop.genruntimeconfig.cache
+E:\codex\multica\desktop\obj\Release\net8.0-windows\ref\Multica.dll

@@ -1,0 +1,372 @@
+{
+  "project_id": "whale-pilot-v1",
+  "source_type": "original_script",
+  "model": "midjourney",
+  "version": "v8.2",
+  "default_aspect_ratio": "16:9",
+  "concurrency_policy": "strict_three_concurrent_while_active",
+  "failure_policy": "resubmit_within_batch_authorization",
+  "authorization": "user_confirmed_2026-09-26",
+  "source_readonly": "E:\\codex\\aigc\\whale-project",
+  "items": [
+    {
+      "item_id": "FF_T02_15S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "15秒慢叠化进入挪威港口夜海首帧",
+      "source_basis": [
+        "storyboard 15-22秒",
+        "7-15到15-22慢叠化"
+      ],
+      "creative_fill": "船舱微光过渡成港口夜色",
+      "required_shot_ids": [
+        "T02"
+      ],
+      "continuity_state": "兰伯特仍穿深海军蓝毛衣，暖光仅在身后",
+      "depends_on": [],
+      "reference_role": "15-22秒图生视频起点，锁人物、酒杯与海面方向",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，挪威北部港口露天酒吧，兰伯特独坐潮湿木桌旁，厚玻璃酒杯在手边，他望向漆黑海面，身后窄窗灯给出克制暖边，海雾贴着栏杆，冷钢蓝占大部画面，人物左下方，右侧留出海面与星空上摇空间 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T02"
+      ]
+    },
+    {
+      "item_id": "FF_T03_22S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "22秒叠化进入档案监视器首帧",
+      "source_basis": [
+        "storyboard 22-32秒",
+        "15-22到22-32叠化"
+      ],
+      "creative_fill": "木星光点接成监视器画面",
+      "required_shot_ids": [
+        "T03"
+      ],
+      "continuity_state": "监视器边框、反光和扫描噪点固定",
+      "depends_on": [],
+      "reference_role": "22-32秒图生视频起点，锁档案设备与视线",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，老式科研档案监视器边框占据前景，厚玻璃有细微反光与轻薄扫描噪点，屏幕内是巨大木星与翻卷云带，磨损混凝土灰金属外壳，角落仅一枚暖色状态灯，镜头正对屏幕略偏左，冷蓝工作站暗部包围 --ar 16:9 --v 8.2 --raw --stylize 140 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T03"
+      ]
+    },
+    {
+      "item_id": "FF_T04_32S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "32秒硬切进入木卫二撞击段首帧",
+      "source_basis": [
+        "storyboard 32-45秒",
+        "22-32到32-45运动跟随"
+      ],
+      "creative_fill": "朱诺飞行方向承接到探测器接近冰壳",
+      "required_shot_ids": [
+        "T04"
+      ],
+      "continuity_state": "木卫二白冰面、探测器尺度与接近方向固定",
+      "depends_on": [],
+      "reference_role": "32-45秒图生视频起点，锁探测器与冰壳关系",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实太空电影首帧，木卫二白色冰封弧面横贯远景，小型探测器从右上高速接近冰壳，蓝灰裂纹像细河，木星反射光形成冷白边缘，镜头沿飞行方向低角度追随，撞击尚未发生，冷钢蓝与云层白主导，极小警示橙反光 --ar 16:9 --v 8.2 --raw --stylize 140 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T04"
+      ]
+    },
+    {
+      "item_id": "FF_T06_55S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "55秒波形匹配成海浪首帧",
+      "source_basis": [
+        "storyboard 55-68秒",
+        "45-55到55-68图形匹配"
+      ],
+      "creative_fill": "屏幕波纹转译成真实海浪，不展示未知存在全貌",
+      "required_shot_ids": [
+        "T06"
+      ],
+      "continuity_state": "兔子洞号磨损船体、盐霜栏杆和冷海天气固定",
+      "depends_on": [],
+      "reference_role": "55-68秒图生视频起点，锁风暴方向与遮挡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，阴云北海巨浪正面拍向旧极地科考木船兔子洞号，深色船漆磨损，盐霜栏杆，船身明显倾斜，泡沫形成声波弧线，水面低位贴近船舷，冷钢蓝海面与灰白天空占主导，人物不入镜，未知物只留水下扰动 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T06"
+      ]
+    },
+    {
+      "item_id": "FF_T07_68S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "68秒故障闪白进入远古残像首帧",
+      "source_basis": [
+        "storyboard 68-78秒",
+        "55-68到68-78闪白噪点"
+      ],
+      "creative_fill": "冷银水下反光成为失真全息触发纹理",
+      "required_shot_ids": [
+        "T07"
+      ],
+      "continuity_state": "飞船只露局部结构，战争不完整，档案噪点固定",
+      "depends_on": [],
+      "reference_role": "68-78秒图生视频起点，锁星云、局部残骸与扫描线",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实科幻档案首帧，冷银水下反光像闪白故障铺满画面后，过渡到阴冷星云深处一小段巨大飞船结构，局部边缘带扫描线与轻微颜色漂移，黑色深空包围主体，一点受控警示橙撞击光尚未完全亮起，镜头远而静，像损坏旧记录正在显影 --ar 16:9 --v 8.2 --raw --stylize 140 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T07"
+      ]
+    },
+    {
+      "item_id": "FF_T08_78S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "78秒慢叠化进入地球海难首帧",
+      "source_basis": [
+        "storyboard 78-92秒",
+        "68-78到78-92慢叠化"
+      ],
+      "creative_fill": "先落到地球海难首镜，再切木卫二深海黑影",
+      "required_shot_ids": [
+        "T08"
+      ],
+      "continuity_state": "兔子洞号已倾覆，人物服装保持原状态，黑影不露全貌",
+      "depends_on": [],
+      "reference_role": "78-92秒交叉剪辑地球端首帧，锁海难与碎片",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，破晓前黑蓝海面上兔子洞号已经侧翻，船底与断裂木板露出水面，海水灌入倾斜船舱，漂浮碎片被巨浪推向镜头，远处雾层压住地平线，水面高度贴近残骸，冷钢蓝和近黑占主导，人物暂不出现，右侧留出后续切入木卫二深海黑影的空白 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T08"
+      ]
+    },
+    {
+      "item_id": "FF_T10_105S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "105秒进入纯黑声波抽象段首帧",
+      "source_basis": [
+        "storyboard 105-114秒",
+        "92-105到105-114渐暗"
+      ],
+      "creative_fill": "上升镜头最后一点光收束成黑场中央单一波形",
+      "required_shot_ids": [
+        "T10"
+      ],
+      "continuity_state": "黑场无人物无字幕，一条波形随后分成两条",
+      "depends_on": [],
+      "reference_role": "105-114秒抽象段图生视频起点，锁黑场、声波位置和留白",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实科幻抽象首帧，整幅画面接近纯黑，中央偏下悬浮一条细而明亮的蓝白发光声波线，波峰规律而克制，周围只有极轻冷蓝雾状光晕，线条边缘有真实光学散射，极大留白，不出现人物、场景和可读文字，构图正中稳定，情绪空旷 --ar 16:9 --v 8.2 --raw --stylize 180 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T10"
+      ]
+    },
+    {
+      "item_id": "CHAR_LAMBERT_MASTER",
+      "kind": "character",
+      "asset_stage": "identity_master",
+      "priority": "P0",
+      "purpose": "锁定兰伯特身份、脸、发型与服装",
+      "source_basis": [
+        "storyboard 7-15、45-55、78-105秒",
+        "导演板全片锁定"
+      ],
+      "creative_fill": "自然眉高不对称与疲惫眼神为辨识点",
+      "required_shot_ids": [
+        "T01",
+        "T05",
+        "T08",
+        "T09"
+      ],
+      "continuity_state": "36岁欧洲男性，偏胖结实，潮湿中长棕发，短胡茬，深海军蓝厚羊毛毛衣、旧工装裤、磨损帆布鞋",
+      "depends_on": [],
+      "reference_role": "人物身份母图，只作身份参考，不冒充已通过角色设定卡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实影视定妆身份母图，单人半身到四分之三身的36岁欧洲男性，偏胖结实体型，轻微眉高不对称，深陷疲惫但专注的眼睛，乱而潮湿的中长棕发，短胡茬，深海军蓝厚羊毛毛衣与旧深色工装裤，衣料有受力褶皱和海盐细痕，冷静中性表情，灰蓝中性背景，左侧柔和冷窗光勾出发丝与鼻梁，真实皮肤毛孔和年龄纹理，单人无文字无道具 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T01",
+        "T05",
+        "T08",
+        "T09"
+      ]
+    },
+    {
+      "item_id": "CHAR_ZUO_MASTER",
+      "kind": "character",
+      "asset_stage": "identity_master",
+      "priority": "P0",
+      "purpose": "锁定左小月身份、脸、短发与服装",
+      "source_basis": [
+        "storyboard 22-32、78-105秒",
+        "导演板全片锁定"
+      ],
+      "creative_fill": "短发轮廓与克制眼神为辨识点",
+      "required_shot_ids": [
+        "T08",
+        "T09"
+      ],
+      "continuity_state": "28岁东亚女性，利落黑色短发，柔和五官，天蓝色厚羽绒服、深灰内层、深色长裤",
+      "depends_on": [],
+      "reference_role": "人物身份母图，只作身份参考，不冒充已通过角色设定卡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实影视定妆身份母图，单人半身到四分之三身的28岁东亚女性，柔和而清楚的五官比例，利落黑色短发形成干净轮廓，眉眼沉静克制，天蓝色厚羽绒服有清晰绗缝、磨损拉链和真实蓬松度，深灰内层与深色长裤露出必要层次，灰蓝中性背景，右侧柔和冷光照亮发丝和衣料，真实皮肤纹理，单人无文字无道具 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T08",
+        "T09"
+      ]
+    },
+    {
+      "item_id": "SCENE_CABIN",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "兔子洞号船舱空间母板",
+      "source_basis": [
+        "storyboard 7-15、45-55秒",
+        "导演板03、07"
+      ],
+      "creative_fill": "固定圆窗、仪器桌、狭窄过道与冷屏幕光方向",
+      "required_shot_ids": [
+        "T01",
+        "T05"
+      ],
+      "continuity_state": "旧极地科考木船内部，木板磨损，海盐潮气重",
+      "depends_on": [],
+      "reference_role": "场景母板；不放人物和剪影，人物位置由首帧单独决定",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，旧的小型极地科考木船兔子洞号内部，狭窄船舱由深色磨损木板和少量冷灰金属构成，左侧圆形舷窗外只有暗蓝海面微光，中央固定旧仪器桌与布线，右侧留出低矮过道，潮湿盐雾附着木板边缘，冷屏幕光从前方打入，空间轴线清楚，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T01",
+        "T05"
+      ]
+    },
+    {
+      "item_id": "SCENE_HARBOR",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "挪威港口露天酒吧与夜海空间母板",
+      "source_basis": [
+        "storyboard 15-22秒",
+        "导演板04"
+      ],
+      "creative_fill": "固定湿木桌、港口栏杆、海面和上摇到木星的视线轴",
+      "required_shot_ids": [
+        "T02"
+      ],
+      "continuity_state": "夜海冷蓝，酒吧暖光受控在室内边缘",
+      "depends_on": [],
+      "reference_role": "场景母板；不放人物与酒杯，人物和道具由首帧加入",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，挪威北部港口露天酒吧靠近黑色海面，前景潮湿粗木桌和低矮栏杆，中景稀疏港口灯火与薄雾，远景海平面自然连接到星空，酒吧内部暖光只在左后方形成窄边，外部保持冷钢蓝，木材、水汽、金属栏杆与夜海反光真实可见，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-01",
+      "used_by_shots": [
+        "T02"
+      ]
+    }
+  ],
+  "batch_id": "whale-pilot-batch-01-retry-01",
+  "planned_count": 11,
+  "retry_basis": {
+    "source_batch": "whale-pilot-v1-batch-01",
+    "failed_item_ids": [
+      "FF_T02_15S",
+      "FF_T03_22S",
+      "FF_T04_32S",
+      "FF_T06_55S",
+      "FF_T07_68S",
+      "FF_T08_78S",
+      "FF_T10_105S",
+      "CHAR_LAMBERT_MASTER",
+      "CHAR_ZUO_MASTER",
+      "SCENE_CABIN",
+      "SCENE_HARBOR"
+    ],
+    "prior_attempt_receipt": "mj-automation/receipts/whale-pilot-v1-batch-01-attempts.jsonl"
+  }
+}

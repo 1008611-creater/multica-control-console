@@ -14,11 +14,14 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 const Module = require('module');
 
+const localNodeModules = path.resolve(__dirname, '..', '..', 'runtime', 'node_modules');
+const legacyNodeModules = 'E:/codex/niannianai/zhuanhuiyuangong/ai-rpa-console/node_modules';
 const EXTRA_NODE_MODULES =
   process.env.MXAI_NODE_MODULES ||
-  'E:/codex/niannianai/zhuanhuiyuangong/ai-rpa-console/node_modules';
+  (fs.existsSync(localNodeModules) ? localNodeModules : legacyNodeModules);
 
 if (EXTRA_NODE_MODULES && !Module.globalPaths.includes(EXTRA_NODE_MODULES)) {
   Module.globalPaths.push(EXTRA_NODE_MODULES);

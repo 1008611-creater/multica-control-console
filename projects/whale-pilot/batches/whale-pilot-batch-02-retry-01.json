@@ -1,0 +1,324 @@
+{
+  "project_id": "whale-pilot-v1",
+  "source_type": "original_script",
+  "model": "midjourney",
+  "version": "v8.2",
+  "default_aspect_ratio": "16:9",
+  "concurrency_policy": "strict_three_concurrent_while_active",
+  "failure_policy": "resubmit_within_batch_authorization",
+  "authorization": "user_confirmed_2026-09-26",
+  "source_readonly": "E:\\codex\\aigc\\whale-project",
+  "items": [
+    {
+      "item_id": "SCENE_ARCHIVE",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "科研档案工作站空间母板",
+      "source_basis": [
+        "storyboard 22-32秒",
+        "导演板05"
+      ],
+      "creative_fill": "固定监视器、控制台、冷顶灯与屏幕反光轴线",
+      "required_shot_ids": [
+        "T03"
+      ],
+      "continuity_state": "老式档案设备、混凝土灰工作台、屏幕冷光与扫描噪点",
+      "depends_on": [],
+      "reference_role": "场景母板；不放左小月和可读字幕",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，安静科研档案工作站，老式监视器与控制台沿水平轴线排列，磨损混凝土灰金属外壳，顶灯极弱，屏幕冷光在桌面留下长条反射，空气里有轻微设备尘粒，背景层层退入暗灰，镜头从监视器正前方看向工作台，冷钢蓝和混凝土灰为主，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T03"
+      ]
+    },
+    {
+      "item_id": "SCENE_DEEPSPACE",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "一亿年前残像的深空空间母板",
+      "source_basis": [
+        "storyboard 68-78秒",
+        "导演板09"
+      ],
+      "creative_fill": "固定冷星云、黑色深空和两条分离轨迹",
+      "required_shot_ids": [
+        "T07"
+      ],
+      "continuity_state": "档案残像有扫描线和轻微颜色失真，飞船结构不完整",
+      "depends_on": [],
+      "reference_role": "场景母板；只供远景和碎片镜头引用",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，极深黑色宇宙中的阴冷蓝灰星云，星云后方大片空黑区域，前中景可容纳一小段巨大飞船结构和两条向不同方向分开的残骸轨迹，光线极少，只有冷星云反射与一次受控橙色闪光，画面带轻微旧档案扫描线和真实光学噪点，宽幅横向构图，无人物无完整飞船无文字 --ar 16:9 --v 8.2 --raw --stylize 380 --chaos 7 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T07"
+      ]
+    },
+    {
+      "item_id": "PROP_RABBITHOLE",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定兔子洞号船体与船名牌",
+      "source_basis": [
+        "storyboard 全片船体出现",
+        "导演板01、08、10"
+      ],
+      "creative_fill": "船名牌仅允许确认文字“兔子洞号”，其余表面不出现随机文字",
+      "required_shot_ids": [
+        "T06",
+        "T08"
+      ],
+      "continuity_state": "旧小型极地科考木船，深色磨损船漆，盐霜金属栏杆，船名牌固定右舷",
+      "depends_on": [],
+      "reference_role": "关键地标道具；首帧可引用船体倾斜、栏杆和船名牌材质",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，旧的小型极地科考木船兔子洞号右舷局部，深色船漆大片磨损，木板吸饱海水，金属栏杆结盐霜，船名牌清楚呈现已确认中文“兔子洞号”，不添加其他文字，海水泡沫刮过船舷，三分之二角度中近景，冷阴天光，真实木材盐渍和金属反射，无人物 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T06",
+        "T08"
+      ]
+    },
+    {
+      "item_id": "PROP_DETECTOR",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定旧探测仪外观与操作状态",
+      "source_basis": [
+        "storyboard 7-15、45-55秒",
+        "导演板01、03、07"
+      ],
+      "creative_fill": "模拟旋钮、划痕玻璃、琥珀指示灯和潮湿盐渍固定",
+      "required_shot_ids": [
+        "T01",
+        "T05"
+      ],
+      "continuity_state": "旧模拟频率探测仪，海上长期使用，旋钮和表面划痕保持",
+      "depends_on": [],
+      "reference_role": "关键仪器道具；不生成品牌或随机界面文字",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，旧模拟频率探测仪放在潮湿木质仪器桌上，深灰金属外壳有细密划痕和盐渍，前面板有不同尺寸旋钮、老式刻度窗和两枚微弱琥珀指示灯，玻璃反射船舱冷蓝光，按键和线路真实可见，略微俯视中近景，不出现品牌随机数字和人物 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T01",
+        "T05"
+      ]
+    },
+    {
+      "item_id": "PROP_WAVEFORM",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定52赫兹波形屏幕图形",
+      "source_basis": [
+        "storyboard 7-15、45-55、105-114秒",
+        "导演板03、07、10"
+      ],
+      "creative_fill": "只允许图形和确认的52赫兹信息，不生成网页或长文字",
+      "required_shot_ids": [
+        "T01",
+        "T05",
+        "T10"
+      ],
+      "continuity_state": "波形先稳定再剧烈震荡，黑场中最后分成两条",
+      "depends_on": [],
+      "reference_role": "关键视觉道具；不作为真实字幕使用",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实屏幕道具状态卡，旧频率仪器显示区占据画面中央，一条清楚蓝白声波线在深灰玻璃上形成稳定波形，旁边只出现已确认的“52赫兹”小读数，其他区域无字，屏幕有划痕冷蓝反光与极小琥珀灯点，正面微距，图形边缘带真实扫描质感 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T01",
+        "T05",
+        "T10"
+      ]
+    },
+    {
+      "item_id": "PROP_ARCHIVE_MONITOR",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定木星存档监视器与屏幕反光",
+      "source_basis": [
+        "storyboard 22-32秒",
+        "导演板05"
+      ],
+      "creative_fill": "监视器外壳、玻璃反光、扫描噪点和木星画面固定",
+      "required_shot_ids": [
+        "T03"
+      ],
+      "continuity_state": "老式档案监视器播放木星存档，除木星画面外不出现可读文字",
+      "depends_on": [],
+      "reference_role": "关键道具；用于由木星光点过渡到木星与木卫二方向",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，老式科研档案监视器正面与右侧边框，磨损混凝土灰金属外壳，厚玻璃屏幕播放木星云带与巨大红色风暴，玻璃反射工作站冷光并带轻扫描噪点，边角一枚微弱琥珀灯，屏幕内不出现可读字幕和随机界面，正面近景，真实旧电子设备材质 --ar 16:9 --v 8.2 --raw --stylize 240 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T03"
+      ]
+    },
+    {
+      "item_id": "PROP_EUROPA_PROBE",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定木卫二探测器局部与冷白光束",
+      "source_basis": [
+        "storyboard 32-45秒",
+        "导演板06"
+      ],
+      "creative_fill": "只展示局部外壳、磨损金属和一束冷白光，不扩展完整型号",
+      "required_shot_ids": [
+        "T04"
+      ],
+      "continuity_state": "白色与银灰外壳，撞击前完整，深海中只剩冷白光束",
+      "depends_on": [],
+      "reference_role": "关键道具；用于撞击、下潜和冰层封闭镜头",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，木卫二探测器局部外壳与前端照明组件，白色隔热板、银灰金属接缝和细小防护结构清楚可见，前方投出唯一冷白光，表面有微粒和冰霜，略微仰视近景，深空和黑海可作失焦背景，不出现品牌文字，不展示完整蓝图 --ar 16:9 --v 8.2 --raw --stylize 240 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T04"
+      ]
+    },
+    {
+      "item_id": "PROP_SILVER_FIN",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定冷银色金属侧翼局部",
+      "source_basis": [
+        "storyboard 55-68秒",
+        "导演板01、08"
+      ],
+      "creative_fill": "用切面和水下运动锁定材质，完整未知存在不可见",
+      "required_shot_ids": [
+        "T06"
+      ],
+      "continuity_state": "宽大侧翼像金属鳍，冷银反光窄而短促，边缘带水流",
+      "depends_on": [],
+      "reference_role": "关键未知道具局部；严禁完整生物或机械外形",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具局部状态卡，巨大未知物一小段宽大冷银色金属侧翼切面，边缘像鱼鳍但材质明确为磨损金属，细密划痕、盐水薄膜和窄长冷光反射清楚，深蓝黑水高速掠过形成轻微运动模糊，贴近侧翼边缘，只保留局部，不出现头部主体完整轮廓或可识别生物解剖 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T06"
+      ]
+    },
+    {
+      "item_id": "PROP_BLACK_CORE",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定尾部裂口与漆黑破损内核局部",
+      "source_basis": [
+        "storyboard 55-68秒",
+        "导演板01、08"
+      ],
+      "creative_fill": "裂口只出现瞬间，黑色内核破损、未知且不完整",
+      "required_shot_ids": [
+        "T06"
+      ],
+      "continuity_state": "冷银外壳断裂，内部漆黑破碎内核，水流切过裂口",
+      "depends_on": [],
+      "reference_role": "关键未知道具局部；严禁完整生物和飞船结构",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具局部状态卡，冷银外壳一处破损尾部裂口，断裂边缘被海水冲刷，内部露出漆黑碎裂的非透明内核，没有发光器官和可识别结构，只有不规则黑色碎片与深处阴影，极短促近景，冷银反光与近黑对比强烈，水流横向切过画面，只展示裂口局部 --ar 16:9 --v 8.2 --raw --stylize 230 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T06"
+      ]
+    },
+    {
+      "item_id": "PROP_OILDRUM",
+      "kind": "prop",
+      "asset_stage": "prop",
+      "priority": "P0",
+      "purpose": "锁定破晓漂流用旧油桶",
+      "source_basis": [
+        "storyboard 92-105秒",
+        "导演板10"
+      ],
+      "creative_fill": "橙色只服务于破晓和道具识别，桶身无品牌或伪字",
+      "required_shot_ids": [
+        "T09"
+      ],
+      "continuity_state": "旧橙色油桶，盐腐蚀、凹痕和浮力状态固定",
+      "depends_on": [],
+      "reference_role": "关键生存道具；用于两人漂浮与破晓构图",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实道具状态卡，一只旧橙色金属油桶漂浮在冷蓝海水中，桶身有凹痕、盐腐蚀、褪色漆面和旧麻绳，表面不出现品牌文字和随机标记，清晨微弱橙光只落在桶的上缘，海水泡沫与湿润金属反射真实可见，水面高度近景，背景留出空旷海平线 --ar 16:9 --v 8.2 --raw --stylize 220 --chaos 5 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-02-retry-01",
+      "used_by_shots": [
+        "T09"
+      ]
+    }
+  ],
+  "batch_id": "whale-pilot-batch-02-retry-01",
+  "planned_count": 10,
+  "recovery_note": "Retry only items without a valid unique image after batch-02; SCENE_EUROPA is excluded after a valid unique receipt."
+}

@@ -1,0 +1,144 @@
+{
+  "project_id": "whale-pilot-v1",
+  "source_type": "original_script",
+  "model": "midjourney",
+  "version": "v8.2",
+  "default_aspect_ratio": "16:9",
+  "concurrency_policy": "strict_three_concurrent_while_active",
+  "failure_policy": "resubmit_within_batch_authorization",
+  "authorization": "user_confirmed_2026-09-26",
+  "source_readonly": "E:\\codex\\aigc\\whale-project",
+  "items": [
+    {
+      "item_id": "FF_T08_78S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "78秒慢叠化进入地球海难首帧",
+      "source_basis": [
+        "storyboard 78-92秒",
+        "68-78到78-92慢叠化"
+      ],
+      "creative_fill": "先落到地球海难首镜，再切木卫二深海黑影",
+      "required_shot_ids": [
+        "T08"
+      ],
+      "continuity_state": "兔子洞号已倾覆，人物服装保持原状态，黑影不露全貌",
+      "depends_on": [],
+      "reference_role": "78-92秒交叉剪辑地球端首帧，锁海难与碎片",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实电影首帧，破晓前黑蓝海面上兔子洞号已经侧翻，船底与断裂木板露出水面，海水灌入倾斜船舱，漂浮碎片被巨浪推向镜头，远处雾层压住地平线，水面高度贴近残骸，冷钢蓝和近黑占主导，人物暂不出现，右侧留出后续切入木卫二深海黑影的空白 --ar 16:9 --v 8.2 --raw --stylize 150 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-04",
+      "used_by_shots": [
+        "T08"
+      ]
+    },
+    {
+      "item_id": "FF_T10_105S",
+      "kind": "first_frame",
+      "asset_stage": "first_frame",
+      "priority": "P1",
+      "purpose": "105秒进入纯黑声波抽象段首帧",
+      "source_basis": [
+        "storyboard 105-114秒",
+        "92-105到105-114渐暗"
+      ],
+      "creative_fill": "上升镜头最后一点光收束成黑场中央单一波形",
+      "required_shot_ids": [
+        "T10"
+      ],
+      "continuity_state": "黑场无人物无字幕，一条波形随后分成两条",
+      "depends_on": [],
+      "reference_role": "105-114秒抽象段图生视频起点，锁黑场、声波位置和留白",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实科幻抽象首帧，整幅画面接近纯黑，中央偏下悬浮一条细而明亮的蓝白发光声波线，波峰规律而克制，周围只有极轻冷蓝雾状光晕，线条边缘有真实光学散射，极大留白，不出现人物、场景和可读文字，构图正中稳定，情绪空旷 --ar 16:9 --v 8.2 --raw --stylize 180 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-04",
+      "used_by_shots": [
+        "T10"
+      ]
+    },
+    {
+      "item_id": "CHAR_LAMBERT_MASTER",
+      "kind": "character",
+      "asset_stage": "identity_master",
+      "priority": "P0",
+      "purpose": "锁定兰伯特身份、脸、发型与服装",
+      "source_basis": [
+        "storyboard 7-15、45-55、78-105秒",
+        "导演板全片锁定"
+      ],
+      "creative_fill": "自然眉高不对称与疲惫眼神为辨识点",
+      "required_shot_ids": [
+        "T01",
+        "T05",
+        "T08",
+        "T09"
+      ],
+      "continuity_state": "36岁欧洲男性，偏胖结实，潮湿中长棕发，短胡茬，深海军蓝厚羊毛毛衣、旧工装裤、磨损帆布鞋",
+      "depends_on": [],
+      "reference_role": "人物身份母图，只作身份参考，不冒充已通过角色设定卡",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "写实影视定妆身份母图，单人半身到四分之三身的36岁欧洲男性，偏胖结实体型，轻微眉高不对称，深陷疲惫但专注的眼睛，乱而潮湿的中长棕发，短胡茬，深海军蓝厚羊毛毛衣与旧深色工装裤，衣料有受力褶皱和海盐细痕，冷静中性表情，灰蓝中性背景，左侧柔和冷窗光勾出发丝与鼻梁，真实皮肤毛孔和年龄纹理，单人无文字无道具 --ar 16:9 --v 8.2 --raw --stylize 250 --chaos 4 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-04",
+      "used_by_shots": [
+        "T01",
+        "T05",
+        "T08",
+        "T09"
+      ]
+    },
+    {
+      "item_id": "SCENE_CABIN",
+      "kind": "scene",
+      "asset_stage": "scene",
+      "priority": "P0",
+      "purpose": "兔子洞号船舱空间母板",
+      "source_basis": [
+        "storyboard 7-15、45-55秒",
+        "导演板03、07"
+      ],
+      "creative_fill": "固定圆窗、仪器桌、狭窄过道与冷屏幕光方向",
+      "required_shot_ids": [
+        "T01",
+        "T05"
+      ],
+      "continuity_state": "旧极地科考木船内部，木板磨损，海盐潮气重",
+      "depends_on": [],
+      "reference_role": "场景母板；不放人物和剪影，人物位置由首帧单独决定",
+      "generation_mode": "text_to_image",
+      "aspect_ratio": "16:9",
+      "resolution": "2k",
+      "generation_prompt": "无人场景空间母板，旧的小型极地科考木船兔子洞号内部，狭窄船舱由深色磨损木板和少量冷灰金属构成，左侧圆形舷窗外只有暗蓝海面微光，中央固定旧仪器桌与布线，右侧留出低矮过道，潮湿盐雾附着木板边缘，冷屏幕光从前方打入，空间轴线清楚，宽幅横向构图，无人物无文字 --ar 16:9 --v 8.2 --raw --stylize 350 --chaos 6 --no 文字, 水印, 标志, 额外人物",
+      "negative_prompt": "文字、水印、标志、额外人物、塑料质感、完整未知生物外形",
+      "lifecycle_state": "prompt_ready",
+      "qa_status": "prepared",
+      "max_retries": 1,
+      "batch": "batch-01-retry-04",
+      "used_by_shots": [
+        "T01",
+        "T05"
+      ]
+    }
+  ],
+  "batch_id": "whale-pilot-batch-01-retry-04",
+  "planned_count": 4,
+  "recovery_note": "Retry only items without a valid unique image after batch-01 and retry-01 through retry-03; FF_T04 and FF_T06 are excluded after valid receipts."
+}

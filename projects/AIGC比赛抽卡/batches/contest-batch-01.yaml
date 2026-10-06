@@ -1,0 +1,202 @@
+﻿schema_version: 1
+batch_id: contest-batch-01
+project_id: aigc-contest-draw-v1
+workflow_template: docs/task-templates/aigc-batch-workflow.md
+status: in_progress
+stage: awaiting_selection
+observed_on: 2026-09-26
+
+spec:
+  purpose: RunningHub 全球 AIGC 长片创作大赛先导片关键帧与 16:9 封面抽卡
+  prompt_manifest: prompts/contest-batch-01.md
+  model: midjourney
+  model_version: v8.2
+  aspect_ratio: "16:9"
+  planned_count: 15
+  estimated_total_points: "约90；来自提示词清单的预估，实际消耗缺"
+  concurrency_policy: strict_three_concurrent_while_active
+  stop_on_first_failure: false
+  failure_policy: resubmit_within_batch_authorization
+  max_manual_retries_per_item: 本批授权内按需；不静默无限重试
+  output_directory: E:\codex\multica\mj-automation\output
+  receipt_path: receipts/contest-batch-01.md
+
+authorization:
+  paid_generation:
+    historical_grant: granted
+    granted_on: 2026-09-26
+    historical_scope: 本批次15张
+    current_resume_decision: resumed_under_user_failure_resubmission_rule
+  final_selection:
+    authority: user_only
+    selected_items: 缺
+  publishing:
+    status: not_authorized
+
+execution:
+  bridge: http://127.0.0.1:8765
+  external_login_by_agent: forbidden
+  auto_retry: forbidden
+  manual_resubmit_failed_item_within_batch_authorization: allowed
+  parallel_submission: strict_three_until_batch_terminal
+  min_active_jobs_while_pending: 3
+  max_concurrent_jobs: 3
+  when_pending_below_min: fill_with_authorized_retry_slots
+  slot_fill_policy: next_eligible_item_then_failed_item_retry
+  strict_three_concurrent: true
+  browser_profile_lock: shared_profile_may_serialize_browser_entry
+  free_download_by_existing_serial_only: true
+
+summary:
+  recovered: 14
+  failed: 1
+  active_jobs: 0
+  not_submitted: 0
+  submitted_or_attempted: 15
+
+last_failure:
+  item_id: C14
+  bridge_status: browser_lock_timeout
+  serial: 缺
+  image_path: 缺
+  site_final_status: exception
+  actual_point_deduction: 缺
+  impact: C15-r6 recovered an independent image; C14-r8 recorded browser-lock timeout; C14-r9 recovered successfully
+  retry_rule: 保留原始失败回执；重提记录 retry_of、新作业号、新序列号和扣费状态
+
+last_success:
+  item_id: C14
+  job_id: contest-batch-01-C14-r9_08c51fa65d
+  serial: serial-2103944396905910272
+  image_path: E:\codex\multica\mj-automation\output\contest-batch-01-C14-r9_08c51fa65d_2103944396905910272_hi.png
+  dimensions: 2912x1632
+  sha256_prefix: 01e758e347a116ae
+  actual_point_deduction: unknown
+items:
+  - item_id: C01
+    status: recovered
+    job_id: contest-batch-01-C01_a26918cb4b
+    serial: serial-2103525288418742272
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C01_a26918cb4b_blob.png
+    dimensions: 2912x1632
+  - item_id: C02
+    status: recovered
+    job_id: contest-batch-01-C02-r2_faa602a759
+    serial: serial-2103542227954307072
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C02-r2_faa602a759_blob.png
+    dimensions: 2912x1632
+  - item_id: C03
+    status: recovered
+    job_id: contest-batch-01-C03-r2_5c4e8b63c3
+    serial: serial-2103710012827242496
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C03-r2_5c4e8b63c3_2103710012827242496_hi.webp
+    dimensions: 2912x1632
+  - item_id: C04
+    status: recovered
+    job_id: contest-batch-01-C04-r2_8a899ac656
+    serial: serial-2103715119392362496
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C04-r2_8a899ac656_blob.png
+    dimensions: 2912x1632
+  - item_id: C05
+    status: recovered_free_download
+    job_id: contest-batch-01-C05-r2_f4181869c5
+    serial: serial-2103720214439923712
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C05-r2_1.png
+    dimensions: 2912x1632
+  - item_id: C06
+    status: recovered_free_download
+    job_id: contest-batch-01-C06-r3
+    serial: serial-2103726832829337600
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C06-r3_2103726832829337600_hi.webp
+    dimensions: 2912x1632
+  - item_id: C07
+    status: failed_user_verified_no_image
+    job_id: contest-batch-01-C07-r2_5cbcdc6e22
+    serial: serial-2103846648898654208
+    file_path: 缺
+    site_status: 用户已核实失败且无成品
+    actual_point_deduction: 缺
+    retry: forbidden_by_prior_user_decision
+    retry_note: 此前明确的不重试决定继续有效
+  - item_id: C08
+    status: recovered
+    job_id: contest-batch-01-C08-r2_1e7c6a212f
+    serial: serial-2103856976441118720
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C08-r2_1e7c6a212f_net.webp
+    dimensions: 2912x1632
+  - item_id: C09
+    status: recovered_after_retry
+    job_id: contest-batch-01-C09-r3_460dbd57d9
+    retry_of: contest-batch-01-C09-r2_460dbd57d9
+    serial: serial-2103910138304794624
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C09-r3_460dbd57d9_2103910138304794624_hi.png
+    dimensions: 2912x1632
+    bridge_status: ok
+    actual_point_deduction: 缺
+    retry_note: 原始 page_reported_failed 回执保留；本次重提成功，扣费状态缺
+  - item_id: C10
+    status: recovered_after_retry
+    job_id: contest-batch-01-C10-r4_40177525c3
+    retry_of: contest-batch-01-C10-r3_40177525c3
+    serial: serial-2103922237408022528
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C10-r4_40177525c3_2103922237408022528_hi.png
+    dimensions: 2912x1632
+    bridge_status: ok
+    actual_point_deduction: 缺
+    slot: released
+  - item_id: C11
+    status: recovered
+    job_id: contest-batch-01-C11-r3_88fd22558f
+    serial: serial-2103915522050494464
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C11-r3_88fd22558f_2103915522050494464_hi.png
+    dimensions: 2912x1632
+    bridge_status: ok
+    historical_bridge_request_id: contest-batch-01-C11_88fd22558f
+  - item_id: C12
+    status: recovered_after_retry
+    job_id: contest-batch-01-C12-r7_9f30953c53_9f30953c53
+    retry_of: contest-batch-01-C12-r6_9f30953c53
+    serial: serial-2103931954947690496
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C12-r7_9f30953c53_9f30953c53_2103931954947690496_hi.webp
+    dimensions: 2912x1632
+    bridge_status: ok
+    prior_failures: contest-batch-01-C12-r3_9f30953c53, contest-batch-01-C12-r4_9f30953c53, contest-batch-01-C12-r5_9f30953c53, contest-batch-01-C12-r6_9f30953c53
+    actual_point_deduction: 缺
+    slot: released
+  - item_id: C13
+    status: recovered_after_retry
+    job_id: contest-batch-01-C13-r4_9b3e6d5f49
+    retry_of: contest-batch-01-C13-r3_9b3e6d5f49
+    serial: serial-2103927025361227776
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C13-r4_9b3e6d5f49_2103927025361227776_hi.webp
+    dimensions: 2912x1632
+    bridge_status: ok
+    actual_point_deduction: 缺
+    slot: released
+  - item_id: C14
+    status: recovered_after_retry
+    job_id: contest-batch-01-C14-r9_08c51fa65d
+    retry_of: contest-batch-01-C14-r8_08c51fa65d
+    serial: serial-2103944396905910272
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C14-r9_08c51fa65d_2103944396905910272_hi.png
+    dimensions: 2912x1632
+    sha256_prefix: 01e758e347a116ae
+    bridge_status: ok
+    current_request_result: recovered_hd_image
+    prior_failures: contest-batch-01-C14_08c51fa65d, contest-batch-01-C14-r3_08c51fa65d, contest-batch-01-C14-r4_08c51fa65d_08c51fa65d, contest-batch-01-C14-r5_08c51fa65d, contest-batch-01-C14-r8_08c51fa65d
+    prior_invalid_captures: contest-batch-01-C14-r6_08c51fa65d and contest-batch-01-C14-r7_08c51fa65d status ok but serial unknown and sha256 duplicated C12-r7 (53ff201c2c6888d8)
+    actual_point_deduction: unknown
+    slot: released
+  - item_id: C15
+    status: recovered_after_retry
+    job_id: contest-batch-01-C15-r6_2f0283ae32
+    retry_of: contest-batch-01-C15-r5_2f0283ae32
+    serial: 缺
+    file_path: E:\codex\multica\mj-automation\output\contest-batch-01-C15-r6_2f0283ae32_blob.png
+    dimensions: 2912x1632
+    bridge_status: ok
+    actual_point_deduction: 缺
+    prior_failures: contest-batch-01-C15_2f0283ae32, contest-batch-01-C15-r3_2f0283ae32, contest-batch-01-C15-r4_2f0283ae32, contest-batch-01-C15-r5_2f0283ae32
+    prior_controller_cancellation: contest-batch-01-C15-r2_2f0283ae32_2f0283ae32 stopped_before_browser_lock; platform result and deduction 缺
+    slot: released
+

@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "Auditable Multica content-production workspace",
   "scripts": {
-    "verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1"
+    "verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1",
+    "test": "node --test mj-automation/scripts/production_machine.test.mjs && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test.ps1"
   }
 }
