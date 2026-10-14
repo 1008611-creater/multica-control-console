@@ -6,7 +6,7 @@
 |---|---|---|---|
 | `tiangong-rebuild-v1` | `projects/天宫漫剧/` | `projects/天宫漫剧/project_state.yaml` | `in_production` |
 | `aigc-contest-draw-v1` | `projects/AIGC比赛抽卡/` | `projects/AIGC比赛抽卡/project_state.yaml` | `in_progress` |
-| `whale-pilot-v1` | `projects/whale-pilot/` | `projects/whale-pilot/project_state.yaml` | `blocked` |
+| `whale-pilot-v1` | `projects/whale-pilot/` | `projects/whale-pilot/project_state.yaml` | `in_progress` |
 
 ## 非项目目录
 

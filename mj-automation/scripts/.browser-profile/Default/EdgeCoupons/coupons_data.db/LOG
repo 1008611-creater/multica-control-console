@@ -1,2 +1,6 @@
-2026/09/30-21:46:09.588 f484 Creating DB E:\codex\multica\mj-automation\scripts\.browser-profile\Default\EdgeCoupons/coupons_data.db since it was missing.
-2026/09/30-21:46:09.641 f484 Reusing MANIFEST E:\codex\multica\mj-automation\scripts\.browser-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/10/07-23:45:56.321 37558 Reusing MANIFEST E:\codex\multica\mj-automation\scripts\.browser-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/10/07-23:45:56.322 37558 Recovering log #45
+2026/10/07-23:45:56.322 37558 Reusing old log E:\codex\multica\mj-automation\scripts\.browser-profile\Default\EdgeCoupons/coupons_data.db/000045.log 
+2026/10/07-23:46:20.485 6be70 Level-0 table #50: started
+2026/10/07-23:46:20.567 6be70 Level-0 table #50: 683376 bytes OK
+2026/10/07-23:46:20.596 6be70 Delete type=0 #45

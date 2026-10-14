@@ -1,142 +1,106 @@
 project_id: whale-pilot-v1
-project_name: ?????????
-status: blocked
-status_changed_at: 2026-09-27
-status_note: ??????????????12 ????????????????14 ?????????? need_login ??????????????????????
+project_name: 鲸歌计划
+status: in_progress
+status_changed_at: 2026-10-09
+last_audited_at: 2026-10-09
+status_note: 用户最新指定v005英文快速模式；排除Alice与鲸星守军，其余8项各生成一次，全部快速模式已核验，8组2912x1632原图解码与目视检查完成，待用户选图。旧D01-V2未决作业保留不重抽。
 source_of_truth: projects/whale-pilot/project_state.yaml
 asset_plan:
   title: 鲸歌计划
-  status: requirements_prepared_no_generation
-  source: C:\Users\lsb\Pictures\1aigc\鲸鱼\先导片\剧本\权威分镜\鲸鱼 先导片分镜头_权威副本.docx
-  manifest: C:\Users\lsb\Pictures\1aigc\鲸鱼\先导片\回执与清单\p0-asset-requirements.json
-  workspace: C:\Users\lsb\Pictures\1aigc\鲸鱼\先导片
+  status: thirty_second_plan_confirmed_candidates_pending_acceptance
+  source: C:/Users/lsb/Pictures/1aigc/鲸鱼/先导片/剧本/权威分镜/鲸鱼 先导片分镜头_权威副本.docx
+  source_sha256: 6e5b51fc021eee31c9b06b4d5c609cc237774d7f7c69e613b34bfe8f92f5dc62
+  manifest: C:/Users/lsb/Pictures/1aigc/鲸鱼/先导片/回执与清单/p0-asset-requirements.json
 deliverables:
   - id: whale-pilot-manifest
-    status: verified
+    status: historical_reference_only
     path: prompts/whale-pilot-manifest.json
-  - id: whale-pilot-batch-01
-    status: partial_blocked
-    path: batches/whale-pilot-batch-01.json
-  - id: whale-pilot-batch-02
-    status: partial_blocked
-    path: batches/whale-pilot-batch-02.json
-  - id: whale-pilot-retry-01
-    status: terminal_blocked
-    path: batches/whale-pilot-batch-01-retry-04.json
-  - id: whale-pilot-retry-02
-    status: terminal_blocked
-    path: batches/whale-pilot-batch-02-retry-01.json
   - id: whale-pilot-asset-index
     status: indexed_pending_user_acceptance
     path: asset-index.md
+  - id: whale-pilot-breakdown
+    status: requirements_prepared
+    path: p0-asset-breakdown.md
   - id: whale-pilot-console
     status: verified_available
     path: README.md
-  - id: whale-pilot-local-control-console
-    status: verified
-    path: ../../mj-automation/control/index.html
-  - id: whale-pilot-local-browser-control
-    status: verified
-    path: ../../mj-automation/scripts/browser_control.js
+  - id: film-production-draft
+    status: draft_pending_confirmation
+    path: ../../docs/film-production-brainstorm-2026-10-08.md
 blockers:
-  - item: control-console-routes
-    status: verified
-    reason: Local visual control is available at http://127.0.0.1:8765/control; watchdog is paused
-    next_action: User completes manual login in the visible Edge window
-  - item: bridge-login-required
+  - item: automatic-execution
+    status: verified_normal_execution
+    reason: 本次普通执行的正式resume请求成功；历史审核记录保留，实际阻塞是页面控件兼容问题，已完成免费预检并恢复剩余首波。
+    next_action: 在最新100次上限内监测真实回执，提交或扣费不明时停止补位，不自动重试。
+  - item: live-generation-verification
     status: blocked
-    reason: ????? 28 ?????????? need_login????????
-    next_action: ??????????????????????? retry manifest
+    reason: D01-V1第三次本地尝试submitted=false但billed缺，已保留并跳过不重抽；D01-V2等待20分钟后超时、提交及扣费缺且无serial；当前队列已暂停，剩余4项没有提交，真实恢复出图未通过。
+    next_action: 原图下载解码与内容核查通过后才能标记正常生产。
+  - item: queue-patch-activation
+    status: verified_reloaded
+    reason: 本次安全启动及重载后health正常、runtime.ready=true；当前server.py安装hash与源码一致，原两批无自动派发。
+    next_action: 实际单次出图仍需平台回执及原图验收，不据服务正常标记生产完成。
   - item: visual-acceptance
     status: pending_user
-    reason: 12 ??????????????????????????
-    next_action: ???????????????
-  - item: character-sheet-edit-contract
-    status: blocked
-    reason: ??????????????????????????????????
-    next_action: ?????????????????????????
-open_items:
-  - item: remaining-14
-    status: blocked
-    next_action: ?????????? batch-01-retry-04 ? batch-02-retry-01??? concurrency=3
-  - item: recovered-12
-    status: pending_user_acceptance
-    next_action: ??????????????????????
-  - item: final-role-sheet
-    status: blocked
-    next_action: ???????
+    reason: 历史候选未通过本轮审美验收。
+    next_action: 成图后选择人物与空间方向，原图保持不变。
 authorization:
-  paid_generation: granted_by_user_2026-09-26_for_whale_pilot_first_frames_and_assets
+  paid_generation: user_authorized_2026_10_09_session_limit
+  historical_paid_generation: user_confirmed_2026-09-26_not_inherited
+  film_identity_confirmed_this_round: true
+  continuous_production: authorized_paused_unknown_platform_receipt
+  max_generation_requests: 100
+  historical_2026_10_08_request_limit: 1000
+  version: v8.2
+  mode: normal
+  authorization_ledger: E:/Multica-Control-Console/mj-automation/run/mj-authorized-100-20261009/authorization.json
+  historical_authorization_ledger: E:/Multica-Control-Console/mj-automation/run/whale30-20261008/authorization.json
+  upload_assets: not_authorized
   final_visual_acceptance: user_only
   platform_publish: not_authorized
 paths:
-  control_console: E:\codex\multica\projects\whale-pilot
-  source_readonly: E:\codex\aigc\whale-project
-  draw_bridge: http://127.0.0.1:8765
-  output_directory: E:\codex\multica\mj-automation\output
-  receipt_ledger: E:\codex\multica\mj-automation\receipts\mxai-tasks.jsonl
+  control_console: E:/codex/multica/projects/whale-pilot
+  source_readonly: E:/codex/aigc/whale-project
+  output_directory: E:/Multica-Control-Console/mj-automation/output/whale30-20261008
+  receipt_ledger: E:/Multica-Control-Console/mj-automation/receipts/mxai-tasks.jsonl
 red_lines:
-  - ?????????????
-  - ?????? Cookie?Token???????????
-  - ????????????????????
-  - ??????????????????????
-  - ????????????????????????SHA-256 ?????
-  - ??????????????????
-  - ????????????????????????????
-  - ??????? need_login ?????????
-
-packaging:
-  artifact_dir: ../../dist/Multica-Control-Console-2026-09-27
-  artifact_zip: ../../dist/Multica-Control-Console-2026-09-27.zip
-  status: verified
-  evidence:
-    - setup/start/control-state/stop smoke test passed on this machine
-    - browser profile and local credentials excluded from the package
-    - watchdog starts paused and paid generation remains explicit in the console
-  remaining_verification:
-    - another-machine installation
-    - Microsoft Edge availability on the target machine
-    - real platform login and paid generation remain untested- [已验证] Manual post-coding review checked the changed portable scripts, package manifest, credential/profile exclusion, start/stop path, control route, and final ZIP contents.
-- [待核验] No second-machine install or real platform generation was performed in this review.
-local_installation:
-  root: E:\Multica-Control-Console
-  status: verified_running
-  control_url: http://127.0.0.1:8765/control
-  verified:
-    - health endpoint returned ok=true
-    - control page returned HTTP 200
-    - watchdog paused and browser control stopped at startup
-    - desktop shortcut Multica Control.lnk exists
-  pending:
-    - manual platform login
-    - paid generation and receipt verification
-    - another-machine installation
-
+  - 不继承历史付费授权，不自动重提未知状态作业。
+  - 不读取凭据、浏览器资料和运行日志。
+  - 不编辑像素，不移动或删除原图、任务、配置和档案。
+  - 原始生产目录只读，候选与通过资产分开。
+  - 不绕过已有工具对浏览器访问和清理操作的拒绝。
 asset_breakdown:
-  title: "鲸歌计划"
-  status: requirements_prepared_pending_visual_acceptance
-  breakdown: projects/whale-pilot/p0-asset-breakdown.md
-  manifest: 'C:\Users\lsb\Pictures\1aigc\鲸鱼\先导片\回执与清单\p0-asset-requirements.json'
-  verified_asset_count: 12
-  unique_candidate_file_count: 4
+  historical_manifest_item_count: 26
+  indexed_candidate_item_count: 12
+  hash_and_decode_status: verified_2026-10-08
+  indexed_missing_candidate_item_count: 14
+  visual_status: all_12_are_four_panel_candidates_pending_user
+  p0_candidate_use_count: 4
+  europa_file_variants: distinct_hashes_do_not_merge
   excluded_misclassified_lambert_files: 2
   lambert_identity_candidate: missing
   generated_this_round: false
-  paid_submission_this_round: false
-  repository_verify: passed_2026-09-27
-  post_coding_review: completed
-  remaining: user_visual_acceptance_and_unconfirmed_creative_details
-
-runtime_audit:
-  status: blocked_need_login
-  item_id: FF_T01_07S
-  batch: batch-01
-  job_id: whale-pilot-v1-batch-01-FF_T01_07S-audit_c4d1a360cd
+  paid_submission_this_round: 缺
+historical_runtime_evidence:
+  date: 2026-09-27
   result_status: need_login
-  charge_known: false
-  actual_point_deduction: null
-  automatic_retry: false
-  second_submission: false
   receipt: ../../mj-automation/receipts/whale-pilot-v1-batch-01-FF_T01_07S-audit-receipt.json
   summary: ../../mj-automation/receipts/whale-pilot-v1-batch-01-FF_T01_07S-audit-summary.md
-  next_action: User must manually log in before any separately authorized follow-up runtime test
+  current_login_status: 缺
+local_installation:
+  root: E:/Multica-Control-Console
+  release_version_recorded: 2026.10.08.2
+  source: docs/workbench-authority-2026-10-08.md
+  changed_this_round: true
+  current_runtime_check: health_ok_runtime_ready_2026_10_09
+  local_unreleased_repairs: true
+reconstruction:
+  date: 2026-10-08
+  basis: 权威分镜、P0清单、现存图片、历史汇总回执与本轮授权。
+  lost_chinese_text: 缺，不依据问号猜字。
+  historical_packaging_claims: 见软件权威发行文档，不再将旧结果写为当前事实。
+
+decisions:
+  film_title: 鲸歌计划
+  teaser_seconds: 30
+  source: 用户2026-10-08本对话确认；原件片名差异保留。

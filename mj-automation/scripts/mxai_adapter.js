@@ -48,6 +48,31 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { inspectFile, describe: describeImg } = require(path.join(__dirname, 'verify_result.js'));
 
+function isTargetOutputUrl(value, recordId) {
+  const serial = String(recordId || '').replace(/^serial-/, '');
+  if (!/^\d+$/.test(serial)) return false;
+  try {
+    const url = new URL(value);
+    return /^https?:$/.test(url.protocol) && /\/draw\/outputs\//.test(url.pathname) &&
+      new RegExp('^' + serial + '(?:_|\\.|-)[^/]*$').test(url.pathname.split('/').pop());
+  } catch (_) { return false; }
+}
+
+
+function closeKnownPromotion(root) {
+  const roots = root ? [root] : [...document.querySelectorAll('[role="dialog"],.el-dialog')];
+  for (const dialog of roots) {
+    const text = String(dialog.innerText || '').replace(/\s+/g, '');
+    if (text !== '关注公众号获取MXAI绘画中文站最新资讯和福利') continue;
+    const button = dialog.querySelector('.csd-dialog-close .mj-close')
+      || dialog.querySelector('button.el-dialog__headerbtn[aria-label="Close this dialog"]');
+    if (!button || button.disabled || button.getBoundingClientRect().width <= 0) continue;
+    button.click();
+    return true;
+  }
+  return false;
+}
+
 // ---------------------------------------------------------------------------
 // 跨进程浏览器锁（缺陷 F 修复，2026-09-12）
 // FastAPI 并发处理请求时，两个 Node 子进程会用同一个 Edge profile 同时调用
@@ -79,7 +104,7 @@ function tryBreakStaleLock() {
   const holder = readLockHolder();
   const idle = lockIdleMs();
   const dead = !lockHolderAlive(holder);
-  if (!dead && idle <= LOCK_STALE_MS) return false;
+  if (!dead || (!holder && idle <= LOCK_STALE_MS)) return false;
   try {
     fs.unlinkSync(LOCK_FILE);
     const why = dead ? '持有进程已退出' : ('锁静默 ' + Math.round(idle / 1000) + 's');
@@ -101,6 +126,17 @@ function installLockExitHook() {
 }
 
 const TRACE_FILE = process.env.MXAI_TRACE_FILE || path.join(__dirname, '..', 'run', 'adapter-trace.log');
+function reportPhase(phase, submitted) {
+  const file = process.env.MJ_PROGRESS_FILE;
+  if (!file) return;
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    const tmp = file + '.' + process.pid + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify({ phase, at: new Date().toISOString(), submitted }));
+    fs.renameSync(tmp, file);
+  } catch (_) { /* receipt and job intent remain authoritative */ }
+}
+
 function trace(msg) {
   const safeMessage = String(msg)
     .replace(/https?:\/\/[^\s\"'<>]+/gi, '[url]')
@@ -152,6 +188,7 @@ function safeOutputStem(value, fallback = '生成结果') {
 async function acquireBrowserLock(label) {
   installLockExitHook();
   const startedAt = Date.now();
+  reportPhase("browser_wait", false);
   fs.mkdirSync(path.dirname(LOCK_FILE), { recursive: true });
   let told = false;
   for (;;) {
@@ -160,6 +197,7 @@ async function acquireBrowserLock(label) {
       fs.writeSync(fd, JSON.stringify({ pid: process.pid, label: label || 'generate', startedAt: new Date().toISOString() }));
       fs.closeSync(fd);
       trace('lock acquired');
+      reportPhase('preparing', false);
       return;
     } catch (err) {
       if (!err || err.code !== 'EEXIST') throw err;
@@ -381,7 +419,7 @@ class MxaiAdapter {
           if (panel && panel.offsetParent !== null) return true;
           const tas = Array.from(document.querySelectorAll('textarea'));
           return tas.some(t => /输入绘画描述词/.test(t.placeholder || '') && t.offsetParent !== null);
-        }, { timeout: 45000 });
+        }, null, { timeout: 45000 });
         ready = true;
       } catch (e) {
         console.log('[MXAI] 创作面板未按时出现，重载重试...');
@@ -415,100 +453,71 @@ class MxaiAdapter {
    * 覆盖：活动横幅(Seedance)、el-dialog 的 X、el-drawer 的 X、各类 close 按钮、遮罩层点击关闭
    * 多轮扫描，直到没有可见弹窗为止（一个弹窗关闭后可能暴露下一个）
    */
-  async _dismissPopups(maxRounds = 5) {
+  async _dismissPopups(maxRounds = 3) {
     if (!this.page) return { dismissed: 0 };
-    const closeSelectors = [
-      '.global-seedance-promo__close',          // Seedance 活动横幅关闭
-      '.el-dialog__headerbtn',                  // Element UI 对话框 X
-      '.el-drawer__close-btn',                  // Element UI 抽屉 X
-      '[class*="promo"] [class*="close"]',
-      '[class*="modal"] [class*="close"]',
-      '[class*="dialog"] [class*="close"]',
-      '[class*="popup"] [class*="close"]',
-      '[class*="notice"] [class*="close"]',
-      '[class*="close-btn"]',
-      '[class*="closeBtn"]',
-      'button[class*="close"]',
-      'span[class*="close"]',
-      'a[class*="close"]',
-      'i[class*="close"]',
-      '[aria-label="关闭"]',
-      '[aria-label="Close"]',
-      '[aria-label="close"]',
-    ];
-    // 仅作为兜底：文本明确的关闭动作
-    const closeTexts = ['关闭', '知道了', '不再提醒', '稍后', '暂不', '×', 'Close'];
-    let totalDismissed = 0;
-
-    for (let round = 0; round < maxRounds; round++) {
-      let dismissedAny = false;
-
-      // 1) 选择器命中的可见关闭按钮
-      for (const sel of closeSelectors) {
-        try {
-          const nodes = await this.page.locator(sel).all();
-          for (const n of nodes) {
-            if (await n.isVisible().catch(() => false)) {
-              const tag = await n.evaluate(el => el.tagName).catch(() => '');
-              // 避免误点面积巨大的容器（可能是整个遮罩而非关闭按钮）
-              const box = await n.boundingBox().catch(() => null);
-              const tooBig = box && (box.width > 600 || box.height > 600);
-              if (tooBig) continue;
-              await n.click({ timeout: 2500, force: true }).catch(() => {});
-              dismissedAny = true;
-              totalDismissed++;
-              await this.page.waitForTimeout(450);
-            }
-          }
-        } catch (e) { /* 忽略单条异常 */ }
-      }
-
-      // 2) 文本命中的可见关闭按钮（兜底）
-      try {
-        for (const t of closeTexts) {
-          const nodes = await this.page.getByText(t, { exact: false }).all();
-          for (const n of nodes) {
-            if (await n.isVisible().catch(() => false)) {
-              const tag = await n.evaluate(el => el.tagName).catch(() => '');
-              if (['BUTTON', 'A', 'SPAN', 'DIV', 'I'].includes(tag)) {
-                const box = await n.boundingBox().catch(() => null);
-                const tooBig = box && (box.width > 600 || box.height > 600);
-                if (tooBig) continue;
-                await n.click({ timeout: 2500, force: true }).catch(() => {});
-                dismissedAny = true;
-                totalDismissed++;
-                await this.page.waitForTimeout(450);
-              }
-            }
-          }
+    // Scope every action to a visible popup, never task cards or page-wide text.
+    // Authentication and billing dialogs belong to the user and stay open.
+    const roots = '[role="dialog"], .el-dialog, .el-drawer, .global-seedance-promo, '
+      + '[class*="promo-modal"], [class*="promo-popup"], [class*="notice-modal"]';
+    const closeSelectors = '.global-seedance-promo__close, .el-dialog__headerbtn, .el-drawer__close-btn, '
+      + 'button[class*="close"], [role="button"][class*="close"], '
+      + '[aria-label="关闭"], [aria-label="Close"], [aria-label="close"]';
+    const exactClose = /^(?:关闭|知道了|不再提醒|稍后|暂不|×|Close)$/i;
+    const protectedDialog = /登录|注册|验证码|扫码|支付|购买|订阅|充值|\blog\s*in\b|\bsign\s*in\b|\bpayment\b|\bpurchase\b/i;
+    const deadline = Date.now() + 8000;
+    const attempted = [];
+    let dismissed = 0;
+    // A site dialog wrapper may have zero height while its explicit close
+    // control remains visible. Inspect the known notice by its visible button.
+    const knownRequested = await this.page.evaluate(closeKnownPromotion).catch(() => false);
+    if (knownRequested) { await this.page.waitForTimeout(500); dismissed++; }
+    for (let round = 0; round < Math.min(Math.max(maxRounds, 0), 3); round++) {
+      let changed = false;
+      for (const popup of await this.page.locator(roots).all()) {
+        if (Date.now() >= deadline || attempted.length >= 12) break;
+        if (!await popup.isVisible().catch(() => false)) continue;
+        const handle = await popup.elementHandle().catch(() => null);
+        if (!handle) continue;
+        let seen = false;
+        for (const previous of attempted) {
+          if (await handle.evaluate((el, other) => el === other, previous).catch(() => false)) { seen = true; break; }
         }
-      } catch (e) { /* 忽略 */ }
-
-      if (!dismissedAny) break;
-      await this.page.waitForTimeout(600);
+        if (seen) { await handle.dispose().catch(() => {}); continue; }
+        attempted.push(handle);
+        const content = await popup.innerText({ timeout: 300 }).catch(() => '');
+        if (!content || protectedDialog.test(content)) continue;
+        // Observed site promotion: its explicit close control can lie under
+        // the overlay hit area. Target only this exact informational dialog.
+        if (content.replace(/\s+/g, '') === '关注公众号获取MXAI绘画中文站最新资讯和福利') {
+          const requested = await popup.evaluate(closeKnownPromotion).catch(() => false);
+          if (requested) {
+            await this.page.waitForTimeout(500);
+            if (!await popup.isVisible().catch(() => false)) { dismissed++; changed = true; }
+          }
+          continue;
+        }
+        const primary = await popup.locator(closeSelectors).all();
+        const fallback = await popup.locator('button, [role="button"], a, span, i').filter({ hasText: exactClose }).all();
+        const choices = [...primary, ...fallback];
+        for (const button of choices) {
+          if (Date.now() >= deadline) break;
+          if (!await button.isVisible().catch(() => false) || !await button.isEnabled().catch(() => false)) continue;
+          const box = await button.boundingBox().catch(() => null);
+          if (!box || box.width > 160 || box.height > 100) continue;
+          // At most one click per popup, including an ambiguous click response.
+          try {
+            await button.click({ timeout: Math.max(1, Math.min(700, deadline - Date.now())) });
+            await this.page.waitForTimeout(150);
+            if (!await popup.isVisible().catch(() => false)) { dismissed++; changed = true; }
+          } catch (_) { /* Leave unchanged overlays for diagnosis, never force-click. */ }
+          break;
+        }
+      }
+      if (!changed || Date.now() >= deadline || attempted.length >= 12) break;
     }
-
-    // 3) 点击真正的遮罩层角落（close-on-click-modal 的弹窗）。
-    //    注意：排除装饰用背景图（class 含 "mask" 的 IMG，如 var(--mx-bg-mask)），避免误点。
-    try {
-      const backdrops = await this.page.locator('.el-overlay, [class*="overlay"]').all();
-      for (const bd of backdrops) {
-        const tag = await bd.evaluate(el => el.tagName).catch(() => '');
-        const cls = await bd.evaluate(el => (el.className && el.className.toString ? el.className.toString() : '')).catch(() => '');
-        if (/mask/i.test(cls) && !/overlay/i.test(cls)) continue; // 跳过纯装饰背景
-        if (await bd.isVisible().catch(() => false)) {
-          const box = await bd.boundingBox().catch(() => null);
-          if (box) {
-            await this.page.mouse.click(box.x + 6, box.y + 6).catch(() => {});
-            totalDismissed++;
-            await this.page.waitForTimeout(450);
-          }
-        }
-      }
-    } catch (e) { /* 忽略 */ }
-
-    console.log(`[MXAI] 弹窗清理完成，共关闭 ${totalDismissed} 个`);
-    return { dismissed: totalDismissed };
+    for (const handle of attempted) await handle.dispose().catch(() => {});
+    console.log(`[MXAI] 弹窗清理完成，共关闭 ${dismissed} 个`);
+    return { dismissed };
   }
 
   /**
@@ -573,34 +582,47 @@ class MxaiAdapter {
       throw new Error('未找到创作提示词文本域（页面可能未完全加载或被弹窗遮挡）');
     }
 
+    const focus = async () => {
+      try { await el.click({ timeout: 10000 }); }
+      catch (cause) {
+        const cleared = await this._dismissPopups();
+        if (cleared?.dismissed > 0) {
+          try { await el.click({ timeout: 10000 }); return; } catch (retryCause) { cause = retryCause; }
+        }
+        const error = new Error('提示词输入被弹窗遮挡，已在生成前停止；请检查页面提示');
+        error.code = 'PROMPT_NOT_APPLIED'; error.cause = cause; throw error;
+      }
+    };
     await el.scrollIntoViewIfNeeded().catch(() => {});
-    await el.click();
+    await focus();
     await this.page.keyboard.press('Control+A');
     await this.page.keyboard.press('Backspace');
     await this.page.waitForTimeout(150);
     await el.fill(prompt);
 
-    // 校验：Vue 的 v-model 偶尔吞掉 .fill() 的输入，确认值已真正写入，否则重试
+    // 比较完整输入，避免正文保留但末尾参数被吞掉。
+    const normalized = value => String(value).replace(/\r\n/g, '\n');
+    const expected = normalized(prompt);
     const verify = async () => this.page.evaluate(() => {
-      const tas = Array.from(document.querySelectorAll('textarea'));
-      const hit = tas.find(t => /输入绘画描述词/.test(t.placeholder || '') && t.offsetParent !== null);
-      return hit ? (hit.value || '').length : -1;
+      const hit = [...document.querySelectorAll('textarea')].find(t =>
+        /输入绘画描述词/.test(t.placeholder || '') && t.offsetParent !== null);
+      return hit ? String(hit.value || '') : null;
     });
-    let vlen = await verify();
-    for (let retry = 0; retry < 3 && vlen < Math.min(prompt.length, 20); retry++) {
-      console.log(`[MXAI] 提示词疑似未写入(value=${vlen})，重试 ${retry + 1}/3`);
-      await el.click();
+    let actual = await verify();
+    for (let retry = 0; retry < 3 && (actual === null || normalized(actual) !== expected); retry++) {
+      await focus();
       await this.page.keyboard.press('Control+A');
       await this.page.keyboard.press('Backspace');
       await this.page.waitForTimeout(120);
       await el.fill(prompt);
       await this.page.waitForTimeout(200);
-      vlen = await verify();
+      actual = await verify();
     }
-    if (vlen < Math.min(prompt.length, 20)) {
-      throw new Error('提示词填写后校验失败（v-model 未捕获输入），放弃本次生成');
+    if (actual === null || normalized(actual) !== expected) {
+      const error = new Error('提示词全文回读不一致，已在生成前停止，请检查输入框及高级参数');
+      error.code = 'PROMPT_NOT_APPLIED'; throw error;
     }
-    console.log(`[MXAI] 提示词已输入(value=${vlen})`);
+    console.log('[MXAI] 提示词全文核对通过，长度=' + actual.length);
   }
 
   /**
@@ -613,45 +635,59 @@ class MxaiAdapter {
     // 页面渲染文本可能被编码（如 "Mid`J"），用页内 evaluate 精确点选最稳。
     const wantNiji = /niji|nijie|尼吉|尼采/i.test(version || '');
     const kw = wantNiji ? ['niji', 'nijie', '尼吉', '尼采', 'nid`j'] : ['midjourney', 'mid`j', 'mid j', 'mj'];
-    const clicked = await this.page.evaluate((kws) => {
-      const els = Array.from(document.querySelectorAll('*'));
-      const hit = els.find(e => {
+    // The model header toggles the selector. Do not close already visible chips.
+    const targetNumber = Number(String(version || '').trim().toLowerCase().replace(/^(?:niji|nj|v)/, '')) || (wantNiji ? 7 : 8.2);
+    const chipsReady = await this.page.evaluate(({ number, niji }) =>
+      [...document.querySelectorAll('.tile-selector-item')].some(e => {
         const t = (e.innerText || '').trim().toLowerCase();
-        const ok = kws.some(k => t === k || t.startsWith(k + ' ') || t.includes(' ' + k + ' ') || t.includes(k));
-        // 关键：限定在创作面板内（.mj-left-tool），避免误点侧边栏的 "Midjourney绘画" 导航链接
-        const inPanel = !!(e.closest('.mj-left-tool') || e.closest('.mj-theme-page'));
-        const small = e.children.length <= 3 && e.offsetParent !== null &&
-          e.getBoundingClientRect().width < 300 && e.getBoundingClientRect().height < 80;
-        return ok && small && inPanel;
-      });
-      if (hit) { hit.click(); return true; }
-      return false;
-    }, kw);
-    if (clicked) {
-      console.log(`[MXAI] 已选择模型家族: ${wantNiji ? 'Niji' : 'Midjourney'}`);
+        return e.offsetParent !== null && /^(?:niji|nj)/.test(t) === niji && Number(t.replace(/^(?:niji|nj|v)/, '')) === number;
+      }), { number: targetNumber, niji: wantNiji });
+    if (!chipsReady) {
+      const clicked = await this.page.evaluate((kws) => {
+        const hit = [...document.querySelectorAll('.mj-left-tool *, .mj-theme-page *')].find(e => {
+          const t = (e.innerText || '').trim().toLowerCase();
+          return kws.includes(t) && e.children.length <= 1 && e.offsetParent !== null &&
+            e.getBoundingClientRect().width < 300 && e.getBoundingClientRect().height < 80;
+        });
+        if (!hit) return null;
+        const info = { text: (hit.innerText || '').trim(), class: String(hit.className || '') };
+        hit.click(); return info;
+      }, kw);
+      if (!clicked) {
+        const error = new Error('无法确认模型家族，已在提交前停止'); error.code = 'VERSION_NOT_APPLIED'; throw error;
+      }
+      this._familySelection = clicked;
     } else {
-      console.log(`[MXAI] 警告: 未找到模型家族按钮（${wantNiji ? 'Niji' : 'Midjourney'}），使用站点当前默认版本继续生成`);
+      this._familySelection = { reusedVisibleChips: true };
     }
 
-    // 显式点选版本芯片（如 v8.2 / v7.0 / NJ7.0），不依赖站点默认。
-    // 版本芯片类为 tile-selector-item，当前选中项带 is-selected。
-    const verNorm = (version || '').toString().trim().toLowerCase().replace(/^v/, '');
+    const verNorm = (version || '').toString().trim().toLowerCase().replace(/^(?:niji|nj|v)/, '');
     const wantVer = wantNiji
       ? (verNorm && /^\d/.test(verNorm) ? verNorm : '7.0')   // Niji 家族默认 NJ7.0
       : (verNorm && /^\d/.test(verNorm) ? verNorm : '8.2');  // Midjourney 家族默认 v8.2
-    const verClicked = await this.page.evaluate((wv) => {
-      const items = Array.from(document.querySelectorAll('.tile-selector-item'));
-      const match = items.find(e => {
-        const t = (e.innerText || '').trim().toLowerCase().replace(/^v/, '');
-        return t === wv;
-      });
-      if (match && !match.className.includes('is-selected')) { match.click(); return true; }
-      if (match) return 'already'; // 已是选中态
-      return false;
-    }, wantVer);
-    if (verClicked === true) console.log(`[MXAI] 已显式选择版本芯片: v${wantVer}`);
-    else if (verClicked === 'already') console.log(`[MXAI] 版本芯片 v${wantVer} 已是选中态`);
-    else console.log(`[MXAI] 警告: 未找到版本芯片 v${wantVer}，使用默认`);
+    const expected = { number: Number(wantVer), niji: wantNiji };
+    // Wait for family-specific chips; ignore hidden selectors and another model family.
+    try {
+      await this.page.waitForFunction(({ number, niji }) => Array.from(document.querySelectorAll('.tile-selector-item')).some(e => {
+        const t = (e.innerText || '').trim().toLowerCase();
+        return e.offsetParent !== null && /^(?:niji|nj)/.test(t) === niji && Number(t.replace(/^(?:niji|nj|v)/, '')) === number;
+      }), expected, { timeout: 5000 });
+      await this.page.evaluate(({ number, niji }) => {
+        const match = Array.from(document.querySelectorAll('.tile-selector-item')).find(e => {
+          const t = (e.innerText || '').trim().toLowerCase();
+          return e.offsetParent !== null && /^(?:niji|nj)/.test(t) === niji && Number(t.replace(/^(?:niji|nj|v)/, '')) === number;
+        });
+        if (match && !match.classList.contains('is-selected')) match.click();
+      }, expected);
+      await this.page.waitForFunction(({ number, niji }) => Array.from(document.querySelectorAll('.tile-selector-item.is-selected')).some(e => {
+        const t = (e.innerText || '').trim().toLowerCase();
+        return e.offsetParent !== null && /^(?:niji|nj)/.test(t) === niji && Number(t.replace(/^(?:niji|nj|v)/, '')) === number;
+      }), expected, { timeout: 5000 });
+    } catch (cause) {
+      const error = new Error('模型版本无法精确确认，已在提交前停止：' + version);
+      error.code = 'VERSION_NOT_APPLIED'; error.cause = cause; throw error;
+    }
+    this._lastVersion = { requested: version, applied: (wantNiji ? 'niji' : 'v') + wantVer, verified: true };
   }
 
   /**
@@ -659,25 +695,48 @@ class MxaiAdapter {
    * @param {string} mode - 'normal' | 'fast'
    */
   async selectMode(mode = 'normal') {
-    const modeText = mode === 'fast' ? '快速' : '普通';
-    const modeBtn = this.page.locator(`div:has-text("模式选择") ~ div >> text="${modeText}"`).first();
-    
-    try {
-      await modeBtn.waitFor({ state: 'visible', timeout: 5000 });
-      await modeBtn.click();
-      console.log(`[MXAI] 已选择模式: ${modeText}`);
-    } catch (e) {
-      // 备用
-      const btns = await this.page.locator(`text="${modeText}"`).all();
-      for (const btn of btns) {
-        try {
-          if (await btn.isVisible()) {
-            await btn.click();
-            return;
-          }
-        } catch (e2) { /* 继续 */ }
+    this._lastMode = { requested: mode, applied: null, verified: false };
+    if (!['normal', 'fast'].includes(mode)) {
+      const error = new Error('不支持的生成模式，已在提交前停止：' + mode);
+      error.code = 'MODE_NOT_APPLIED'; throw error;
+    }
+    const wanted = mode === 'fast' ? '快速' : '普通';
+    const snapshot = ({ target, click, poll = false }) => {
+      const visible = e => e.offsetParent !== null;
+      const text = e => (e.innerText || '').trim();
+      const labels = [...document.querySelectorAll('div,span,label')]
+        .filter(e => visible(e) && text(e) === '模式选择');
+      for (const label of labels) {
+        let container = label.parentElement;
+        for (let depth = 0; container && depth < 4; depth++, container = container.parentElement) {
+          const choices = [...container.querySelectorAll('div,span,button,label')]
+            .filter(e => visible(e) && ['普通', '快速'].includes(text(e)) &&
+              (e.matches('button,[role="button"],.item,.selected-item,.tile-selector-item,.control-item') ||
+               e.classList.contains('is-selected')));
+          if (!choices.some(e => text(e) === '普通') || !choices.some(e => text(e) === '快速')) continue;
+          const chosen = choices.find(e => text(e) === target);
+          if (click && chosen) chosen.click();
+          const active = choices.filter(e => e.classList.contains('selected-item') ||
+            e.classList.contains('is-selected') || e.classList.contains('selected') ||
+            e.classList.contains('control-item-selected') ||
+            e.getAttribute('aria-pressed') === 'true' || e.getAttribute('aria-checked') === 'true');
+          const values = [...new Set(active.map(text))];
+          const verified = values.length === 1 && values[0] === target;
+          return poll ? verified : { requested: target, applied: values.length === 1 ? values[0] : null, verified };
+        }
       }
-      console.log(`[MXAI] 警告: 无法切换模式到 ${modeText}`);
+      return poll ? false : { requested: target, applied: null, verified: false };
+    };
+    try {
+      await this.page.evaluate(snapshot, { target: wanted, click: true });
+      await this.page.waitForFunction(snapshot, { target: wanted, click: false, poll: true }, { timeout: 5000 });
+      const result = await this.page.evaluate(snapshot, { target: wanted, click: false });
+      if (!result.verified) throw new Error('selected mode did not match');
+      this._lastMode = { requested: mode, applied: mode, verified: true };
+      return this._lastMode;
+    } catch (cause) {
+      const error = new Error('无法确认已选中' + wanted + '模式，已在提交前停止，不会退回其他模式');
+      error.code = 'MODE_NOT_APPLIED'; error.cause = cause; throw error;
     }
   }
 
@@ -862,29 +921,26 @@ class MxaiAdapter {
    * 点击立即生成按钮
    */
   async clickGenerate() {
-    const genBtn = this.page.locator('div:has-text("立即生成")').filter({ hasText: '立即生成' }).first();
-    
-    // 更精确：找紫色的立即生成按钮
-    const buttons = await this.page.locator('text=立即生成').all();
-    let clicked = false;
-    
-    for (const btn of buttons) {
-      try {
-        if (await btn.isVisible()) {
-          const box = await btn.boundingBox();
-          if (box && box.x < 700) { // 左侧创作区
-            await btn.click();
-            clicked = true;
-            console.log('[MXAI] 已点击立即生成');
-            break;
-          }
-        }
-      } catch (e) { /* 继续 */ }
+    const buttons = await this.page.getByText('立即生成', { exact: true }).all();
+    let target = null;
+    for (const button of buttons) {
+      if (!await button.isVisible()) continue;
+      if (typeof button.isEnabled === 'function' && !await button.isEnabled()) continue;
+      const box = await button.boundingBox();
+      if (box && box.x < 700) { target = button; break; }
     }
-    
-    if (!clicked) {
-      throw new Error('无法找到并点击立即生成按钮');
+    if (!target) {
+      const error = new Error('没有可用的立即生成按钮，本次未点击生成');
+      error.code = 'GENERATE_UNAVAILABLE'; throw error;
     }
+    // 一次点击异常不能证明平台没有受理，绝不改点另一个按钮。
+    try {
+      await target.click();
+    } catch (cause) {
+      const error = new Error('生成按钮点击结果不明，已停止后续点击，请核查本次平台任务');
+      error.code = 'SUBMISSION_UNCERTAIN'; error.cause = cause; throw error;
+    }
+    console.log('[MXAI] 已完成一次生成按钮点击，等待平台受理回执');
   }
 
   /**
@@ -966,135 +1022,51 @@ class MxaiAdapter {
    * @returns {object} - { success: boolean, message: string, recordId: string }
    */
   async waitForResult(timeout = 120000) {
-    console.log('[MXAI] 等待生成完成...');
-    const startTime = Date.now();
-    const baseline = this._baselineSrcs || new Set();
-    const baselineSerials = this._baselineSerials || new Set();
-    const requiredNew = this._requiredNewImages || 4;
-    // 【2026-09-12】「排队中」是一个真实状态，不是失败：把它单独记账，
-    // 让上层能拿着 serial 走免费的 dl-serial 补下载，而不是盲目重跑（会重复扣积分）。
-    let queueSeen = false;
-    let queueText = '';
-    let unassociatedSeen = false;
-
-    while (Date.now() - startTime < timeout) {
-      await this.page.waitForTimeout(3000);
-
+    console.log('[MXAI] waiting for target result...');
+    const deadline = Date.now() + Math.max(0, Number(timeout) || 0);
+    const baseline = this._baselineSerials || new Set();
+    let target = null;
+    let lastState = null;
+    while (Date.now() < deadline) {
+      await this.page.waitForTimeout(Math.max(0, Math.min(target ? 5000 : 3000, deadline - Date.now())));
       try {
-        const srcs = await this._collectImageSrcs();
-        const newSrcs = [...srcs].filter(s => !baseline.has(s));
-        const serials = await this._collectSerialIds();
-        const newSerials = [...serials].filter(s => !baselineSerials.has(s));
-        const pageText = await this.page.evaluate(() => document.body ? document.body.innerText : '').catch(() => '');
-
-        // 失败判定：只看「本次新 serial 卡片」内的失败文案。
-        // 禁止扫全页 —— 列表里会残留历史失败卡片的旧文案，全页扫描必然误判。
-        if (newSerials.length > 0) {
-          const newestTmp = newSerials.slice().sort((a, b) => {
-            const x = BigInt(b.split('-')[1] || '0');
-            const y = BigInt(a.split('-')[1] || '0');
-            return x < y ? -1 : (x > y ? 1 : 0);
-          })[0];
-          const ownFail = await this.page.evaluate((id) => {
-            const el = document.getElementById(id);
-            const t = el ? (el.innerText || '') : '';
-            return t.match(/(绘图失败|生成失败|出图失败)[：:：]?\s*([^\n]{0,60})/);
-          }, newestTmp).catch(() => null);
-          if (ownFail) {
-            const reason = (ownFail[2] || '未知原因').trim();
-            console.log(`[MXAI] 生成失败（serial ${newestTmp}）: ${reason}`);
-            return { success: false, status: 'page_reported_failed', message: `绘图失败：${reason}`, recordId: newestTmp };
+        if (!target) {
+          const serials = await this._collectSerialIds();
+          const candidates = [...serials].filter(id => !baseline.has(id) && /^serial-\d+$/.test(id));
+          if (candidates.length > 1) {
+            return { success: false, status: 'unassociated_result', recordId: null,
+              retry_allowed: false, message: '同时出现多条新任务，无法确定本次 serial；已停止关联和下载' };
           }
+          target = candidates[0] || null;
+          if (!target) continue;
+          this._submissionConfirmed = true;
+          reportPhase("platform_generating", true);
         }
-
-        const elapsed = Math.round((Date.now() - startTime) / 1000);
-
-        // 完成判定：出现新 serial（最可靠，mxai 4宫格常共用同一 src，按图数判定会漏）
-        if (newSerials.length > 0) {
-          // 选最大数值 serial（最新一条）。
-          const newest = newSerials.slice().sort((a, b) => {
-            const x = BigInt(b.split('-')[1] || '0');
-            const y = BigInt(a.split('-')[1] || '0');
-            return x < y ? -1 : (x > y ? 1 : 0);
-          })[0];
-          // 任务已受理（已扣费），但 MJ 出图需 1-2 分钟；serial 卡片的「下载」按钮
-          // 只在出图完成后才出现 —— 它是比缩略图渲染更可靠的完成信号。
-          // 轮询等待「下载」span 或失败文案，超时仍返回供下载阶段兜底。
-          const waitStart = Date.now();
-          const finishWait = Math.max(60000, timeout - (Date.now() - startTime)); // 用剩余预算等 MJ 出完图（本机实测排队约 11 分钟），总等待不超过 timeout
-          while (Date.now() - waitStart < finishWait) {
-            await this.page.waitForTimeout(5000);
-            const st = await this.page.evaluate((id) => {
-              const el = document.getElementById(id);
-              if (!el) return { done: false, failed: false };
-              const hasDl = [...el.querySelectorAll('span')].some(s => (s.textContent || '').trim() === '下载');
-              return { done: hasDl, failed: /绘图失败|生成失败/.test(el.innerText || '') };
-            }, newest).catch(() => ({ done: false, failed: false }));
-            if (st.failed) {
-              console.log(`[MXAI] 生成失败（serial ${newest} 卡片含失败文案）`);
-              return { success: false, status: 'page_reported_failed', message: `生成失败`, recordId: newest };
-            }
-            if (st.done) {
-              console.log(`[MXAI] 生成完成！serial=${newest} 已出现「下载」按钮（共等待 ${Math.round((Date.now() - startTime) / 1000)}s）`);
-              return { success: true, message: '生成完成', recordId: newest };
-            }
-          }
-          // 【2026-09-12】等满预算还没出「下载」按钮：
-          //   卡片里仍是排队/出图中文案 -> 这是排队未完成（status=queued），必须带着 serial 上报，
-          //   上层用免费的 dl-serial 补下载即可，绝不能当成失败重跑。
-          const still = await this.page.evaluate((id) => {
-            const el = document.getElementById(id);
-            const t = el ? (el.innerText || '') : '';
-            return { text: t.replace(/\s+/g, ' ').slice(0, 120), queued: /排队|排第\s*\d+\s*位|全力出图|生成中|正在生成|队列/.test(t) };
-          }, newest).catch(() => ({ text: '', queued: false }));
-          if (still.queued) {
-            console.log(`[MXAI] serial ${newest} 仍在排队/出图中，返回 status=queued（可用 dl-serial 免费补下载）`);
-            return { success: false, status: 'queued', message: `任务仍在排队/出图（已等待 ${Math.round((Date.now() - startTime) / 1000)}秒）: ${still.text}`, recordId: newest, retry_allowed: false, warn: 'queued' };
-          }
-          console.log(`[MXAI] 警告: serial ${newest} 长时间未出「下载」按钮，交由下载阶段重试`);
-          return { success: true, message: '生成完成（任务完成信号未出现，下载阶段将重试）', recordId: newest, warn: 'finish_timeout' };
-        }
-
-        // 不能只凭 img src 变化判定本次任务完成。页面会懒加载历史图片，
-        // 这会把旧图误报成“新增图”，随后下载最新卡片就会串图。
-        // 必须拿到本次点击生成后新增的 serial；没有可信 serial 就进入人工核查。
-        if (newSrcs.length >= requiredNew || (newSrcs.length > 0 && /绘制完成|生成成功|已生成|出图完成/.test(pageText))) {
-          if (!unassociatedSeen) {
-            console.log(`[MXAI] 检测到图片变化但暂未找到本次 serial，继续等待关联（新增图 ${newSrcs.length}，已等待 ${elapsed}s）`);
-            unassociatedSeen = true;
-          }
-        }
-
-        // 仍处于进行中
-        const queueHit = pageText.match(/(当前排第\s*\d+\s*位|排队中|正在排队|队列中|正在全力出图|生成中|正在生成)/);
-        if (queueHit) {
-          queueSeen = true;
-          queueText = queueHit[1];
-          console.log(`[MXAI] 生成中/排队中（${queueText}）... 已等待 ${elapsed}s（新增图 ${newSrcs.length}）`);
-        } else if (/等待/.test(pageText)) {
-          console.log(`[MXAI] 生成中... 已等待 ${elapsed}s（新增图 ${newSrcs.length}）`);
-        }
-      } catch (e) {
-        console.log(`[MXAI] 等待中检查异常: ${e.message}`);
+        lastState = await this.page.evaluate(id => {
+          const el = document.getElementById(id);
+          if (!el) return { found: false, done: false, queued: false, failed: false, message: '' };
+          const text = el.innerText || '';
+          const failure = text.match(/(?:绘图失败|生成失败|出图失败)[：:]?\s*([^\n]{0,240})/);
+          const reason = failure ? failure[1].replace(/\s+/g, ' ').trim() : '';
+          return { found: true,
+            done: [...el.querySelectorAll('span')].some(e => (e.textContent || '').trim() === '下载'),
+            queued: /排队|排第\s*\d+\s*位|全力出图|生成中|正在生成|队列/.test(text),
+            failed: !!failure, message: reason ? '绘图失败：' + reason : '生成失败' };
+        }, target);
+        if (lastState.failed) return { success: false, status: 'page_reported_failed',
+          recordId: target, message: lastState.message, retry_allowed: false };
+        if (lastState.done) return { success: true, message: '生成完成', recordId: target };
+      } catch (error) {
+        // Keep the bound serial even if the page disappears.
+        console.log('[MXAI] result check error: ' + error.message);
+        lastState = null;
       }
     }
-
-    if (unassociatedSeen) {
-      return {
-        success: false,
-        status: 'unassociated_result',
-        retry_allowed: false,
-        recordId: null,
-        message: '平台页面出现图片变化，但没有找到本次任务对应的 serial，已停止抓图以防串图',
-        warning: '请人工核查平台记录；系统不会自动重提或下载页面最新旧图',
-      };
-    }
-
-    // 【2026-09-12】超时也要分性质：排队中 != 失败。
-    if (queueSeen) {
-      return { success: false, status: 'queued', retry_allowed: false, recordId: null, message: `任务仍在排队（${queueText}），已等待 ${timeout / 1000} 秒；禁止自动重跑，请稍后用免费补下载取回结果` };
-    }
-    return { success: false, status: 'timeout', recordId: null, message: `等待超时（${timeout / 1000}秒）` };
+    const queued = target && lastState?.found && lastState.queued;
+    return { success: false, status: queued ? 'queued' : (target ? 'receipt_pending' : 'timeout'),
+      recordId: target, retry_allowed: false,
+      message: queued ? '本次任务仍在排队或生成中，请按此 serial 查询结果，不要重新提交' :
+        '等待结束，尚未取得本次任务完成信号；保留回执待核查，不会自动重提' };
   }
 
   /**
@@ -1407,32 +1379,25 @@ class MxaiAdapter {
         await this.page.waitForTimeout(1200);
         opened = await this.page.waitForSelector('.el-image-viewer__img', { timeout: 5000 })
           .then(() => true).catch(() => false);
-        if (!opened) {
-          await this.page.locator('.el-image').first().click({ timeout: 5000 }).catch(() => {});
-          await this.page.waitForTimeout(1200);
-          opened = await this.page.waitForSelector('.el-image-viewer__img', { timeout: 5000 })
-            .then(() => true).catch(() => false);
-        }
         if (!opened) { await this.page.keyboard.press('Escape').catch(() => {}); await this.page.waitForTimeout(400); }
       }
-      if (!opened) {
-        const fb = await this._downloadFromDetailDom(this.page, outputDir, prefix);
-        const okRes = settle(fb, '预览器未打开，已回退详情页（已校验）');
-        if (okRes) return okRes;
-        return { ok: false, success: false, downloaded: [], rejected, error: '预览器未能打开，且详情页兜底未拿到合格图片' };
-      }
+      if (!opened) return { ok: false, success: false, downloaded: [], rejected,
+        error: '目标任务预览未打开，已停止下载以防串图' };
 
       await this.page.waitForFunction(() => {
         const v = document.querySelector('.el-image-viewer__img');
         const s = v ? (v.currentSrc || v.src || '') : '';
         return s.includes('outputs');
-      }, { timeout: 10000 }).catch(() => {});
+      }, null, { timeout: 10000 }).catch(() => {});
 
       const src = await this.page.evaluate(() => {
         const v = document.querySelector('.el-image-viewer__img');
         const s = v ? (v.currentSrc || v.src || '') : '';
         return s.includes('outputs') ? s : '';
       });
+      if (!isTargetOutputUrl(src, newestId)) {
+        return { ok: false, success: false, downloaded: [], rejected, error: '预览图片与目标 serial 不匹配，已停止下载' };
+      }
       if (src) {
         const buf = await this.page.request.get(src, {
           headers: { Referer: this.mxaiUrl }, timeout: 30000,
@@ -1473,9 +1438,6 @@ class MxaiAdapter {
 
       await this.page.keyboard.press('Escape').catch(() => {});
 
-      const fb2 = await this._downloadFromDetailDom(this.page, outputDir, prefix);
-      const okRes2 = settle(fb2, '已回退详情页（已校验）');
-      if (okRes2) return okRes2;
 
       return {
         ok: false, success: false, downloaded: [], rejected,
@@ -1509,7 +1471,8 @@ class MxaiAdapter {
     if (!this.page) return { ok: false, error: '浏览器未启动' };
 
     // 接收槽：页面把字节推过来时直接落盘（缺陷 G）。
-    this._blobSink = { outputDir, prefix, files: [] };
+    // Unbound Blob bytes are not eligible output; use target responses only.
+    this._blobSink = null;
     const sniffed = [];
     const serialNum = String(serialId || '').replace(/^serial-/, '');
 
@@ -1572,7 +1535,7 @@ class MxaiAdapter {
         if (/^data:|^blob:/.test(u)) return;
         netLog.push({ t: Date.now(), m: req.method(), u: u.slice(0, 200), r: req.resourceType() });
         if (!/\/draw\/outputs\//.test(u) || !/auth_key=/.test(u)) return;
-        if (serialNum && !u.includes(serialNum)) {
+        if (!isTargetOutputUrl(u, serialId)) {
           trace('fastlane: 忽略非本次 serial 的原图直链');
           return;
         }
@@ -1604,7 +1567,7 @@ class MxaiAdapter {
     const onResp = (resp) => {
       try {
         const respUrl = String(resp.url() || '');
-        if (serialNum && !respUrl.includes(serialNum) && /\/draw\/outputs\//.test(respUrl)) return;
+        if (!isTargetOutputUrl(respUrl, serialId)) return;
         const ct = String((resp.headers() || {})['content-type'] || '');
         if (!/image\//.test(ct)) return;
         const len = Number((resp.headers() || {})['content-length'] || 0);
@@ -1660,7 +1623,7 @@ class MxaiAdapter {
       let pageGoneAt = 0;
       let firstCaptureAt = 0;
       while (Date.now() - startedAt < waitMs) {
-        const got = this._blobSink.files.length + sniffed.length;
+        const got = sniffed.length;
         if (got) {
           if (!firstCaptureAt) firstCaptureAt = Date.now();
           // 站点是先发网络请求拿图、再建 Blob 触发下载。网络嗅探往往先命中，
@@ -1689,8 +1652,7 @@ class MxaiAdapter {
 
     // 快车道收尾：页面已死但直链下载还在飞，等它落地再判定。
     for (let i = 0; i < 40 && fastLane.some((x) => !x.done); i++) await lockSleepMs(500);
-    const sink = this._blobSink || { files: [] };
-    const all = sink.files.concat(sniffed);
+    const all = sniffed;
     this._blobSink = null;
     if (!all.length) {
       trace('blob-capture: no bytes captured within ' + waitMs + 'ms');
@@ -1722,7 +1684,7 @@ class MxaiAdapter {
     for (const c of cands) {
       const clean = String(c).replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '').split(' ')[0];
       if (!/^https?:/.test(clean)) continue;
-      if (!/qihuiai\.com/.test(clean)) continue;
+      if (!isTargetOutputUrl(clean.replace('/thumbnail/', '/outputs/'), serialId)) continue;
       urls.push(clean);
       const noQuery = clean.split('?')[0];
       const variants = [
@@ -1735,7 +1697,7 @@ class MxaiAdapter {
       ];
       for (const v of variants) if (/^https?:/.test(v)) urls.push(v);
     }
-    const uniq = [...new Set(urls)].filter((u) => !/prasie|toolbar|\/images\//.test(u));
+    const uniq = [...new Set(urls)].filter(u => isTargetOutputUrl(u, serialId));
     trace('url-fetch trying ' + uniq.length + ' urls');
 
     for (const u of uniq.slice(0, 14)) {
@@ -1965,19 +1927,36 @@ class MxaiAdapter {
       allowAspectDegrade = false,
     } = options;
 
-    const outputStem = safeOutputStem(outputName || filePrefix);
+    this._submissionStarted = false;
+    this._submissionConfirmed = false;
+    this._lastMode = null;
+    this._lastVersion = null;
+    const outputStem = safeOutputStem(outputName || filePrefix) + "_" + crypto.createHash('sha256').update(String(taskId || filePrefix)).digest('hex').slice(0, 12);
     const startedAt = new Date().toISOString();
     const t0 = Date.now();
     const promptHash = crypto.createHash('sha256').update(String(prompt)).digest('hex').slice(0, 16);
     const adapter = this;
     const baseReceipt = {
       task_id: taskId,
+      effective_prompt: String(prompt),
+      requested_version: version,
+      requested_mode: mode,
+      parameter_verification: 'transport_only',
       prompt_hash: promptHash,
       requested_aspect: aspect,
       output_name: outputStem,
     };
 
     const finish = (res) => {
+      const submitted = typeof res.submitted === "boolean" ? res.submitted : (adapter._submissionConfirmed ? true : (adapter._submissionStarted ? null : false));
+      res.submitted = submitted;
+      res.requestedMode = mode;
+      res.appliedMode = adapter._lastMode?.applied || null;
+      res.modeVerified = adapter._lastMode?.verified === true;
+      res.requestedVersion = version;
+      res.appliedVersion = adapter._lastVersion?.applied || null;
+      res.versionVerified = adapter._lastVersion?.verified === true;
+      reportPhase(res.success ? "completed" : "result_pending", submitted);
       const files = (res.images || []).map((f) => {
         try {
           const i = inspectFile(f);
@@ -1987,6 +1966,12 @@ class MxaiAdapter {
       adapter._writeReceipt({
         ...baseReceipt,
         serial: res.recordId || null,
+        version_applied: adapter._lastVersion?.applied || null,
+        version_verified: adapter._lastVersion?.verified === true,
+        mode_applied: adapter._lastMode?.applied || null,
+        mode_verified: adapter._lastMode?.verified === true,
+        submitted,
+        billed: typeof res.billed === "boolean" ? res.billed : null,
         // 规格对账：requested（调用方要的）与 applied（页面真实点中的）分开记，防止再次静默降级。
         aspect_requested: aspect,
         aspect_note: (adapter._lastAspect && adapter._lastAspect.note) || null,
@@ -2048,7 +2033,12 @@ class MxaiAdapter {
       this._baselineSrcs = await this._collectImageSrcs();
       this._baselineSerials = await this._collectSerialIds();
       this._submissionStarted = false;
+      // Persist ambiguous click intent before contacting the platform.
+      this._submissionStarted = true;
+      reportPhase("submitting", null);
       await this.clickGenerate();
+      // A successful browser click is not a platform acceptance receipt.
+      // waitForResult confirms submission only after binding a new serial.
       // 点击成功后即视为“可能已扣费/已入队”；后续超时不得自动重试。
       this._submissionStarted = true;
 
@@ -2099,6 +2089,7 @@ class MxaiAdapter {
       }
 
       // 8. 通过页面「下载」按钮获取高清原图，并强制内容校验
+      reportPhase("downloading", true);
       const dl = await this.downloadLatestViaButton(outputDir, outputStem, 120000, result.recordId)
         .catch((e) => ({ ok: false, success: false, downloaded: [], rejected: [], error: e.message }));
 
@@ -2131,10 +2122,14 @@ class MxaiAdapter {
       // 避免上层把它和"已扣费的失败"混为一谈而盲目重跑。
       const status = e.code ? String(e.code).toLowerCase() : 'exception';
       const extra = {};
-      if (e.code === 'ASPECT_NOT_APPLIED') {
+      if (['ASPECT_NOT_APPLIED', 'MODE_NOT_APPLIED', 'VERSION_NOT_APPLIED', 'PROMPT_NOT_APPLIED'].includes(e.code) && !this._submissionStarted) {
         extra.submitted = false;
         extra.billed = false;
         extra.aspect = e.aspect || null;
+      }
+      if (e.code === 'GENERATE_UNAVAILABLE') {
+        extra.submitted = false;
+        extra.billed = false;
       }
       return finish({ success: false, status, message: e.message, images: [], recordId: null, ...extra });
     }
@@ -2149,6 +2144,7 @@ module.exports = MxaiAdapter;
 module.exports.stripAspectParams = stripAspectParams;
 MxaiAdapter.stripAspectParams = stripAspectParams;
 module.exports.safeOutputStem = safeOutputStem;
+module.exports.isTargetOutputUrl = isTargetOutputUrl;
 MxaiAdapter.safeOutputStem = safeOutputStem;
 
 // 命令行测试入口

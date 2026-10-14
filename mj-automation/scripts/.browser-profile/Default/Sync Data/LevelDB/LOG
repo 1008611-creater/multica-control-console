@@ -1,2 +1,3 @@
-2026/09/30-21:46:07.441 4ff4 Creating DB E:\codex\multica\mj-automation\scripts\.browser-profile\Default\Sync Data\LevelDB since it was missing.
-2026/09/30-21:46:07.471 4ff4 Reusing MANIFEST E:\codex\multica\mj-automation\scripts\.browser-profile\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/10/07-23:45:53.683 15b5c Reusing MANIFEST E:\codex\multica\mj-automation\scripts\.browser-profile\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/10/07-23:45:53.683 15b5c Recovering log #3
+2026/10/07-23:45:53.684 15b5c Reusing old log E:\codex\multica\mj-automation\scripts\.browser-profile\Default\Sync Data\LevelDB/000003.log 

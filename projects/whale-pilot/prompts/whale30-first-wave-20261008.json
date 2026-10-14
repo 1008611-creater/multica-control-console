@@ -1,0 +1,510 @@
+{
+  "project_id": "whale-pilot-v1",
+  "session_id": "whale30-20261008",
+  "title": "鲸歌计划",
+  "duration_seconds": 30,
+  "authoritative_source": "C:\\Users\\lsb\\Pictures\\1aigc\\鲸鱼\\先导片\\剧本\\权威分镜\\鲸鱼 先导片分镜头_权威副本.docx",
+  "source_sha256": "6e5b51fc021eee31c9b06b4d5c609cc237774d7f7c69e613b34bfe8f92f5dc62",
+  "generation_authorization": {
+    "granted": true,
+    "user_statement": "就是《鲸歌计划》，先规划30s悬疑试片，给我具体镜头、资产和首批提示词，然后给你1000个普通模式v8.2模型的生成额度 你可以随意生成",
+    "max_generation_requests": 1000,
+    "model": "v8.2",
+    "mode": "normal",
+    "scope": "本次鲸歌计划试片分镜、人物与场景资产、相关展示图；允许分轮，额度是上限",
+    "quota_unit": "generation_request_not_downloaded_image",
+    "reference_upload_authorized": false,
+    "video_generation_authorized": false,
+    "publication_authorized": false
+  },
+  "output_dir": "E:\\Multica-Control-Console\\mj-automation\\output\\whale30-20261008",
+  "first_wave_request_count": 24,
+  "items": [
+    {
+      "id": "D01-V1",
+      "name": "幽暗海水与巨大远影-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An underwater extreme wide shot in unlocated abyssal water. A tiny sparse trail of suspended particles crosses the near foreground. Far behind it, one enormous indistinct asymmetrical dark mass fades into blue-black water. Its shape is unreadable, neither a recognizable whale nor a visible creature anatomy. No eye, jaw or mouth is revealed. Almost all of the frame is negative space, just enough diffuse silver backscatter to sense impossible scale. The mass is still distant, not passing the camera yet.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810801
+      },
+      "asset_id": "D01",
+      "shot_ids": [
+        "T02"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D01-V2",
+      "name": "幽暗海水与巨大远影-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An underwater extreme wide shot in unlocated abyssal water. A tiny sparse trail of suspended particles crosses the near foreground. Far behind it, one enormous indistinct asymmetrical dark mass fades into blue-black water. Its shape is unreadable, neither a recognizable whale nor a visible creature anatomy. No eye, jaw or mouth is revealed. Almost all of the frame is negative space, just enough diffuse silver backscatter to sense impossible scale. The mass is still distant, not passing the camera yet.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810802
+      },
+      "asset_id": "D01",
+      "shot_ids": [
+        "T02"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D02-V1",
+      "name": "兔子洞号监听船舱-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Inside the cramped research cabin of the vessel Rabbit Hole, an empty listening station occupies the left third, an aged steel desk with a compact acoustic receiver, wired over-ear headphones hanging at the desk edge and a small dark glass monitor. One circular porthole on the right shows dull grey water. Cold instrument glow and one dim amber task lamp, practical patched cabling, consistent human-scale geometry, view from the doorway at seated eye height. No readable screen content and no person, a reusable empty set plate.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 70,
+        "chaos": 3,
+        "seed": 810811
+      },
+      "asset_id": "D02",
+      "shot_ids": [
+        "T03"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D02-V2",
+      "name": "兔子洞号监听船舱-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Inside the cramped research cabin of the vessel Rabbit Hole, an empty listening station occupies the left third, an aged steel desk with a compact acoustic receiver, wired over-ear headphones hanging at the desk edge and a small dark glass monitor. One circular porthole on the right shows dull grey water. Cold instrument glow and one dim amber task lamp, practical patched cabling, consistent human-scale geometry, view from the doorway at seated eye height. No readable screen content and no person, a reusable empty set plate.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 70,
+        "chaos": 3,
+        "seed": 810812
+      },
+      "asset_id": "D02",
+      "shot_ids": [
+        "T03"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D03-V1",
+      "name": "木卫二冰下探测器-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An extreme wide underwater view beneath the thick ice shell of Europa. A tiny unmarked scientific descent probe occupies the upper-right third, its one narrow cold-white searchlight reaches down into an immense empty black ocean. The underside of pale fractured ice forms a heavy roof across the upper edge. Fine illuminated particles near the beam and almost total darkness beyond it, no visible animal or structure. The probe has just entered the water and has not reached the abyss.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810821
+      },
+      "asset_id": "D03",
+      "shot_ids": [
+        "T06"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D03-V2",
+      "name": "木卫二冰下探测器-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An extreme wide underwater view beneath the thick ice shell of Europa. A tiny unmarked scientific descent probe occupies the upper-right third, its one narrow cold-white searchlight reaches down into an immense empty black ocean. The underside of pale fractured ice forms a heavy roof across the upper edge. Fine illuminated particles near the beam and almost total darkness beyond it, no visible animal or structure. The probe has just entered the water and has not reached the abyss.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810822
+      },
+      "asset_id": "D03",
+      "shot_ids": [
+        "T06"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D04-V1",
+      "name": "阴云薄雾海面-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A low ocean-level wide view of an unlocated grey sea beneath dense overcast sky. Thin fog hangs above long slow swells, a low horizon at the upper third. One modest swell in the foreground, empty middle distance, distant horizon barely visible, dim silver light breaking through a narrow seam in the clouds. No boat, land, animal or spectacle, a quiet shot before the camera descends under the surface.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 65,
+        "chaos": 3,
+        "seed": 810831
+      },
+      "asset_id": "D04",
+      "shot_ids": [
+        "T01"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D04-V2",
+      "name": "阴云薄雾海面-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A low ocean-level wide view of an unlocated grey sea beneath dense overcast sky. Thin fog hangs above long slow swells, a low horizon at the upper third. One modest swell in the foreground, empty middle distance, distant horizon barely visible, dim silver light breaking through a narrow seam in the clouds. No boat, land, animal or spectacle, a quiet shot before the camera descends under the surface.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 65,
+        "chaos": 3,
+        "seed": 810832
+      },
+      "asset_id": "D04",
+      "shot_ids": [
+        "T01"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D05-V1",
+      "name": "木卫二探测器抵达冰壳-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A cinematic orbital view of Europa, its white-blue fractured ice surface filling most of the lower frame. A tiny physically plausible compact unmarked scientific probe approaches from upper right towards a dark fracture region, Jupiter only a distant softly lit partial disk at the extreme background edge. Clean scale relationship, cold reflected light, no fire in vacuum, no impact yet, no cracked opening yet. The first frame of a controlled descent towards the ice.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 4,
+        "seed": 810841
+      },
+      "asset_id": "D05",
+      "shot_ids": [
+        "T05"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D05-V2",
+      "name": "木卫二探测器抵达冰壳-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A cinematic orbital view of Europa, its white-blue fractured ice surface filling most of the lower frame. A tiny physically plausible compact unmarked scientific probe approaches from upper right towards a dark fracture region, Jupiter only a distant softly lit partial disk at the extreme background edge. Clean scale relationship, cold reflected light, no fire in vacuum, no impact yet, no cracked opening yet. The first frame of a controlled descent towards the ice.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 4,
+        "seed": 810842
+      },
+      "asset_id": "D05",
+      "shot_ids": [
+        "T05"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D06-V1",
+      "name": "未知存在冷银侧翼局部-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A close underwater view in dark water. Only one broad curved cold-silver edge of an unidentified enormous submerged object is visible entering at the far right. Its torn surface catches a single restrained narrow highlight; everything beyond that fragment disappears into black water. No complete body, whale head, eye, animal tail or recognizable machine design. Sparse foreground particles, the object has not yet swept across the lens, motion-ready suspense composition.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 80,
+        "chaos": 3,
+        "seed": 810851
+      },
+      "asset_id": "D06",
+      "shot_ids": [
+        "T08"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "D06-V2",
+      "name": "未知存在冷银侧翼局部-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A close underwater view in dark water. Only one broad curved cold-silver edge of an unidentified enormous submerged object is visible entering at the far right. Its torn surface catches a single restrained narrow highlight; everything beyond that fragment disappears into black water. No complete body, whale head, eye, animal tail or recognizable machine design. Sparse foreground particles, the object has not yet swept across the lens, motion-ready suspense composition.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 80,
+        "chaos": 3,
+        "seed": 810852
+      },
+      "asset_id": "D06",
+      "shot_ids": [
+        "T08"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A01-V1",
+      "name": "兰伯特身份候选-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Identity casting portrait of Lambert, an invented weary ocean-acoustics researcher, proposed appearance rather than a locked identity: a man in his early forties with a lean angular face, short dark brown slightly disordered hair, a faint stubble beard, tired grey eyes, weathered navy canvas work jacket over a simple grey knit shirt. Single waist-up three-quarter portrait, sitting still, hands out of frame, calm intent expression before hearing an unexpected sound. Simple dark blurred cabin background, natural pores, modest cold side light, no glamorous fashion styling.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 55,
+        "chaos": 3,
+        "seed": 810861
+      },
+      "asset_id": "A01",
+      "shot_ids": [
+        "T03",
+        "T07"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A01-V2",
+      "name": "兰伯特身份候选-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Identity casting portrait of Lambert, an invented weary ocean-acoustics researcher, proposed appearance rather than a locked identity: a man in his early forties with a lean angular face, short dark brown slightly disordered hair, a faint stubble beard, tired grey eyes, weathered navy canvas work jacket over a simple grey knit shirt. Single waist-up three-quarter portrait, sitting still, hands out of frame, calm intent expression before hearing an unexpected sound. Simple dark blurred cabin background, natural pores, modest cold side light, no glamorous fashion styling.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 55,
+        "chaos": 3,
+        "seed": 810862
+      },
+      "asset_id": "A01",
+      "shot_ids": [
+        "T03",
+        "T07"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A02-V1",
+      "name": "左小月身份候选-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Identity casting portrait of Zuo Xiaoyue, an invented planetary-science researcher, proposed appearance rather than a locked identity: a Chinese woman in her early thirties, straight black jaw-length hair tucked behind one ear, oval face, dark eyes, wearing a plain charcoal knit top with a faded slate-blue overshirt. One waist-up three-quarter portrait, hands out of frame, attentive and quietly skeptical expression. Simple dark blurred research room background, cool monitor side light with a faint warm rim, natural skin texture, no glamour posing.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 55,
+        "chaos": 3,
+        "seed": 810871
+      },
+      "asset_id": "A02",
+      "shot_ids": [
+        "T04"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A02-V2",
+      "name": "左小月身份候选-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Identity casting portrait of Zuo Xiaoyue, an invented planetary-science researcher, proposed appearance rather than a locked identity: a Chinese woman in her early thirties, straight black jaw-length hair tucked behind one ear, oval face, dark eyes, wearing a plain charcoal knit top with a faded slate-blue overshirt. One waist-up three-quarter portrait, hands out of frame, attentive and quietly skeptical expression. Simple dark blurred research room background, cool monitor side light with a faint warm rim, natural skin texture, no glamour posing.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 55,
+        "chaos": 3,
+        "seed": 810872
+      },
+      "asset_id": "A02",
+      "shot_ids": [
+        "T04"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A03-V1",
+      "name": "科研档案工作站母板-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A dark compact planetary-research archival room, no person present. A single ageing scientific monitor dominates the left half of an uncluttered desk, showing an unmistakable softly rendered Jupiter disk and swirling ochre cloud bands without text. Nearby modest cables and an old hard drive, concrete-grey and matte steel surfaces, faint glass reflections. Right half left open for a future seated researcher, cold blue room shadows and a very small amber indicator, no institution signage.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 70,
+        "chaos": 3,
+        "seed": 810881
+      },
+      "asset_id": "A03",
+      "shot_ids": [
+        "T04"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A03-V2",
+      "name": "科研档案工作站母板-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A dark compact planetary-research archival room, no person present. A single ageing scientific monitor dominates the left half of an uncluttered desk, showing an unmistakable softly rendered Jupiter disk and swirling ochre cloud bands without text. Nearby modest cables and an old hard drive, concrete-grey and matte steel surfaces, faint glass reflections. Right half left open for a future seated researcher, cold blue room shadows and a very small amber indicator, no institution signage.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 70,
+        "chaos": 3,
+        "seed": 810882
+      },
+      "asset_id": "A03",
+      "shot_ids": [
+        "T04"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A04-V1",
+      "name": "监听仪器道具近景-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A tight close-up of a compact worn acoustic receiver on the same modest research-boat desk. Its recessed monitor is dark green-blue glass with a faint empty horizontal center line, deliberately blank for later waveform design. Practical knurled knobs and two subtle indicator lights, fine salt wear on matte charcoal metal, a headphone cable leaving lower left, physically plausible perspective and straight screen edges. No digits, letters, dramatic neon waveform or hands.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 55,
+        "chaos": 2,
+        "seed": 810891
+      },
+      "asset_id": "A04",
+      "shot_ids": [
+        "T07"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A04-V2",
+      "name": "监听仪器道具近景-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A tight close-up of a compact worn acoustic receiver on the same modest research-boat desk. Its recessed monitor is dark green-blue glass with a faint empty horizontal center line, deliberately blank for later waveform design. Practical knurled knobs and two subtle indicator lights, fine salt wear on matte charcoal metal, a headphone cable leaving lower left, physically plausible perspective and straight screen edges. No digits, letters, dramatic neon waveform or hands.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 55,
+        "chaos": 2,
+        "seed": 810892
+      },
+      "asset_id": "A04",
+      "shot_ids": [
+        "T07"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A05-V1",
+      "name": "船舱内兰伯特中近景候选-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A single man with proposed Lambert casting, early forties, short dark brown slightly disordered hair, faint stubble, weary angular face, navy canvas work jacket and grey knit shirt, sits at the left side of a cramped research cabin. Wired headphones rest over his ears. He is leaning slightly towards a dark acoustic receiver but has not reacted yet, restrained alert posture, hands mostly below desk edge. Circular porthole with dull grey water at right, one small amber task lamp, coherent cabin proportions and an unobstructed profile silhouette.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 65,
+        "chaos": 2,
+        "seed": 810901
+      },
+      "asset_id": "A05",
+      "shot_ids": [
+        "T03",
+        "T07"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A05-V2",
+      "name": "船舱内兰伯特中近景候选-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A single man with proposed Lambert casting, early forties, short dark brown slightly disordered hair, faint stubble, weary angular face, navy canvas work jacket and grey knit shirt, sits at the left side of a cramped research cabin. Wired headphones rest over his ears. He is leaning slightly towards a dark acoustic receiver but has not reacted yet, restrained alert posture, hands mostly below desk edge. Circular porthole with dull grey water at right, one small amber task lamp, coherent cabin proportions and an unobstructed profile silhouette.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 65,
+        "chaos": 2,
+        "seed": 810902
+      },
+      "asset_id": "A05",
+      "shot_ids": [
+        "T03",
+        "T07"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A06-V1",
+      "name": "档案站左小月侧脸候选-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A single Chinese woman with proposed Zuo Xiaoyue casting, early thirties, jaw-length straight black hair tucked behind one ear, charcoal knit top and slate-blue overshirt, sits on the right of a dark research desk. Left profile close-up, eyes focused on a monitor positioned to camera left, face not yet turning. Dim cool monitor reflection in her eyes, natural skin, the monitor frame and a soft partial Jupiter disk visible at the extreme left edge. Quiet curiosity rather than overt fear, no text or signage.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 65,
+        "chaos": 2,
+        "seed": 810911
+      },
+      "asset_id": "A06",
+      "shot_ids": [
+        "T04"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    },
+    {
+      "id": "A06-V2",
+      "name": "档案站左小月侧脸候选-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. A single Chinese woman with proposed Zuo Xiaoyue casting, early thirties, jaw-length straight black hair tucked behind one ear, charcoal knit top and slate-blue overshirt, sits on the right of a dark research desk. Left profile close-up, eyes focused on a monitor positioned to camera left, face not yet turning. Dim cool monitor reflection in her eyes, natural skin, the monitor frame and a soft partial Jupiter disk visible at the extreme left edge. Quiet curiosity rather than overt fear, no text or signage.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 65,
+        "chaos": 2,
+        "seed": 810912
+      },
+      "asset_id": "A06",
+      "shot_ids": [
+        "T04"
+      ],
+      "status": "planned",
+      "creative_status": "candidate_not_user_approved",
+      "mode": "normal"
+    }
+  ],
+  "identity_consistency": "文字约束仅为候选，不宣称参考图锁定人物",
+  "workflow": "6次视觉锚点探索 -> 目视审查 -> 18次首批资产/镜头候选 -> 补缺；不强制耗尽额度"
+}

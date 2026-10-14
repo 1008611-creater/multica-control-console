@@ -53,3 +53,15 @@ desktop.ini
 
 # Generated release folders and archives; keep source installer scripts under installers/.
 /dist/
+
+# ---- 浏览器档案（任意位置）：含登录态 Cookies / Local Storage，绝不入库 ----
+.browser-profile/
+**/.browser-profile/
+**/BrowserMetrics*/
+**/Crashpad/
+*.pma
+**/Local State
+**/Login Data*
+
+# ---- 本项目交付物：非控制台内容，体积大，另有存放位置 ----
+/deliverables/

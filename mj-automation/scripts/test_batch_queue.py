@@ -28,7 +28,7 @@ class FakeAdapter:
         if item["id"] in self.fail_ids:
             return {"jobId": job_id, "status": "done", "ok": False, "resultStatus": "rejected", "billed": True, "chargeKnown": True, "message": "模拟失败"}
         output = self.output / f"{item['id']}.png"
-        output.write_bytes(b"png")
+        output.write_bytes(__import__("base64").b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aXsAAAAAASUVORK5CYII="))
         return {"jobId": job_id, "status": "done", "ok": True, "images": [str(output)], "resultStatus": "succeeded", "billed": True, "chargeKnown": True}
 
 
@@ -136,6 +136,39 @@ class BatchQueueTests(unittest.TestCase):
         time.sleep(0.08)
         self.assertEqual(len(adapter.submitted), count)
         self.assertEqual(manager2.get_state("sim-batch")["status"], "completed")
+
+
+    def test_terminal_local_job_with_platform_queue_pauses_without_duplicate_dispatch(self):
+        adapter = FakeAdapter(self.root / "output")
+        adapter.get = lambda job_id: {"jobId": job_id, "status": "done", "ok": False,
+            "resultStatus": "queued", "submitted": True, "chargeKnown": False,
+            "recordId": "serial-123", "retryAllowed": False, "message": "platform queue fixture"}
+        manager = self.make_manager(self.root, adapter)
+        payload = self.payload(2)
+        payload["profile_mode"] = "shared"
+        payload["concurrency"] = 1
+        manager.create(payload)
+        manager.start("sim-batch", True)
+        self.assertTrue(wait_until(lambda: manager.get_state("sim-batch")["status"] == "paused"))
+        state = manager.get_state("sim-batch")
+        self.assertEqual(state["items"][0]["status"], "result_pending")
+        self.assertIsNone(state["items"][0]["slot"])
+        self.assertIn("serial-123", state["items"][0]["failureReason"])
+        self.assertEqual(state["items"][1]["status"], "pending")
+        self.assertEqual(adapter.submitted, ["task-0"])
+        manager2 = self.make_manager(self.root, adapter)
+        time.sleep(0.08)
+        self.assertEqual(manager2.get_state("sim-batch")["status"], "paused")
+        self.assertEqual(adapter.submitted, ["task-0"])
+
+    def test_live_local_job_with_queue_status_keeps_running(self):
+        manager = self.make_manager(self.root, FakeAdapter(self.root / "output"))
+        state = manager.create(self.payload(1))
+        item = state["items"][0]
+        item.update({"status": "running", "slot": 1})
+        manager._finalize_job(state, item, {"status": "running", "resultStatus": "queued"})
+        self.assertEqual(item["status"], "running")
+        self.assertEqual(item["slot"], 1)
 
 
 if __name__ == "__main__":

@@ -210,3 +210,20 @@ AIGC 抽卡采用“一批一个 Multica 任务”的方式。Multica 保存批�
 - `dist/Multica-Control-Console-Setup-2026-09-28-product.exe`
 
 仍待验证：另一台 Windows 首次安装、代码签名、真实平台登录、真实付费提交和真实成品回收。
+
+## 2026-10-07：创作工作台的补充架构
+
+前端采用准备、批次、图片、连接四空间；参数由 `workbench_params.py` 校验，图库由 `workbench_assets.py` 只读关联真实 jobs/requests/batches/attemptHistory/receipts，标注另存 run/library-annotations.json。原始与有效提示词分开，平台采用未验时记录 transport_only。
+
+提交前持久化唯一完整请求意图；未知派发沿用原 jobId，禁止 force 绕过去重。shared 实际一路，per_slot 本地最多三路；取消仍接收已提交回执。`MJ_RUN_DIR` 可隔离控制/标注路径，其他运行目录由相应环境变量明确指定。
+
+`/control/` 拒绝非同源 Origin，保留 `/v1` 画布跨域契约。便携包构建检查独立 Python 依赖，新目录分发不包含用户资料。详细决定与边界见 [ADR 0011](./adr/0011-creative-workbench.md) 和 [本轮验收](./workbench-upgrade-2026-10-07.md)。
+
+## 图片位置、交付与公开发行（2026-10-08）
+
+- 图库纯筛选、排序、参数差异与复用判断位于 control/gallery-logic.js；前端与 Node 测试共用判断，保持原生页面与无副作用数据处理。
+- GET/PATCH /control/storage 读取和保存原图默认目录及素材目录，持久化于 run/library-storage.json；新批次采用默认，已保存批次沿用自身 outputDir。
+- POST /control/assets/deliver 只接受图库 ID 数组，不接受客户端源路径；索引重新核对源图，目标目录拒绝链接、磁盘根及程序/运行状态目录，使用同目录临时文件和不覆盖的原子发布。
+- 素材副本位于用户选择目录的 multica-assets 子目录；真实字节完整哈希校验，若原图与完整回执哈希不同则拒绝交付。来源 JSON 与图片分别可追溯；已有副本校验通过后复用，冲突逐项报错。
+- 私有控制接口沿用同源 Origin 限制；素材复制和复用不调用生成接口。
+- 对外发布采用显式软件源码清单的独立干净仓库，独立于本地项目、登录资料、成品和已有 Git 历史。唯一软件发行索引为 dist/AUTHORITY.json，具体验收与回滚见 workbench-authority-2026-10-08.md。

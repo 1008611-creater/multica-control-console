@@ -5,6 +5,6 @@
   "description": "Auditable Multica content-production workspace",
   "scripts": {
     "verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1",
-    "test": "node --test mj-automation/scripts/production_machine.test.mjs && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test.ps1"
+    "test": "node --test mj-automation/scripts/production_machine.test.mjs mj-automation/scripts/gallery-logic.test.cjs && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test.ps1"
   }
 }

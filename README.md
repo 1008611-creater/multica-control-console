@@ -1,6 +1,16 @@
+# 当前软件权威发行：2026.10.08.2
+
+软件权威源码为公开仓库 `1008611-creater/multica-mj-workbench` 的 tag `v2026.10.08.2`；安装包在对应 Release assets。本机 `E:/Multica-Control-Console` 已更新并重新打开，默认直接进入新版创作工作区，运行桥返回同一版本。安装包与公开源码、本机程序文件已逐一核对。本轮没有新增付费生成。
+
+权威索引：`dist/AUTHORITY.json`；完整交付、保留检查和未验环节见 [2026-10-08 图库与权威发行](docs/workbench-authority-2026-10-08.md)。之前的 current 与旧 Setup 仅保留为历史，不能当成最新包。新界面视觉验收与 supent 实际素材位置仍待人工复核。
+
+以下为原控制台工程说明和历史阶段记录；本仓库历史包含本机浏览器档案，不得直接作为软件发行历史推送。公开软件仓库采用安全源码清单的独立快照。
+
 # Multica 本地抽卡工作台工程仓库
 
 工作目录：`E:\codex\multica`。本仓库维护 Windows 本地抽卡工作台的中文界面、桥接源码、安装与分发脚本、项目规则和可核验回执。
+
+当前唯一权威 Windows 发行入口：`dist/Multica-Control-Console-2026.10.08.2.zip`，公开软件仓库同版本 Release assets 已上传并核对哈希。本机正式安装 `E:/Multica-Control-Console` 运行新版；旧分发因执行工具策略尚未删除，作为历史副本，不再具有权威性。本机任务和图片保留，验收与证据见 [权威发行与入口修复](docs/workbench-authority-2026-10-08.md)。
 
 ## 项目分工
 

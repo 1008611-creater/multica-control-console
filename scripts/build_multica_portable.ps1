@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([string]$Version = '2026-10-03-product')
+param([string]$Version = 'current')
 $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $DistRoot = Join-Path $RepoRoot 'dist'
@@ -16,6 +16,14 @@ $distResolved = (Resolve-Path -LiteralPath $DistRoot).Path
 if (Test-Path -LiteralPath $PackageRoot) {
   $candidate = (Resolve-Path -LiteralPath $PackageRoot).Path
   if (-not $candidate.StartsWith($distResolved + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Refusing to remove a path outside dist.' }
+  # A previously launched portable directory may be an installation, not build cache.
+  foreach ($protected in @('config','runtime\browser-profile','runtime\webview-profile','mj-automation\run','mj-automation\output','mj-automation\archive','mj-automation\receipts')) {
+    $protectedPath = Join-Path $candidate $protected
+    if (Test-Path -LiteralPath $protectedPath) {
+      $userFiles = @(Get-ChildItem -LiteralPath $protectedPath -File -Recurse -Force | Where-Object { $_.Name -notin @('README.txt','README.md','local.ps1.example') })
+      if ($userFiles.Count -gt 0) { throw '目标便携目录已有本机资料，拒绝覆盖；请使用新的 Version 构建到新目录。' }
+    }
+  }
   Remove-Item -LiteralPath $candidate -Recurse -Force
 }
 if (Test-Path -LiteralPath $ZipPath) { Remove-Item -LiteralPath $ZipPath -Force }
@@ -30,23 +38,18 @@ function Copy-Required([string]$Source, [string]$Destination) {
   if ($parent) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
   Copy-Item -LiteralPath $Source -Destination $Destination -Recurse -Force
 }
-function Copy-DirectoryFast([string]$Source, [string]$Destination, [string[]]$ExcludeDirectories = @()) {
+function Copy-DirectoryFast([string]$Source, [string]$Destination, [string[]]$ExcludeDirectories = @(), [string[]]$ExcludeFiles = @()) {
   if (-not (Test-Path -LiteralPath $Source -PathType Container)) { throw ('Missing required source directory: ' + $Source) }
   New-Item -ItemType Directory -Force -Path $Destination | Out-Null
   $robocopy = Join-Path $env:SystemRoot 'System32\robocopy.exe'
   $arguments = @($Source, $Destination, '/E', '/COPY:DAT', '/DCOPY:DAT', '/R:1', '/W:1', '/NFL', '/NDL', '/NJH', '/NJS', '/NP')
   if ($ExcludeDirectories.Count -gt 0) { $arguments += '/XD'; $arguments += $ExcludeDirectories }
+  if ($ExcludeFiles.Count -gt 0) { $arguments += '/XF'; $arguments += $ExcludeFiles }
   & $robocopy @arguments | Out-Null
   if ($LASTEXITCODE -ge 8) { throw ('Directory copy failed: ' + $Source + ' (robocopy exit ' + $LASTEXITCODE + ')') }
 }
-Copy-Required (Join-Path $RepoRoot 'mj-automation\scripts') (Join-Path $PackageRoot 'mj-automation\scripts')
+Copy-DirectoryFast (Join-Path $RepoRoot 'mj-automation\scripts') (Join-Path $PackageRoot 'mj-automation\scripts') @('.browser-profile','__pycache__') @('.browser-profile.bridge.lock')
 Copy-Required (Join-Path $RepoRoot 'mj-automation\start_mj_bridge.ps1') (Join-Path $PackageRoot 'mj-automation\start_mj_bridge.ps1')
-$profileLeak = Join-Path $PackageRoot 'mj-automation\scripts\.browser-profile'
-if (Test-Path -LiteralPath $profileLeak) {
-  $resolvedLeak = (Resolve-Path -LiteralPath $profileLeak).Path
-  if (-not $resolvedLeak.StartsWith((Join-Path $PackageRoot 'mj-automation\scripts') + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Refusing to remove a path outside the package scripts directory.' }
-  Remove-Item -LiteralPath $resolvedLeak -Recurse -Force
-}
 Copy-Required (Join-Path $RepoRoot 'mj-automation\control') (Join-Path $PackageRoot 'mj-automation\control')
 foreach ($relative in @('Install-Multica.cmd','Setup-Multica.cmd','Start-Multica.cmd','Stop-Multica.cmd','Open-Control.cmd','README_FIRST_RUN.md')) {
   Copy-Required (Join-Path $RepoRoot $relative) (Join-Path $PackageRoot $relative)
@@ -79,7 +82,12 @@ if (Test-Path -LiteralPath $bundledPythonExe) {
   New-Item -ItemType Directory -Force -Path $bundledPythonTarget | Out-Null
   $bundledSitePackages = Join-Path $bundledPythonTarget 'Lib\site-packages'
   Copy-DirectoryFast $bundledPythonHome $bundledPythonTarget @((Join-Path $bundledPythonHome 'Lib\site-packages'))
-  if (Test-Path -LiteralPath $bundledSitePackages) { Remove-Item -LiteralPath $bundledSitePackages -Recurse -Force }
+  if (Test-Path -LiteralPath $bundledSitePackages) {
+    $sitePackagesResolved = (Resolve-Path -LiteralPath $bundledSitePackages).Path
+    $packageResolved = (Resolve-Path -LiteralPath $PackageRoot).Path
+    if (-not $sitePackagesResolved.StartsWith($packageResolved + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Refusing to remove Python packages outside this package.' }
+    Remove-Item -LiteralPath $sitePackagesResolved -Recurse -Force
+  }
   New-Item -ItemType Directory -Force -Path $bundledSitePackages | Out-Null
   $sitePackagesSource = Join-Path $RepoRoot 'runtime\python\Lib\site-packages'
   $sitePackagesTarget = Join-Path $bundledPythonTarget 'Lib\site-packages'
@@ -112,7 +120,7 @@ $manifest = [ordered]@{
   bundledPython = (Test-Path -LiteralPath (Join-Path $runtime 'python\python.exe'))
   bundledNode = (Test-Path -LiteralPath (Join-Path $runtime 'node\node.exe'))
   setupRequiredOnTargetMachine = -not ((Test-Path -LiteralPath (Join-Path $runtime 'python\python.exe')) -and (Test-Path -LiteralPath (Join-Path $runtime 'node\node.exe')) -and (Test-Path -LiteralPath (Join-Path $nodeModules 'playwright\package.json')))
-  externalPrerequisites = @('Microsoft Edge')
+  externalPrerequisites = @('Microsoft Edge', 'Microsoft Edge WebView2 Runtime')
 }
 if ($manifest.setupRequiredOnTargetMachine) { throw 'Runtime dependencies are missing; refusing to create an incomplete package.' }
 $packagePython = Join-Path $runtime 'python\python.exe'
@@ -125,12 +133,3 @@ Compress-Archive -LiteralPath $PackageRoot -DestinationPath $ZipPath -Compressio
 $zip = Get-Item -LiteralPath $ZipPath
 Write-Output ('BUILD OK: ' + $PackageRoot)
 Write-Output ('ZIP: ' + $ZipPath + ' (' + [math]::Round($zip.Length / 1MB, 1) + ' MB)')
-
-
-
-
-
-
-
-
-

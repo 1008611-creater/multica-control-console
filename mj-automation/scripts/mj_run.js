@@ -343,7 +343,7 @@ async function runMaintenance(args) {
     if (mode === 'bg') {
         const prefix = String(inlinePrefix || inlineSerial || args.prefix || ('mj_' + Date.now())).replace(/[\\/:*?"<>|]/g, '_');
         const root = path.resolve(__dirname, '..');
-        const jobsDir = path.join(root, 'run', 'jobs');
+        const jobsDir = path.resolve(process.env.MJ_JOBS_DIR || path.join(root, 'run', 'jobs'));
         try { fs.mkdirSync(jobsDir, { recursive: true }); } catch (e) { /* ignore */ }
         const resultFile = path.join(jobsDir, prefix + '.json');
         const logFile = path.join(jobsDir, prefix + '.log');
@@ -359,6 +359,8 @@ async function runMaintenance(args) {
             __filename,
             '--mode', 'normal',
             '--prompt', prompt,
+            '--source-prompt', String(args['source-prompt'] || prompt),
+            '--params-json', String(args['params-json'] || '{}'),
             '--aspect', String(args.aspect || '9:16'),
             '--out-dir', outputDir,
             '--prefix', prefix,
@@ -381,7 +383,7 @@ async function runMaintenance(args) {
     if (mode === 'job') {
         const prefix = String(inlinePrefix || inlineSerial || args.prefix || '').replace(/[\\/:*?"<>|]/g, '_');
         const root = path.resolve(__dirname, '..');
-        const jobsDir = path.join(root, 'run', 'jobs');
+        const jobsDir = path.resolve(process.env.MJ_JOBS_DIR || path.join(root, 'run', 'jobs'));
         const resultFile = path.join(jobsDir, prefix + '.json');
         const logFile = path.join(jobsDir, prefix + '.log');
         let raw = '';
@@ -572,6 +574,34 @@ async function runMaintenance(args) {
             return;
         }
 
+        // Verify current version and normal-mode controls without generating.
+        if (mode === 'mode-check') {
+            let failure = null;
+            try {
+                if (args.prompt) await adapter.fillPrompt(String(args.prompt));
+                await adapter.selectVersion(args.version || 'v8.2');
+                await adapter.selectMode('normal');
+            } catch (error) { failure = { code: error.code || null, message: error.message, cause: error.cause?.message }; }
+            const dialogs = adapter.page ? await adapter.page.evaluate(() =>
+                [...document.querySelectorAll('[role="dialog"],.el-dialog')]
+                    .filter(e => e.offsetParent !== null && e.getBoundingClientRect().width > 0)
+                    .map(e => ({ text:(e.innerText || '').trim().slice(0, 700),
+                        buttons:[...e.querySelectorAll('button')].map(b => ({text:(b.innerText || '').trim(),cls:String(b.className || ''),ariaLabel:b.getAttribute('aria-label'),html:b.outerHTML.slice(0,1000)})) })).slice(0, 8)) : null;
+            emit({ ok: !failure, status: 'mode-check', submitted: false, billed: false,
+                mode: adapter._lastMode || null, version: adapter._lastVersion || null,
+                promptVerified: args.prompt ? !failure : null, dialogs, failure });
+            process.exitCode = failure ? 6 : 0;
+            return;
+        }
+        // 免费版本诊断：只选择并验证版本，不提交生成。
+        if (mode === 'version-check') {
+            let failure = null;
+            try { await adapter.selectVersion(args.version || 'v8.2'); } catch (error) { failure = { message: error.message, cause: error.cause?.message }; }
+            const chips = await adapter.page.evaluate(() => [...document.querySelectorAll('.tile-selector-item')].map(e => ({ text: (e.innerText || '').trim(), class: String(e.className || ''), visible: e.offsetParent !== null })));
+            emit({ ok: !failure, status: 'version-check', submitted: false, billed: false, version: adapter._lastVersion || null, family: adapter._familySelection || null, failure, chips });
+            process.exitCode = failure ? 6 : 0;
+            return;
+        }
         if (mode === 'probe') {
             const info = await adapter.page.evaluate(() => {
                 const cards = Array.from(document.querySelectorAll('div[id*="serial-"]'));
@@ -591,6 +621,21 @@ async function runMaintenance(args) {
                     pageHasFailedText: /绘图失败|生成失败|出图失败/.test(document.body.innerText || ''),
                     // 站点当前用的是普通 div.item / div.selected-item，老版 Element-Plus 类名已不存在。
                     // 两种选择器都试一遍，否则探针会报空数组，让人误判成「站点改版、档位没了」。
+                    modeControls: [...document.querySelectorAll('div,span,label,button')]
+                        .filter(e => e.offsetParent !== null && e.children.length === 0 && /模式|普通|快速/.test((e.innerText || '').trim()))
+                        .slice(0, 20).map(e => {
+                            const chain = [];
+                            for (let p=e, depth=0; p && depth<4; p=p.parentElement, depth++) {
+                                chain.push({ tag:p.tagName, cls:String(p.className || ''), role:p.getAttribute('role'),
+                                    ariaPressed:p.getAttribute('aria-pressed'), ariaChecked:p.getAttribute('aria-checked'),
+                                    text:(p.innerText || '').trim().slice(0, 180) });
+                            }
+                            return chain;
+                        }),
+                    versionChips: [...document.querySelectorAll('.tile-selector-item')]
+                        .filter(e => e.children.length <= 1 && /^(?:v|nj|niji)\s*\d+(?:\.\d+)?$/i.test((e.innerText || '').trim()))
+                        .map(e => ({ text: (e.innerText || '').trim(), class: String(e.className || ''), visible: e.offsetParent !== null,
+                            parentClass: String(e.parentElement?.className || ''), selected: /selected|active/i.test(String(e.className || '')) })).slice(0, 30),
                     aspectChips: (() => {
                         const ep = Array.from(document.querySelectorAll('.el-radio-button__inner, .el-segmented__item'))
                             .map((e) => (e.textContent || '').trim()).filter(Boolean);
@@ -746,7 +791,7 @@ async function runMaintenance(args) {
         emit({ ok: false, status: 'bad_request', error: '未知 --mode: ' + mode });
         process.exitCode = 1;
     } catch (error) {
-        emit({ ok: false, status: 'exception', error: (error && error.message) || String(error) });
+        emit({ ok: false, status: 'exception', submitted: adapter._submissionStarted ? undefined : false, billed: adapter._submissionStarted ? undefined : false, error: (error && error.message) || String(error) });
         process.exitCode = 3;
     } finally {
         try {
@@ -758,13 +803,25 @@ async function runMaintenance(args) {
 async function main() {
     const args = parseArgs(process.argv.slice(2));
     const prompt = String(args.prompt || '').trim();
+    let generationParams;
+    try {
+        generationParams = JSON.parse(args['params-json'] || '{}');
+        if (!generationParams || Array.isArray(generationParams) || typeof generationParams !== 'object') {
+            throw new Error('params-json 必须是 JSON 对象');
+        }
+    } catch (error) {
+        emit({ ok: false, status: 'bad_request', submitted: false, billed: false,
+            retryAllowed: false, error: '高级参数格式错误，尚未打开浏览器或提交生成：' + error.message });
+        process.exitCode = 1;
+        return;
+    }
     if (adapterError) {
         emit({ ok: false, status: 'adapter_missing', error: adapterError });
         process.exitCode = 4;
         return;
     }
     // 免费维护通道：不出图、不消耗积分，供服务层与人工排查使用。
-    if (args.mode && String(args.mode) !== 'normal') {
+    if (args.mode && !['normal', 'fast'].includes(String(args.mode))) {
         return runMaintenance(args);
     }
     if (!prompt) {
@@ -803,6 +860,17 @@ async function main() {
         const ok = Boolean(result && result.success) && images.length > 0;
         emit({
             ok,
+            prompt: args["source-prompt"] || prompt,
+            effectivePrompt: prompt,
+            version: args.version || "v8.2",
+            params: generationParams,
+            parameterVerification: "transport_only",
+            requestedMode: result?.requestedMode || args.mode || 'normal',
+            appliedMode: result?.appliedMode || null,
+            modeVerified: result?.modeVerified === true,
+            requestedVersion: result?.requestedVersion || args.version || 'v8.2',
+            appliedVersion: result?.appliedVersion || null,
+            versionVerified: result?.versionVerified === true,
             status: (result && result.status) || (ok ? 'ok' : 'failed'),
             images,
             recordId: (result && result.recordId) || null,
@@ -818,7 +886,11 @@ async function main() {
             error: ok ? undefined : ((result && result.message) || '生成失败，没有拿到通过校验的图片'),
         });
     } catch (error) {
-        emit({ ok: false, status: 'exception', error: (error && error.message) || String(error) });
+        emit({ ok: false, status: 'exception',
+            submitted: adapter._submissionStarted ? undefined : false,
+            billed: adapter._submissionStarted ? undefined : false,
+            retryAllowed: adapter._submissionStarted ? undefined : true,
+            error: (error && error.message) || String(error) });
         process.exitCode = 3;
     } finally {
         // 必须显式关掉浏览器。Playwright 的子进程会让 node 挂住不退出，

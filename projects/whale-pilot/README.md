@@ -1,62 +1,56 @@
-# ??????????????????????????
+# 《鲸歌计划》候选项目控制台
 
-?? ID?whale-pilot-v1
+项目ID：whale-pilot-v1。用户已确认《鲸歌计划》30秒悬疑试片；2026-10-09最新授权为最多100次普通模式v8.2生成，旧1000次额度不与本次相加。状态为blocked：工作位已核验登录，陈旧锁、模式按钮和公众号广告兼容已修复并安装，完整提示词/normal/v8.2免费预检通过。D01-V1旧异常回执扣费缺，保留并跳过不重抽；首波其余5项恢复后，D01-V2实际等待20分钟超时，提交及扣费缺、无serial和新图；批次自动暂停，另4项未提交。历史审核记录保留，当前普通执行成功，无需重复索要同一授权。
 
-???????????????????????????????????????? E:\codex\aigc\whale-project????????????? midjourney / v8.2 ??????????????????????????????????????
+## 真源与范围
 
-## ????
+剧情原件：C:/Users/lsb/Pictures/1aigc/鲸鱼/先导片/剧本/权威分镜/鲸鱼 先导片分镜头_权威副本.docx。
+SHA-256：6e5b51fc021eee31c9b06b4d5c609cc237774d7f7c69e613b34bfe8f92f5dc62；本轮重读，与外部P0清单一致。
 
-- ???blocked???????? 28 ?????????? need_login?????????
-- ????120 ??16:9??????????????
-- ???10 ????????2 ????????6 ??????8 ????????
-- ????????12 ???? 2912?1632 ??????????????????????
-- ????????14 ??? asset-index.md
-- ?????E:\codex\multica\mj-automation\scripts\production_machine.mjs
-- ??????prompts/whale-pilot-manifest.json
-- ?????asset-index.md
-- ?????E:\codex\multica\mj-automation\output
-- ?????E:\codex\multica\mj-automation\receipts\mxai-tasks.jsonl
+《鲸歌计划》是外部P0登记标题，原件S12仍写《这颗星球上最孤独的那一只鲸鱼》。用户已在本轮确认使用《鲸歌计划》；原件保持不变，旧片名差异保留。
 
-## ??????
+[P0拆解](./p0-asset-breakdown.md)管理需求，[候选索引](./asset-index.md)管理字节、回执和目视意见，[生产准备](../../docs/film-production-brainstorm-2026-10-08.md)管理本轮草稿与启动门槛。
 
-???????????????????????????????????????????????????????????? blocked_missing_edit_contract???????????????????
+## 已核查与缺口
 
-## ????
+历史清单26项，12项候选的解码与回执哈希一致，全部为四格图，没有本轮用户验收。其余14项是索引候选缺口，不等于必须补抽14张。兰伯特旧母图误关联屏幕与失败波形，继续排除。问号损坏旧文无法还原，本页由真实来源重写。
 
-1. ????????????????
-2. ?????? retry manifest???? concurrency=3?
-   - prompts/whale-pilot-batch-01-retry-04.json
-   - prompts/whale-pilot-batch-02-retry-01.json
-3. ?????? 12 ???????????????????????????
-4. ?????????????????????
+历史need_login只说明历史结果；2026-10-09实际工作位登录已经实时核验。旧manifest保留历史参考，不直接导入运行，不继承2026-09-26费用授权。
 
-## Local control console (2026-09-27)
+## 软件与授权
 
-- [已验证] Local dashboard: http://127.0.0.1:8765/control
-- [已验证] Dashboard reads bridge health, browser-control state, watchdog pause state, recent jobs, and receipts.
-- [已验证] 打开登录浏览器 starts a visible Edge window for manual login only; it does not submit generation.
-- [已验证] Current watchdog pause file: mj-automation/run/bridge-control-paused.
-- [待用户决定] After manual login is stable, user decides when to resume the authorized three-concurrent batch.
+据权威发行记录，本机安装E:/Multica-Control-Console为2026.10.08.2；本轮已同步未发行程序修复，基础公开发行仍为2026.10.08.2。正式参考图接口、上传/编辑合同、费用上限缺。商业用途许可与素材权利证明缺，本文不构成许可证明。
 
-## Portable console package (2026-09-27)
+本次已有100次生成授权，无需逐批重复询问；正式普通执行resume已成功，旧提权拒绝不代表当前自动执行被拒。当前不登录、不上传、不发布，不读取凭据或浏览器内容，不修改、移动、删除原图。运行资料及额度以本机授权账本为准。
 
-- [已验证] Package directory: `../../dist/Multica-Control-Console-2026-09-27/`
-- [已验证] Package ZIP: `../../dist/Multica-Control-Console-2026-09-27.zip`
-- [已验证] The package includes the local control console, bridge scripts, setup/start/stop wrappers, and bundled Playwright runtime files.
-- [已验证] It excludes browser login state, cookies, tokens, passwords, API keys, generated media, and receipts from the source machine.
-- [待核验] A second-machine install and real platform login still require a separate acceptance run.
-## Local installation (2026-09-27)
+当前生产方案见[30秒镜头与首波提示词](./whale30-production-plan-20261008.md)，批次为whale30-20261008-wave1（6项）和wave2（18项）。原图目标为E:/Multica-Control-Console/mj-automation/output/whale30-20261008。只有平台回执、原图下载解码与内容检查通过，才算恢复生产。
 
-- [已验证] Installed root: `E:\Multica-Control-Console`
-- [已验证] Control page: `http://127.0.0.1:8765/control`
-- [已验证] Desktop shortcut: `Multica Control.lnk`
-- [已验证] Startup is safe by default: watchdog paused, browser control stopped, and no paid job submitted.
-- [待核验] Login and paid generation remain explicit user actions.
 
-## 鲸歌计划先导片 P0 资产拆解（2026-09-27）
+本次单次试抽草稿mj-repair-one-20261008已在工作台保存，名称“MJ修复验收：仅试抽1次”，仅1项、尝试0、无作业及成图。具体修复、测试、受保护文件核对和回滚证据见[本次维修记录](./whale30-production-plan-20261008.md)。已恢复本机服务不等于平台正常出图，用户本人登录已核验；真实成图仍待完成。
 
-- [已验证] 用户确认正式片名为《鲸歌计划》。
-- [已验证] P0 拆解产物包含 12 项人物、故事实体与场景需求，详见 `p0-asset-breakdown.md` 和外部素材目录中的 `回执与清单/p0-asset-requirements.json`。
-- [已验证] 修正了海洋候选序号；目视复核发现两张兰伯特图不合格，已排除；当前有 4 张候选图供目视审看，均未通过最终验收。
-- [待用户验收] 候选图仅完成路径核验，还没有逐张目视判断是否适合分镜。人物外形、开篇深海地点、科研站归属和海难海域仍未确认。
-- [已验证] 本次没有生成图片、编辑图像像素或提交付费生成任务。
+
+2026-10-09当前核查：首波已有一次启动，D01-V1返回need_login、submitted=false、billed=false，批次已暂停。已通过软件正式接口打开此工作位的共享登录窗口，等待用户本人登录；随后可在已给100次上限内继续，无需再询问费用授权。新授权账本位于安装根mj-automation/run/mj-authorized-100-20261009/authorization.json，原授权账本及历史审核拒绝记录未删除。当前没有平台受理或成图证据，不能标为正常生产。
+
+
+本次还发现运行互斥锁指向已被Autodesk GenuineService复用的旧PID，导致登录控制器持续等待。核对该进程启动时间晚于锁记录、锁心跳已过期且没有活动生成后，仅将mj-browser.lock移至新授权目录备份；未终止任何进程。等待中的登录控制器随后取得新锁，接口心跳恢复，当前running=true、loggedIn=false/loginState=unknown；需本人完成登录。此为失效运行锁恢复，不删除或修改政策审核记录。
+
+
+北京时间2026-10-09 01:27:38接口已确认running=true、loggedIn=true、status=logged_in；01:28:01通过普通执行调用正式resume成功，首波6项进入running。未删除审核或历史记录，未请求提权、未再次询问费用授权。此前明确未提交的need_login尝试保留；首项新增作业处于preparing，不能据此声称平台已受理或出图。
+
+
+首项第一次恢复返回mode_not_applied，回执确认submitted=false、billed=false。通过现有软件probe实际观察到模式控件为control-item/control-item-selected，原代码仅支持旧类。已扩展按钮及选中态识别，active悬浮态单独不作为证据；42 Node、44 Python测试通过。安装程序备份并同步后，真实免费mode-check确认normal/v8.2均verified=true，未生成或扣费。之后在当前100次授权内正式resubmit/resume首项，历史回执保留，授权保守预留从6增加到7；该次尝试随后在提示词输入阶段被广告阻挡，submitted=false、billed缺；原回执保留，跳过不重抽。
+
+
+当前补丁验收：网站标准广告关闭按钮实测宽高为0且点击无效果，真实可见控件为精确公众号广告内的.csd-dialog-close .mj-close。只对全文匹配的此广告点明确关闭控件；登录、充值和未知提示保留。提示词focus超时由2秒调整为10秒；完整字符串回读保持。48 Node、44 Python测试通过，免费实机完整提示词/normal/v8.2通过，未调用生成。安装备份和证据位于本次100次授权目录。当前首波剩余5项正式resume已成功，用户无需追加费用审批；平台回执和原图验收待完成。
+
+
+当前终态：D01-V2正式作业等待20分钟后返回timeout，submitted/billed均缺，无recordId、无images，队列自动paused。免费probe确认最新可见平台记录为北京时间2026-10-09 00:26:13的旧作业，与本次01:52开始的候选不能关联；页面显示已登录和3026积分，但缺生成前对照，不能据此算本次扣费。旧提示词过长并自动退款的错误属于历史卡片，不作为本次原因。其余4项未提交，wave2仍未启动。当前阻塞是平台回执未知，不是自动审批；不重抽未知作业，不删除历史回执。无需追加额度授权，须先取得此作业受理、未受理或退款的真实证据。
+
+
+## 2026-10-09 v005英文快速模式：8组完成
+
+用户指定外部v005逐张中英提示词，排除A01 Alice完整舰、A02鲸星守军，其余A03/BG01/BG02/P01/K01/K02/K03/K04各一次。当前任务明确改用fast，继承本次100次上限，累计保守预留15，不叠加旧1000次。无参考图上传，源文件及原图像素未改。K01/K03因平台字符上限压缩重复英文，原始和实际全文保留在本机manifest。
+
+实际发现runner把fast误判为维护命令，首次A03返回bad_request而没有进入generate；保留该回执，修复main入口接受normal/fast，增加独立fast合同测试。49 Node、44 Python测试及npm run verify通过；备份安装runner，字节哈希一致。随后8项各实际提交一次，8个不同平台serial，全部回执modeVerified=true/appliedMode=fast、versionVerified=true/appliedVersion=v8.2。BG02下载返回浏览器关闭错误，但同serial的2912x1632原图已落盘，真实解码和目视检查通过，未重抽或修改失败回执。
+
+结果目录：E:/Multica-Control-Console/mj-automation/output/whale-v005-english-fast-20261009；index.html为原图展示，生成结果索引.md为索引。8组原图均2912x1632、MJ四格共32个候选，SHA256/解码/目视证据保存在本机run/whale-v005-english-fast-20261009/original-image-validation.json及visual-review.json。部分主舰造型、方向、数量和背景有偏差，不标为审美验收通过，不自动补抽。实际积分扣除缺。旧普通模式D01-V2未决记录保留、不恢复、不重提交；它不冒充本次v005失败。当前8项生成目标已完成，最终选图仍由用户。

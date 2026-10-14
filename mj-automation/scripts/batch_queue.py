@@ -17,7 +17,9 @@ import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from workbench_assets import image_type
 from typing import Any, Callable
+from workbench_params import prepare_request
 
 
 ITEM_TERMINAL = {"completed", "skipped"}
@@ -81,7 +83,7 @@ def validate_prompt(prompt: Any) -> tuple[list[str], list[str]]:
     if PARAM_RE.search(text):
         errors.append("prompt 不应把平台参数写在正文中，请放入 params")
     if QUALITY_RE.search(text):
-        errors.append("prompt 含有质量参数词，请放入 params 或删除")
+        warnings.append("prompt 含有泛化质量词，建议用具体画面描述提高可控性")
     if ACRONYM_RE.search(text):
         warnings.append("prompt 含有连续大写缩写，请确认平台安全规则")
     if re.search(r"(?:密码|token|cookie|api[_ -]?key|secret|私钥)", text, re.IGNORECASE):
@@ -119,6 +121,12 @@ def validate_payload(payload: Any, default_output_dir: str | Path) -> dict:
         errors.append({"field": "items", "message": "items 必须是非空数组"})
         rows = []
 
+    profile_mode = payload.get("profileMode", "shared")
+    if profile_mode not in {"shared", "per_slot"}:
+        errors.append({"field": "profileMode", "message": "浏览器档案模式无效"})
+    if len(rows) > 500:
+        errors.append({"field": "items", "message": "每批最多 500 个任务"})
+    seen_requests = set()
     seen: set[str] = set()
     items: list[dict] = []
     for index, row in enumerate(rows):
@@ -157,6 +165,15 @@ def validate_payload(payload: Any, default_output_dir: str | Path) -> dict:
         if len(params) > 32:
             errors.append({"item": item_id, "field": "params", "message": "params 最多 32 个字段"})
 
+        try:
+            prepared = prepare_request(prompt, aspect, version, params)
+            params = prepared["params"]
+            identity = json.dumps(prepared, sort_keys=True, ensure_ascii=False)
+            if identity in seen_requests:
+                warnings.append({"item": item_id, "field": "prompt", "message": "发现相同请求，运行中的请求会复用作业号；独立实验请改变 seed 或其他参数"})
+            seen_requests.add(identity)
+        except ValueError as exc:
+            errors.append({"item": item_id, "field": "params", "message": str(exc)})
         items.append({
             "id": item_id,
             "name": str(row.get("name") or row.get("label") or item_id).strip(),
@@ -171,7 +188,7 @@ def validate_payload(payload: Any, default_output_dir: str | Path) -> dict:
         "ok": not errors,
         "errors": errors,
         "warnings": warnings,
-        "normalized": {"batchId": batch_id, "name": name, "concurrency": concurrency, "outputDir": output_dir, "items": items},
+        "normalized": {"batchId": batch_id, "name": name, "concurrency": concurrency, "outputDir": output_dir, "profileMode": profile_mode, "items": items},
     }
 
 
@@ -217,7 +234,7 @@ class BatchManager:
 
     def _recover_loaded(self) -> None:
         for batch_id, state in list(self._states.items()):
-            if state.get("status") in {"running", "paused"}:
+            if state.get("status") in {"running", "paused"} or (state.get("status") == "cancelled" and any(i.get("status") == "running" for i in state.get("items", []))):
                 self._ensure_worker(batch_id)
 
     def _persist(self, state: dict) -> None:
@@ -256,7 +273,7 @@ class BatchManager:
                 "name": normalized["name"],
                 "status": "validated",
                 "concurrency": normalized["concurrency"],
-                "profileMode": "shared" if self.shared_profile else "per_slot",
+                "profileMode": normalized.get("profileMode", "shared") if self.shared_profile else "per_slot",
                 "sharedProfile": self.shared_profile,
                 "outputDir": normalized["outputDir"],
                 "createdAt": now_iso(),
@@ -294,7 +311,7 @@ class BatchManager:
                 counts: dict[str, int] = {}
                 for item in state.get("items", []):
                     counts[item.get("status", "pending")] = counts.get(item.get("status", "pending"), 0) + 1
-                rows.append({"batchId": state["batchId"], "name": state.get("name"), "status": state.get("status"), "concurrency": state.get("concurrency"), "createdAt": state.get("createdAt"), "updatedAt": state.get("updatedAt"), "counts": counts, "pauseReason": state.get("pauseReason")})
+                rows.append({"batchId": state["batchId"], "name": state.get("name"), "status": state.get("status"), "concurrency": state.get("concurrency"), "profileMode": state.get("profileMode"), "effectiveConcurrency": 1 if state.get("profileMode") == "shared" else state.get("concurrency"), "createdAt": state.get("createdAt"), "updatedAt": state.get("updatedAt"), "counts": counts, "pauseReason": state.get("pauseReason")})
             return sorted(rows, key=lambda x: x.get("updatedAt") or "", reverse=True)
 
     def get_state(self, batch_id: str) -> dict:
@@ -396,7 +413,7 @@ class BatchManager:
             item = self._item(state, item_id)
             if item.get("status") not in UNRESOLVED | {"pending"}:
                 raise BatchError("当前任务不能跳过", 409)
-            item.update({"status": "skipped", "slot": None, "submissionId": None, "failureReason": "用户选择跳过"})
+            item.update({"status": "skipped", "slot": None, "failureReason": "用户选择跳过；原作业关联保留"})
             self._event(state, "item_skipped", item_id, "用户选择跳过")
             self._persist(state)
             return copy.deepcopy(state)
@@ -410,6 +427,10 @@ class BatchManager:
             item = self._item(state, item_id)
             if item.get("status") not in UNRESOLVED:
                 raise BatchError("只有失败或结果待核查任务可以重新提交", 409)
+            previous = item.get("lastResult") or {}
+            if previous.get("submitted") is not False:
+                raise BatchError("上次提交状态不明或已提交，禁止重新提交；请先核对原作业回执", 409)
+            item.setdefault("attemptHistory", []).append({"jobId": item.get("currentJobId"), "attempt": item.get("attempts"), "result": copy.deepcopy(previous), "at": now_iso()})
             item.update({"status": "pending", "slot": None, "retryOf": item.get("currentJobId"), "currentJobId": None, "submissionId": None, "failureReason": None})
             state["authorization"] = {"paidGeneration": True, "confirmedAt": now_iso()}
             state["status"] = "paused"
@@ -432,15 +453,19 @@ class BatchManager:
                     job = self.get_job(str(item["currentJobId"]))
                 except Exception:
                     continue
+                if job.get("status") == "done" and job.get("ok") is True:
+                    self._finalize_job(state, item, job)
+                    continue
                 login_status = str(job.get("resultStatus") or job.get("status") or "").lower()
-                if login_status == "need_login" and job.get("submitted") is not True:
+                if login_status == "need_login" and job.get("submitted") is False:
                     slot = item.get("slot")
                     if not slot:
                         match = re.search(r"-slot-(\d+)$", str(item.get("profile") or ""))
                         slot = int(match.group(1)) if match else None
                     item.update({"status": "login_required", "slot": slot, "failureReason": "该工作位尚未登录，未向平台提交生成；请登录此槽位后再继续"})
-                    state["status"] = "paused"
-                    state["pauseReason"] = "检测到批次工作位未登录，已暂停派发"
+                    if state.get("status") != "cancelled":
+                        state["status"] = "paused"
+                        state["pauseReason"] = "检测到批次工作位未登录，已暂停派发"
             self._event(state, "recovery_requested", message="已请求重新核对运行中的作业")
             self._persist(state)
             self._ensure_worker(batch_id)
@@ -462,18 +487,25 @@ class BatchManager:
 
     def _allocate_slot(self, state: dict) -> int | None:
         used = {item.get("slot") for item in state["items"] if item.get("status") == "running" and item.get("slot")}
-        for slot in range(1, int(state["concurrency"]) + 1):
+        limit = 1 if state.get("profileMode") == "shared" else int(state["concurrency"])
+        for slot in range(1, limit + 1):
             if slot not in used:
                 return slot
         return None
 
     def _summary(self, job: dict) -> dict:
-        allowed = ("jobId", "status", "resultStatus", "retryAllowed", "submitted", "billed", "chargeKnown", "actualPointDeduction", "ok", "images", "aspect", "recordId", "message", "startedAt")
-        return {key: job.get(key) for key in allowed if key in job}
+        allowed = ("jobId", "status", "resultStatus", "retryAllowed", "submitted", "billed", "chargeKnown", "actualPointDeduction", "phase", "phaseSource", "phaseAt", "ok", "images", "aspect", "recordId", "message", "startedAt")
+        summary = {key: job.get(key) for key in allowed if key in job}
+        result = job.get("result") if isinstance(job.get("result"), dict) else {}
+        for key in ("requestedMode", "appliedMode", "modeVerified", "requestedVersion", "appliedVersion", "versionVerified"):
+            if key in job or key in result:
+                summary[key] = job[key] if key in job else result[key]
+        return summary
 
     def _pause_item(self, state: dict, item: dict, status: str, reason: str) -> None:
         item.update({"status": status, "slot": None, "failureReason": reason, "lastResult": item.get("lastResult")})
-        state["status"] = "paused"
+        if state.get("status") != "cancelled":
+            state["status"] = "paused"
         state["pauseReason"] = reason
         self._event(state, "batch_paused_for_review", item.get("id"), reason)
 
@@ -483,26 +515,39 @@ class BatchManager:
         # 旧版 runner 的未登录回执只有 status=need_login、没有 resultStatus。
         # 只要明确未登录且尚未提交，就归类为登录待处理，绝不自动重提。
         login_status = str(job.get("resultStatus") or job.get("status") or "").lower()
-        if login_status == "need_login" and job.get("submitted") is not True:
+        if login_status == "need_login" and job.get("submitted") is False:
             item.update({"status": "login_required", "failureReason": "该工作位尚未登录，未向平台提交生成；请登录此槽位后再继续"})
-            state["status"] = "paused"
+            if state.get("status") != "cancelled":
+                state["status"] = "paused"
             state["pauseReason"] = "\u68c0\u6d4b\u5230\u6279\u6b21\u5de5\u4f5c\u4f4d\u672a\u767b\u5f55\uff0c\u5df2\u6682\u505c\u6d3e\u53d1"
             self._event(state, "slot_login_required", item.get("id"), "检测到批次工作位未登录，已暂停派发")
             return
         if job.get("status") == "done" and job.get("ok") is True:
             files = [str(path) for path in (job.get("images") or []) if path]
-            valid_files = [path for path in files if Path(path).is_file() and Path(path).stat().st_size > 0]
+            valid_files = [path for path in files if image_type(Path(path))]
             if files and len(valid_files) == len(files):
                 item.update({"status": "completed", "slot": None, "finishedAt": now_iso(), "outputFiles": valid_files, "failureReason": None})
                 self._event(state, "item_completed", item.get("id"), "已收到可信回执且成品文件检查通过")
                 return
-            self._pause_item(state, item, "result_pending", "平台报告完成，但成品文件缺失或为空，需人工核查")
+            self._pause_item(state, item, "result_pending", "平台报告完成，但成品文件缺失或图片格式校验失败，需人工核查")
             return
         status = str(job.get("resultStatus") or job.get("status") or "unknown").lower()
         if status in {"running", "queued"}:
+            if str(job.get("status") or "").lower() == "done":
+                serial = job.get("recordId")
+                reason = str(job.get("message") or "平台尚未生成完成，本地作业已结束")
+                reason += f"；保留任务 {serial}，只可查询或补下载，不得重新生成" if serial else "；缺少平台任务编号，需核查提交结果，不得重新生成"
+                self._pause_item(state, item, "result_pending", reason)
             return
-        if status in {"unknown", "stale", "receipt_pending", "download_failed", "timeout"} or job.get("chargeKnown") is not True:
-            self._pause_item(state, item, "result_pending", "平台没有返回可确认的成品，本批次已暂停")
+        if status == "page_reported_failed":
+            reason = str(job.get("message") or "平台已明确返回生成失败")
+            if job.get("chargeKnown") is not True:
+                reason += "；费用尚未确认"
+            self._pause_item(state, item, "failed", reason)
+        elif status in {"unknown", "stale", "receipt_pending", "download_failed", "timeout", "unassociated_result"} or job.get("chargeKnown") is not True:
+            reason = str(job.get("message") or "平台没有返回可确认的成品")
+            self._pause_item(state, item, "result_pending", reason + "；本批次已暂停")
+
         else:
             self._pause_item(state, item, "failed", str(job.get("message") or "平台返回失败，本批次已暂停"))
 
@@ -511,7 +556,7 @@ class BatchManager:
         while True:
             with self._lock:
                 state = self._states.get(batch_id)
-                if not state or state.get("status") in {"completed", "cancelled"}:
+                if not state or state.get("status") == "completed" or (state.get("status") == "cancelled" and not any(x.get("status") == "running" for x in state.get("items", []))):
                     return
                 active = [x for x in state["items"] if x.get("status") == "running"]
 
@@ -563,7 +608,7 @@ class BatchManager:
                         pending = next((x for x in state["items"] if x.get("status") == "pending"), None)
                         if slot is None or pending is None:
                             break
-                        profile = self.shared_profile or str(self.slot_root / f"{batch_id}-slot-{slot}")
+                        profile = self.shared_profile if state.get("profileMode") == "shared" else str(self.slot_root / f"{batch_id}-slot-{slot}")
                         pending.update({"status": "running", "slot": slot, "profile": profile, "attempts": int(pending.get("attempts") or 0) + 1, "submissionId": uuid.uuid4().hex, "startedAt": now_iso(), "failureReason": None})
                         self._persist(state)
                         request = {**pending, "batchId": batch_id, "slot": slot, "profile": profile}
@@ -588,7 +633,7 @@ class BatchManager:
                     self._event(state, "batch_completed", message="所有任务均已完成或跳过")
                     self._persist(state)
                     return
-                if state.get("status") == "paused" and not any(x.get("status") == "running" for x in state["items"]):
+                if state.get("status") in {"paused", "cancelled"} and not any(x.get("status") == "running" for x in state["items"]):
                     return
             time.sleep(self.poll_seconds)
 

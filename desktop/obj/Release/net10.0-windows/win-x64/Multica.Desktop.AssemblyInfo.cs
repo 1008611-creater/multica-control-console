@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Multica")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ee95d2ae7e84f09692e9faf0451aa3cbaddb00c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0584c12eb3ca416ac40fad5407ac20384510691c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Multica")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Multica")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

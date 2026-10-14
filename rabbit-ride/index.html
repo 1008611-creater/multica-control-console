@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f6ef">
+<title>春日漫游 · 小兔子的骑行日记</title>
+<style>
+:root{color-scheme:light;--ink:#34483d;--muted:#869082;--paper:#f7f6ef;--accent:#b36b50}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:5px}button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.page{max-width:1800px;margin:auto;padding:0 38px}.masthead{height:94px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;gap:12px;align-items:center}.brand-mark{width:37px;height:41px}.brand-name{font-family:Georgia,"Songti SC","STSong",serif;font-size:22px;letter-spacing:3px}.brand small{display:block;font-family:Georgia,serif;font-size:9px;letter-spacing:3px;margin-top:6px;color:var(--muted)}.edition{display:flex;align-items:center;gap:14px;font-size:11px;letter-spacing:2px}.edition span:first-child{height:7px;width:7px;background:#819770;border-radius:50%;box-shadow:0 0 0 5px #8197700b}.edition em{font-style:normal;font-family:Georgia,serif;color:#9caa96;font-size:15px}.scene{position:relative;isolation:isolate;border-radius:24px;overflow:hidden;aspect-ratio:1.85;min-height:610px;background:#eef1e7;border:1px solid #e3e6da;box-shadow:0 12px 45px #36433005}.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.grain{position:absolute;inset:0;pointer-events:none;opacity:.09;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23989b8a' filter='url(%23n)' opacity='.55' d='M0 0h180v180H0z'/%3E%3C/svg%3E")}.intro{position:absolute;top:9%;left:5.3%;pointer-events:none}.eyebrow{font-family:Georgia,serif;font-size:10px;letter-spacing:3.6px;color:#869581;display:flex;align-items:center;gap:11px}.eyebrow:before{content:"";width:25px;height:1px;background:#a0ad90}h1{font-family:Georgia,"Noto Serif SC","Songti SC","STSong",serif;font-weight:500;font-size:clamp(42px,4.6vw,78px);line-height:1.28;letter-spacing:5px;margin:23px 0 21px}h1 .spring{color:#7b8e64;position:relative}h1 .spring:after{content:"";position:absolute;left:1px;right:9px;bottom:-7px;height:10px;border-top:2px solid #b4bea0;border-radius:50%;transform:rotate(-3deg)}.intro p{font-size:12px;letter-spacing:2px;color:#7e8977;line-height:2.1;margin:0}.weather{position:absolute;right:4.5%;top:7%;text-align:right;color:#72816a}.weather .top{display:flex;align-items:center;justify-content:flex-end;gap:9px;font:22px Georgia,serif}.weather svg{height:21px;width:21px;fill:none;stroke:currentColor;stroke-width:1.2}.weather small{display:block;margin-top:8px;font:9px Georgia,serif;letter-spacing:2px}.route{position:absolute;left:5.3%;bottom:7%;display:flex;align-items:center;gap:13px;color:#6a7b62}.route .number{font:italic 34px Georgia,serif;color:#869873}.route .divider{width:1px;height:28px;background:#b2bda2}.route b{font-weight:400;display:block;font-size:10px;letter-spacing:2px}.route small{display:block;font:9px Georgia,serif;letter-spacing:1.5px;color:#8e9c80;margin-top:7px}.controls{position:absolute;bottom:5.6%;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #ffffffa0;border-radius:50px;background:#fafaf0cf;backdrop-filter:blur(14px);box-shadow:0 6px 25px #5263450c}.controls button{border:0;background:none;min-height:36px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:28px;transition:background .2s,transform .2s}.controls button:hover{background:#e2e8d9}.controls button:active{transform:scale(.94)}.round{width:37px}.controls .speed{padding:0 9px;min-width:49px;font:12px Georgia,serif}.control-line{height:19px;width:1px;background:#d9decd;margin:0 3px}.themes{display:flex;background:#e6ebdd;border-radius:24px;padding:3px}.controls .themes button{padding:0 12px;min-height:29px;font-size:10px;letter-spacing:1px}.controls .themes .active{background:#fffff4;box-shadow:0 2px 6px #47543808}.hint{position:absolute;right:4.5%;bottom:7%;font-size:10px;letter-spacing:1px;color:#7d8c70;display:flex;gap:8px;align-items:center;pointer-events:none}.hint svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1}.foot{display:flex;justify-content:space-between;align-items:center;height:76px;color:#8a9485;font-size:10px;letter-spacing:2px}.foot span:last-child{font:10px Georgia,serif;letter-spacing:1.7px}.toast{position:absolute;left:50%;bottom:15%;transform:translate(-50%,8px);background:#fffff0dc;padding:10px 18px;border:1px solid #dde4d2;border-radius:24px;opacity:0;transition:.3s;color:#617355;font-size:11px;letter-spacing:1px;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.scene.night .spring{color:#87745c}.scene.night .intro p,.scene.night .eyebrow,.scene.night .weather{color:#8c806b}
+@media(min-width:1800px){h1{font-size:78px}}@media(max-width:1000px){.page{padding:0 22px}.scene{min-height:620px}.intro{top:8%;left:6%}h1{font-size:52px}.route{left:6%;bottom:6%}.hint{display:none}.controls{left:auto;right:5%;transform:none;bottom:5%}}@media(max-width:650px){.page{padding:0 14px}.masthead{height:79px}.brand-name{font-size:18px}.brand small{font-size:8px;letter-spacing:2px}.brand-mark{width:30px}.edition{font-size:9px;gap:10px;letter-spacing:1px}.edition em{display:none}.scene{min-height:760px;aspect-ratio:auto;border-radius:19px}.intro{top:6%;left:8%}h1{font-size:44px;margin:19px 0 18px;letter-spacing:4px}.eyebrow{font-size:8px;letter-spacing:2.6px}.intro p{font-size:10px}.weather{right:8%;top:6.2%}.weather .top{font-size:17px}.weather small{font-size:7px;letter-spacing:1px}.route{top:38%;bottom:auto;left:8%}.route .number{font-size:27px}.controls{left:50%;right:auto;bottom:5%;transform:translateX(-50%);gap:5px}.controls .themes button{padding:0 10px}.foot{height:65px;font-size:9px;letter-spacing:1px}.foot span:last-child{font-size:8px;letter-spacing:1px}.toast{bottom:12%;white-space:nowrap}.scene canvas{touch-action:pan-y}}@media(prefers-reduced-motion:reduce){.controls button,.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="masthead">
+ <div class="brand"><svg class="brand-mark" viewBox="0 0 44 48" aria-hidden="true"><g fill="none" stroke="#667b5d" stroke-width="1.5" stroke-linecap="round"><path d="M14 22C6 5 13 0 18 18M23 18C24-2 33 1 28 24M12 27c-4 6-2 16 10 16 10 0 16-7 12-15-3-6-16-9-22-1Z"/><path d="M29 30h.1M34 33l4 1M19 40c2 2 5 2 7 0"/></g></svg><div><div class="brand-name">风的来信</div><small>LETTERS FROM THE WIND</small></div></div>
+ <div class="edition"><span></span><span>一小段好时光</span><em>Vol. 01</em></div>
+</header>
+<main>
+<section class="scene" aria-label="小兔子骑着绿色自行车，穿过春日花田的交互动画">
+ <canvas id="landscape" aria-label="春日骑行插画：车轮、踏板、兔子的耳朵和沿途花草持续运动">你的浏览器暂不支持 Canvas，请使用新版浏览器打开。</canvas>
+ <div class="grain"></div>
+ <div class="intro"><div class="eyebrow">THE ART OF GOING SLOW</div><h1>把日子，<br>骑成<span class="spring">春天</span>。</h1><p>不赶时间，也不赶路。<br>和小兔子一起，去风里兜个圈。</p></div>
+ <div class="weather"><div class="top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></svg><span id="weatherWord">晴日</span></div><small id="weatherSub">A PERFECT DAY TO WANDER</small></div>
+ <div class="route"><span class="number">01</span><span class="divider"></span><div><b>花田小路 · 春日漫游</b><small>TAKE THE SCENIC ROUTE</small></div></div>
+ <div class="controls" aria-label="动画控制">
+  <button id="play" class="round" title="暂停动画" aria-label="暂停动画" aria-pressed="false"><svg id="playIcon" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
+  <button id="speed" class="speed" title="切换骑行速度" aria-label="骑行速度：1 倍">1×</button><span class="control-line"></span>
+  <div class="themes" aria-label="选择光线"><button id="day" class="active" aria-pressed="true">日光</button><button id="sunset" aria-pressed="false">落日</button></div><span class="control-line"></span>
+  <button id="sound" class="round" title="开启自然音" aria-label="开启自然音" aria-pressed="false"><svg id="soundIcon" viewBox="0 0 24 24"><path d="m11 5-6 4H2v6h3l6 4ZM16 9l5 6m0-6-5 6"/></svg></button>
+ </div>
+ <div class="hint"><svg viewBox="0 0 24 24"><path d="M9 13V6a2 2 0 0 1 4 0v6m0-2c1-3 4-2 4 0v1c2-2 4-1 4 1v5c0 4-4 6-7 6-2 0-4-2-5-4l-4-6c-1-2 1-3 3-2l3 3"/></svg>轻点风景，捎来一只蝴蝶</div>
+ <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</section>
+</main>
+<footer class="foot"><span>把风留给耳朵，把时间留给路。</span><span>A LITTLE RIDE, A LITTLE JOY.</span></footer>
+</div>
+<script>
+(() => {
+'use strict';
+const canvas=document.getElementById('landscape'),ctx=canvas.getContext('2d');
+const scene=document.querySelector('.scene'),TAU=Math.PI*2;
+const prefersQuiet=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W=1600,H=900,pixelScale=1,time=0,last=0,paused=prefersQuiet,speed=1,theme=0,targetTheme=0;
+let audio=null,master=null,soundOn=false,birdTimer=null,toastTimer=null;
+const visitors=[];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),mix=(a,b,t)=>a+(b-a)*t;
+const rng=seed=>{let n=seed|0;return()=>{n=(Math.imul(n,1664525)+1013904223)|0;return(n>>>0)/4294967296}};
+const rand=rng(73),speckles=Array.from({length:850},()=>[rand(),rand(),rand()]);
+const wrap=(x,len)=>((x%len)+len)%len;
+function color(a,b,t=theme){const h=s=>s.replace('#','').match(/../g).map(v=>parseInt(v,16));const x=h(a),y=h(b);return`rgb(${x.map((v,i)=>Math.round(mix(v,y[i],t))).join(',')})`}
+function path(d,fill,stroke,width=1){const p=new Path2D(d);if(fill){ctx.fillStyle=fill;ctx.fill(p)}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke(p)}}
+function line(points,stroke,width=1){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}
+function ellipse(x,y,rx,ry,fill,rotation=0,stroke=null,width=1){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rotation,0,TAU);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
+function gradient(x,y,x2,y2,stops){const g=ctx.createLinearGradient(x,y,x2,y2);stops.forEach(s=>g.addColorStop(...s));return g}
+function roundRect(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
+function resize(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);H=900;pixelScale=canvas.height/H;W=canvas.width/pixelScale;render()}
+new ResizeObserver(resize).observe(scene);
+function cloud(x,y,s,opacity=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.globalAlpha=opacity;path('M-109 23C-119 9-106-6-84-5C-84-30-56-42-37-29C-26-66 25-64 38-32C65-49 91-30 91-11C128-10 133 21 105 26C59 31-54 32-109 23Z',color('#fafbf1','#fbeadd'));path('M-91 23Q0 34 105 22',null,color('#e3e9d9','#e8cbb6'),1.2);ctx.restore()}
+function hills(){
+ const g=gradient(0,0,0,H,[[0,color('#f1f3e9','#f5dfcc')],[.6,color('#e6eedc','#ebd7b5')],[1,color('#dfe8ca','#d8ceab')]]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ const sunX=W*.83,sunY=193-theme*34;const glow=ctx.createRadialGradient(sunX,sunY,15,sunX,sunY,200);glow.addColorStop(0,color('#f5e7aa','#edb57b'));glow.addColorStop(.43,'#f1dab438');glow.addColorStop(1,'#efdbae00');ctx.fillStyle=glow;ctx.fillRect(sunX-200,sunY-200,400,400);ellipse(sunX,sunY,49,49,color('#f8e8af','#ebad74'));ellipse(sunX,sunY,57,57,null,0,color('#e2dca0','#d8a16a'),.7);
+ cloud(wrap(W*.71-time*2,W+420)-210,147,1.03,.64);cloud(wrap(W*.44-time*3,W+450)-225,267,.78,.65);cloud(wrap(W*.99-time*4,W+420)-180,338,.94,.68);
+ path(`M-30 495C${W*.11} 481 ${W*.17} 390 ${W*.33} 419S${W*.49} 453 ${W*.61} 412S${W*.85} 371 ${W+30} 439V650H-30Z`,color('#d1ddc7','#d7c9a8'));
+ path(`M-20 510C${W*.1} 441 ${W*.24} 476 ${W*.35} 522S${W*.53} 422 ${W*.67} 477S${W*.85} 472 ${W+30} 510V650H-20Z`,color('#b7cda9','#bbc09a'));
+ path(`M${W*.45} 481Q${W*.61} 436 ${W*.78} 498`,null,color('#a7c19a','#b2b18c'),1);
+ const vX=wrap(W*.21-time*3.2,W+440)-100;village(vX,472,.8);
+ path(`M-30 557C${W*.14} 511 ${W*.29} 558 ${W*.46} 550S${W*.72} 515 ${W+30} 573V740H-30Z`,color('#9fb98d','#a6ad80'));
+ path(`M-20 620C${W*.16} 555 ${W*.32} 608 ${W*.48} 608S${W*.76} 557 ${W+20} 621V830H-20Z`,color('#b3c791','#b3b77f'));
+ path(`M0 592Q${W*.3} 575 ${W*.49} 615T${W} 596`,null,color('#cbd7ad','#c9c295'),2);
+ path(`M0 618Q${W*.31} 601 ${W*.49} 631T${W} 620`,null,color('#96b079','#9d9f6e'),1.4);
+ const fenceOffset=wrap(time*13,110);ctx.save();ctx.globalAlpha=.62;
+ for(let x=-110-fenceOffset;x<W+110;x+=110){const y=612+Math.sin(x/W*5)*12;line([[x,y-35],[x,y+10]],'#8e9a70',4);line([[x-1,y-31],[x+105,y-25]],'#a4aa81',3);line([[x-1,y-17],[x+105,y-11]],'#a4aa81',2)}ctx.restore();
+ for(let i=0;i<24;i++){const x=wrap(i*113-time*14,W+130)-65;const y=622+Math.sin(i*6.1)*21;shrub(x,y,.25+(i%4)*.05)}
+ path(`M-20 739Q${W*.25} 705 ${W*.52} 714T${W+20} 727V860Q${W*.5} 813-20 849Z`,gradient(0,710,0,859,[[0,color('#ebe5c7','#dfcea8')],[.6,color('#f3edcf','#ead6b3')],[1,color('#e2daba','#dcc7a1')]]));
+ path(`M-20 737Q${W*.25} 705 ${W*.52} 714T${W+20} 727`,null,color('#f7f2d8','#f1dfbb'),5);
+ ctx.save();ctx.globalAlpha=.38;for(let i=0;i<48;i++){const x=wrap(i*53-travel(),W+100)-50;const y=755+(i%8)*8;ellipse(x,y,1.8+(i%3),.8,'#aea67d',.1)}ctx.restore();
+ path(`M-20 854Q${W*.23} 802 ${W*.54} 846T${W+20} 833V920H-20Z`,color('#8ca773','#8f9965'));
+}
+function village(x,y,s){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.globalAlpha=.85;tree(-91,10,.54);tree(175,-1,.46);roundRect(-15,-43,52,52,3,color('#eae9d4','#ead6b9'));path('M-25-43 11-73 47-43Z',color('#a7ad88','#a4a17d'));roundRect(-4,-25,10,14,1,'#adb99c');roundRect(19,-25,9,14,1,'#adb99c');roundRect(8,-7,11,17,2,'#9ca88b');roundRect(57,-23,63,34,2,color('#e4e4c9','#ddc6a5'));path('M49-23 85-47 128-23Z',color('#b2aa81','#b39b76'));roundRect(83,-13,11,24,1,'#a4a286');line([[105,-38],[105,-54],[114,-54],[114,-34]],'#aaa387',5);line([[-31,13],[139,13]],'#a5b18c',2);ctx.restore()}
+function tree(x,y,s){ctx.save();ctx.translate(x,y);ctx.scale(s,s);line([[0,0],[1,-114]],'#7e8867',9);line([[0,-61],[-37,-103]],'#7e8867',5);line([[1,-83],[29,-124]],'#7e8867',4);ellipse(-30,-122,49,52,color('#a1ba8b','#a8ae84'));ellipse(30,-139,46,58,color('#98b482','#a0a579'));ellipse(0,-167,44,46,color('#b0c698','#bab68b'));ellipse(-38,-145,21,23,'#c5d4ac',-.4);ctx.restore()}
+function shrub(x,y,s){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ellipse(-35,-8,41,22,color('#799762','#828e60'));ellipse(8,-23,45,32,color('#849f6e','#94996b'));ellipse(43,-11,34,21,color('#90ab76','#a0a473'));path('M-32-7q23-18 46-13M4-33q18 0 24 12',null,'#b5c18e',2);ctx.restore()}
+function flower(x,y,s,kind,phase=0){ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(time*1.8+phase)*.055);ctx.scale(s,s);const tall=kind===3?62:43;path(`M0 0Q-8-${tall*.55} 0-${tall}`,null,'#647f50',2);path('M-3-18Q-26-33-23-15Q-14-7-3-18Z','#90a66f');path('M-4-28Q15-43 19-29Q10-19-4-28Z','#a4b780');ctx.translate(0,-tall);
+ if(kind===3){path('M-1 3C-19-6-19-31-8-30L0-18 8-33C24-34 22-9 5 3Z',color('#c78365','#bb765b'));path('M0-18V1',null,'#e9b996',1)}else{const c=kind===0?'#f7f3d9':kind===1?'#e2ac8c':'#e1cb78';for(let p=0;p<7;p++){const a=p*TAU/7;ellipse(Math.cos(a)*8,Math.sin(a)*8,7,4.2,c,a)}ellipse(0,0,4.5,4.5,kind===1?'#b78350':'#c3a658');ellipse(-1,-1,1.5,1.5,'#eed79a')}
+ ctx.restore()}
+function grasses(){
+ for(let i=0;i<84;i++){const x=wrap(i*37.4-time*20,W+95)-45;const y=690+Math.sin(i*7.2)*22;const s=.34+(i%5)*.085;flower(x,y,s,i%4,i)}
+ for(let i=0;i<32;i++){const x=wrap(i*74-time*24,W+150)-75;const y=696+(i%6)*5;ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(time+i)*.04);const s=.35+(i%3)*.12;ctx.scale(s,s);for(let k=0;k<3;k++){path(`M0 0Q${k*8-5}-39 ${k*8-7}-67`,null,'#8a9b64',2);for(let j=0;j<5;j++){ellipse(k*8-10,-42-j*5,5,1.8,'#bcc08a',-.6);ellipse(k*8-3,-45-j*5,5,1.8,'#c7c58d',.6)}}ctx.restore()}
+}
+function wheel(x,y,r,angle){ctx.save();ctx.translate(x,y);
+ ellipse(0,0,r+2.4,r+2.4,null,0,'#45584d',8);ellipse(0,0,r-1.3,r-1.3,null,0,'#e7e5ce',5);ellipse(0,0,r-6,r-6,null,0,'#aab6a2',1.5);
+ ctx.save();ctx.rotate(angle);for(let i=0;i<32;i++){const a=i*TAU/32;line([[Math.cos(a)*6,Math.sin(a)*6],[Math.cos(a+.07)*(r-7),Math.sin(a+.07)*(r-7)]],i%2?'#bcc4b1':'#96a791',.85)}line([[17,-r+8],[25,-r+12]],'#e9c68c',3);line([[-17,r-8],[-25,r-12]],'#e9c68c',3);ctx.restore();ellipse(0,0,8,8,'#789282');ellipse(0,0,3,3,'#dedfcb');ctx.restore()}
+function basketBack(){ctx.save();ctx.translate(137,-82);ctx.rotate(.035);path('M-8-24 51-24 43 34 1 34Z','#b99460','#97744b',1.5);path('M-7-22Q20-28 51-22',null,'#d5b782',5);ctx.restore()}
+function basketFront(){ctx.save();ctx.translate(137,-82);ctx.rotate(.035);
+ path('M-8-13 51-13 43 34 1 34Z',gradient(0,-12,45,32,[[0,'#d4b37b'],[.7,'#c4a16b'],[1,'#b7915e']]),'#9f7f51',1.3);
+ ctx.save();ctx.clip(new Path2D('M-8-13 51-13 43 34 1 34Z'));for(let y=-9;y<34;y+=7){path(`M-9 ${y}Q24 ${y+5} 51 ${y}`,null,'#9b7b51',1);path(`M-9 ${y+2}Q24 ${y+7} 51 ${y+2}`,null,'#e0c18d',1.3)}for(let x=1;x<50;x+=7){line([[x,-18],[x-4,36]],'#b38e5c',1.4)}ctx.restore();path('M-8-14Q22-9 51-14',null,'#dfc18c',4);path('M1 34H43',null,'#987448',2.5);ctx.restore()}
+function bouquet(){ctx.save();ctx.translate(156,-99);ctx.rotate(Math.sin(time*3)*.025);
+ path('M-2 21Q-25-17-16-42Q-1-37-2 21Z','#839665');path('M3 23Q27-22 34-21Q39-4 3 23Z','#a2b27e');path('M3 22Q0-12 12-57',null,'#647e58',2);path('M4 22Q-20-1-22-31',null,'#728955',2);path('M4 22Q18-6 25-35',null,'#7b8f5d',2);
+ for(const [x,y,c] of [[12,-55,'#f1de9e'],[-21,-33,'#edd5bd'],[25,-37,'#bd795f'],[-4,-49,'#f7efd2']]){for(let j=0;j<6;j++){const a=j*TAU/6;ellipse(x+Math.cos(a)*6,y+Math.sin(a)*6,5,3.8,c,a)}ellipse(x,y,3,3,'#bc9b54')}
+ path('M-9 0 2 23 14 0Z','#ebe1bc');path('M-5 11 9 12',null,'#c5aa77',1);ctx.restore()}
+function jointKnee(hip,foot,a,b,side=-1){const dx=foot[0]-hip[0],dy=foot[1]-hip[1],d=clamp(Math.hypot(dx,dy),.1,a+b-.1),base=Math.atan2(dy,dx),bend=Math.acos(clamp((a*a+d*d-b*b)/(2*a*d),-1,1));return[hip[0]+Math.cos(base+side*bend)*a,hip[1]+Math.sin(base+side*bend)*a]}
+function leg(hip,foot,back){const knee=jointKnee(hip,foot,82,86,-1);line([hip,knee,foot],back?'#c3c4a3':'#e8dfc0',21);line([[hip[0]+1,hip[1]-1],knee,[foot[0],foot[1]-4]],back?'#d7d3b3':'#f2ead2',14);ellipse(knee[0],knee[1],10,10,back?'#c8c7a8':'#e8dfc0');ctx.save();ctx.translate(foot[0],foot[1]);ctx.rotate(-.12);path('M-12-10Q-8-19 8-16Q13-11 18-8L26-5Q32 2 25 7L-13 7Q-18-1-12-10Z',back?'#b2b99b':'#f6efdb','#b0b89d',1.2);path('M-14 6H26',null,back?'#869778':'#a6b397',3);path('M5-10 10-6M12-9 16-5',null,'#a2ab91',1);ctx.restore()}
+function pedal(x,y,back){roundRect(x-12,y-2,25,5,2,back?'#7c8b78':'#596f60');line([[x-8,y],[x+8,y]],'#b9c3a8',1)}
+function rideScale(){return clamp(W/650,.73,1.13)}
+function travel(){return time*70*rideScale()*2.1*.85}
+function rabbitBike(){const x=W*(W<800?.53:.61),y=659,scale=rideScale(),phase=time*2.1;
+ ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+ const bob=Math.sin(phase*2)*1.15;
+ ellipse(1,150,205,12,'#71835e19');ellipse(-12,150,135,6,'#71835e16');
+ const rear=[-133,75],front=[143,75],crank=[-14,63],footA=[crank[0]+Math.cos(phase)*29,crank[1]+Math.sin(phase)*29],footB=[crank[0]-Math.cos(phase)*29,crank[1]-Math.sin(phase)*29];
+ wheel(...rear,70,phase*.85);wheel(...front,70,phase*.85);
+ // Tyres, mudguards and polished wheel rims.
+ path('M-206 50A77 77 0 0 1-64 40',null,'#729680',6);path('M77 39A77 77 0 0 1 213 51',null,'#729680',6);path('M-206 48A77 77 0 0 1-64 38',null,'#a6be9c',1.8);path('M77 37A77 77 0 0 1 213 49',null,'#a6be9c',1.8);
+ line([[-159,18],[-74,18]],'#6e8975',4);line([[-155,18],[-133,73]],'#9fae91',2);line([[-87,18],[-128,73]],'#9fae91',2);
+ // Far leg is drawn behind the frame. Both feet share one crank axis.
+ leg([-61,-62+bob],footB,true);line([crank,footB],'#8c9c85',5);pedal(...footB,true);
+ line([rear,[-67,-45],crank,rear],'#5f8874',9);line([[-67,-45],[crank[0],crank[1]]],'#a5ba99',2);
+ path('M-66-38Q-52 17-17 20Q20 24 94-43',null,'#648e79',10);path('M-66-40Q-52 15-17 18Q20 22 94-45',null,'#a8c19e',2);
+ line([crank,[102,-31]],'#5f8975',10);line([[102,-31],[143,75]],'#537867',8);line([[98,-36],[139,67]],'#9fb595',2);line([[93,-57],[108,-16]],'#5c816c',13);
+ path('M-127 75Q-76 61-18 53Q5 50 11 64Q6 79-18 81Q-75 87-129 80Z','#c5d0b0','#8ba18a',1.5);path('M-121 77Q-69 70-20 68',null,'#e4e7ce',2);ellipse(...crank,17,17,'#839981',0,'#d7dec4',3);ellipse(...crank,5,5,'#e4e7cd');
+ line([[-67,-43],[-71,-70]],'#8e9d89',7);path('M-102-72Q-75-85-43-72Q-39-63-58-60H-90Q-104-60-102-72Z','#715e4d','#524f42',1.4);path('M-98-72Q-74-79-47-71',null,'#a58a6a',2);
+ line([[95,-57],[89,-91],[87,-104]],'#91a28d',6);path('M87-104Q85-114 73-111Q66-108 70-101',null,'#566f5a',6);path('M69-108Q74-112 83-109',null,'#aaa78b',7);path('M87-104Q116-121 125-107',null,'#839982',4);
+ path('M79-106Q152-49 108-23',null,'#829a80',1.4);
+ basketBack();bouquet();
+ ellipse(-103,-87+bob,19,18,'#ece6ce',-.1,'#cbcdb1',1.4);ellipse(-108,-93+bob,11,10,'#f9f3df');
+ path(`M-88 ${-104+bob}Q-56 ${-116+bob}-32 ${-83+bob}L-40 ${-52+bob}Q-67 ${-44+bob}-88 ${-68+bob}Z`,'#e7dec0','#bfc6a7',1.5);
+ ctx.save();ctx.translate(0,bob);path('M-65-174Q-42-185-22-168Q-12-140-28-94Q-61-75-88-98Q-87-135-65-174Z',gradient(-80,-161,-21,-107,[[0,'#a5b58a'],[.5,'#8fa779'],[1,'#789263']]),'#788b64',1.5);
+ path('M-69-166Q-69-128-81-106',null,'#c0cca7',2);path('M-27-159Q-35-128-42-96',null,'#677f56',1.4);path('M-75-101Q-57-88-30-98',null,'#647c52',2);path('M-51-124-34-121-39-103-55-105Z','#9db083','#758b63',1);path('M-49-121-37-120',null,'#c0cba4',1);ellipse(-34,-152,2,2,'#e9e2c5');ellipse(-38,-138,2,2,'#e9e2c5');
+ path('M-36-159Q-22-156 0-130L67-109',null,'#7d9868',17);path('M-48-159Q-37-167-23-151L5-123 67-111',null,'#a9b992',22);path('M-44-159Q-29-151 2-118L60-107',null,'#bdc9a7',5);line([[55,-111],[62,-107]],'#71885c',15);ellipse(71,-106,14,10,'#f3ecd6',.17,'#b8c3a2',1.2);path('M78-110q5 3 5 7M73-111q5 3 6 7',null,'#c9cbb0',1);
+ // Long scarf follows a wave rather than a rigid rotation.
+ const flap=Math.sin(time*4.3)*8;path(`M-33-177Q-66-173-80-186Q-97 ${-201+flap}-137 ${-188+flap*.7}Q-131 ${-202+flap*.8}-142 ${-215+flap*.8}Q-104 ${-221+flap}-80-200Q-56-185-33-185Z`,'#c48665','#aa6c51',1.2);path(`M-76-195Q-104 ${-216+flap}-130 ${-205+flap*.8}`,null,'#e5ae86',2);line([[-137,-198+flap*.7],[-143,-196+flap*.7]],'#b67957',1);line([[-139,-204+flap*.7],[-146,-204+flap*.7]],'#b67957',1);
+ ctx.save();ctx.translate(-14,-205);ctx.rotate(Math.sin(time*1.6)*.02);
+ ear(-24,-28,-.23+Math.sin(time*3.1)*.035,93,18);ear(0,-32,.10+Math.sin(time*3.1-.8)*.05,105,17);
+ const face=gradient(-41,-30,40,29,[[0,'#fff8e4'],[.55,'#f5eed8'],[1,'#e2dfc5']]);path('M-38-13Q-43-46-12-46Q19-48 28-21Q30-8 41-3Q51 9 35 21Q18 39-10 31Q-41 25-38-13Z',face,'#b6c0a0',1.5);
+ path('M-30-9Q-37-3-32 6M-29 12l-4 4M-27 20l-2 3',null,'#d7d9bb',1.2);
+ const blink=wrap(time,5.7)>5.46;if(blink){path('M18-9q5 5 10 0',null,'#49574a',2)}else{ellipse(23,-10,3.4,4.7,'#485448',-.09);ellipse(24,-11.5,1,1.3,'#fff8e1')}
+ ellipse(18,6,8.5,5.2,'#dfae93',-.15);ellipse(17,5,5.5,3,'#e7baa0',-.15);path('M40 1 46 4 40 7Q37 4 40 1Z','#a67d67');path('M40 9q-3 7-9 4',null,'#8f8e75',1.2);path('M35 8 49 10M34 13 47 16M34 5 49 4',null,'#a8b098',.85);
+ path('M-21-34q8-6 16-5',null,'#fffbed',3);ctx.restore();
+ path('M-46-177Q-40-188-25-180L-19-167Q-37-161-46-177Z','#d39772','#ac7657',1.1);path('M-42-178-25-173',null,'#f0bf92',2);ctx.restore();
+ leg([-61,-62+bob],footA,false);line([crank,footA],'#a7b69a',6);line([crank,footA],'#d9dfc3',2);pedal(...footA,false);ellipse(...crank,4,4,'#657b66');
+ basketFront();
+ ellipse(113,-107,7,4,'#bdab71',-.2,'#8c8c61',1);ellipse(111,-109,3,1.3,'#e2d6a5');path('M143-10H157Q169-7 158 4H145Z','#94a38b','#748772',1.2);ellipse(159,-3,4,7,'#f5ecc9',0,'#adba9b',1);path('M53 2 59-2 65 4 58 9Z','#dfcf98');ellipse(-66,-41,2,2,'#d7ddc5');ellipse(101,-29,2,2,'#d7ddc5');ctx.restore();
+}
+function ear(x,y,a,length,width){ctx.save();ctx.translate(x,y);ctx.rotate(a);path(`M-${width*.52} 6Q-${width} -${length*.45}-${width*.53} -${length*.81}Q-1-${length+13} ${width*.52}-${length*.81}Q${width} -${length*.47} ${width*.52} 6Z`,gradient(-width,-length,width,0,[[0,'#fff8e2'],[1,'#ece8cf']]),'#bcc5a7',1.3);path(`M-4-6Q-${width*.48}-${length*.46}-5-${length*.79}Q0-${length+1} 5-${length*.79}Q${width*.48}-${length*.45} 4-6Z`,'#debba5');path(`M-1 -15 Q-3 -${length*.5} 0 -${length*.82}`,null,'#edcdb5',2);ctx.restore()}
+function butterfly(x,y,s,p,peach=true){ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(p*.65)*.22);const flap=.32+Math.abs(Math.sin(p))*.68;ctx.scale(s,s);const c=peach?'#ce9473':'#e2ce86';ctx.save();ctx.scale(flap,1);path('M0 0C-31-34-39-7-19 5C-40 17-17 32-2 6Z',c);path('M0 0C31-34 39-7 19 5C40 17 17 32 2 6Z',c);path('M-4-2-18-13M4-2 18-13',null,'#f5ddad',1);ellipse(-18,-10,2,2,'#f6dfb5');ellipse(18,-10,2,2,'#f6dfb5');ctx.restore();line([[0,-4],[0,10]],'#777e58',2);path('M0-4q-6-10-9-6M0-4q6-10 9-6',null,'#7c805c',1);ctx.restore()}
+function foreground(){
+ for(let i=0;i<30;i++){const x=wrap(i*84-travel()*1.12,W+170)-85,y=867+(i%4)*19;flower(x,y,.68+(i%5)*.11,i%4,i*2)}
+ for(let i=0;i<52;i++){const x=wrap(i*42-travel()*1.15,W+110)-55,y=894+(i%3)*12;const sway=Math.sin(time*2+i)*5;path(`M${x} ${y}q${-14+sway}-26-10-47M${x} ${y}q${12+sway}-21 18-33`,null,i%3?'#6e8c5a':'#9ab17a',1.5)}
+ butterfly(W*.75+Math.sin(time*.6)*48,494+Math.cos(time*.9)*25,.46,time*9,true);butterfly(W*.35+Math.sin(time*.5+2)*38,583+Math.sin(time*1.2)*20,.3,time*10+4,false);
+ ctx.save();for(let i=0;i<12;i++){const x=wrap(i*179-time*(18+i%3*6),W+100)-50,y=290+(i*67)%450+Math.sin(time+i)*15;ctx.globalAlpha=.36;ctx.save();ctx.translate(x,y);ctx.rotate(time*.4+i);ellipse(0,0,3.5,1.5,'#f7f3d7',.5);ctx.restore()}ctx.restore();
+ for(let i=visitors.length-1;i>=0;i--){const b=visitors[i],age=time-b.born;if(age>12){visitors.splice(i,1);continue}ctx.save();ctx.globalAlpha=Math.min(age*3,1)*clamp((12-age)/2,0,1);butterfly(b.x+Math.sin(age*1.4)*40+age*10,b.y-age*13+Math.cos(age*2)*12,.55,age*12,b.peach);ctx.restore()}
+}
+function birds(){const offset=time*3;ctx.save();ctx.globalAlpha=.55;for(let i=0;i<3;i++){const x=wrap(W*.55+i*22+offset,W+80)-40,y=251+i*8;const wing=Math.sin(time*3+i)*3;path(`M${x-6} ${y+wing}Q${x-3} ${y-4} ${x} ${y}Q${x+4} ${y-4} ${x+8} ${y+wing}`,null,color('#8c9c80','#a59079'),1.4)}ctx.restore()}
+function render(){ctx.setTransform(pixelScale,0,0,pixelScale,0,0);ctx.lineCap='round';ctx.lineJoin='round';hills();birds();grasses();rabbitBike();foreground();ctx.save();ctx.globalAlpha=.1;ctx.fillStyle='#6c7551';for(const p of speckles){ctx.fillRect(p[0]*W,p[1]*H,p[2]*1.2+.25,.55)}ctx.restore()}
+function frame(now){const dt=last?Math.min((now-last)/1000,.05):0;last=now;if(!paused)time+=dt*speed;theme=mix(theme,targetTheme,1-Math.exp(-dt*3));render();requestAnimationFrame(frame)}
+function notify(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200)}
+function updatePlay(){document.getElementById('playIcon').innerHTML=paused?'<path d="m8 5 11 7-11 7Z"/>':'<path d="M9 5v14M15 5v14"/>';const b=document.getElementById('play');b.title=b.ariaLabel=paused?'继续骑行':'暂停动画';b.setAttribute('aria-pressed',String(paused))}
+document.getElementById('play').addEventListener('click',()=>{paused=!paused;updatePlay();if(master)master.gain.setTargetAtTime(soundOn&&!paused?.22:0,audio.currentTime,.3)});updatePlay();
+document.getElementById('speed').addEventListener('click',()=>{speed=speed===1?1.5:speed===1.5?.65:1;document.getElementById('speed').textContent=`${speed}×`;document.getElementById('speed').ariaLabel=`骑行速度：${speed} 倍`;notify(speed===.65?'慢一点，春天会等你。':speed===1.5?'追一小段风。':'按自己的节奏，刚刚好。')});
+function setTheme(value){targetTheme=value;scene.classList.toggle('night',!!value);for(const [id,active] of [['day',!value],['sunset',!!value]]){const b=document.getElementById(id);b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))}document.getElementById('weatherWord').textContent=value?'晚晴':'晴日';document.getElementById('weatherSub').textContent=value?'CHASE A LITTLE GOLDEN LIGHT':'A PERFECT DAY TO WANDER'}
+document.getElementById('day').addEventListener('click',()=>setTheme(0));document.getElementById('sunset').addEventListener('click',()=>setTheme(1));
+canvas.addEventListener('pointerdown',e=>{const r=canvas.getBoundingClientRect();if(visitors.length>18)visitors.shift();visitors.push({x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H,born:time,peach:visitors.length%2===0});if(paused)notify('继续骑行，让蝴蝶也一起出发。')});
+function chirp(){if(!soundOn||paused||!audio||audio.state!=='running')return;const n=audio.currentTime;for(let i=0;i<3;i++){const osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';const start=n+i*.13;osc.frequency.setValueAtTime(2300+i*170,start);osc.frequency.exponentialRampToValueAtTime(3600+i*130,start+.045);osc.frequency.exponentialRampToValueAtTime(2600,start+.1);gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(.07,start+.018);gain.gain.exponentialRampToValueAtTime(.0001,start+.11);osc.connect(gain);gain.connect(master);osc.start(start);osc.stop(start+.12)}}
+async function toggleSound(){try{if(!audio){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio){notify('这个浏览器暂不支持自然音。');return}audio=new Audio();master=audio.createGain();master.gain.value=0;master.connect(audio.destination);const len=audio.sampleRate*3,buffer=audio.createBuffer(1,len,audio.sampleRate),data=buffer.getChannelData(0);let brown=0;const noiseRand=rng(31);for(let i=0;i<len;i++){brown=(brown+(noiseRand()*2-1)*.02)/1.02;data[i]=brown*2.4}const noise=audio.createBufferSource();noise.buffer=buffer;noise.loop=true;const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.value=570;const wind=audio.createGain();wind.gain.value=.2;noise.connect(filter);filter.connect(wind);wind.connect(master);noise.start();birdTimer=setInterval(chirp,3900)}await audio.resume();soundOn=!soundOn;master.gain.setTargetAtTime(soundOn&&!paused?.22:0,audio.currentTime,.5);document.getElementById('soundIcon').innerHTML=soundOn?'<path d="m11 5-6 4H2v6h3l6 4ZM15 8q5 4 0 8M18 5q8 7 0 14"/>':'<path d="m11 5-6 4H2v6h3l6 4ZM16 9l5 6m0-6-5 6"/>';const b=document.getElementById('sound');b.setAttribute('aria-pressed',String(soundOn));b.title=b.ariaLabel=soundOn?'关闭自然音':'开启自然音';if(soundOn){chirp();notify('听，风和小鸟也在。')}}catch{notify('声音暂时无法开启，风景仍在。')}}
+document.getElementById('sound').addEventListener('click',toggleSound);
+document.addEventListener('visibilitychange',()=>{last=0;if(audio&&master)master.gain.setTargetAtTime(soundOn&&!paused&&!document.hidden?.22:0,audio.currentTime,.3)});
+scene.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===canvas){e.preventDefault();document.getElementById('play').click()}});canvas.tabIndex=0;
+window.addEventListener('pagehide',()=>{clearInterval(birdTimer);if(audio)audio.close().catch(()=>{})});
+resize();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

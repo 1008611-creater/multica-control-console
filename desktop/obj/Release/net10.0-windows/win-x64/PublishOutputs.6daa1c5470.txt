@@ -1,0 +1,5 @@
+C:\Users\lsb\AppData\Local\Temp\Multica-Desktop-Publish-2026-10-09-team-09493f5068db4c1296f7cbe14985dfdf\Multica.pdb
+C:\Users\lsb\AppData\Local\Temp\Multica-Desktop-Publish-2026-10-09-team-09493f5068db4c1296f7cbe14985dfdf\Microsoft.Web.WebView2.Core.xml
+C:\Users\lsb\AppData\Local\Temp\Multica-Desktop-Publish-2026-10-09-team-09493f5068db4c1296f7cbe14985dfdf\Microsoft.Web.WebView2.WinForms.xml
+C:\Users\lsb\AppData\Local\Temp\Multica-Desktop-Publish-2026-10-09-team-09493f5068db4c1296f7cbe14985dfdf\Microsoft.Web.WebView2.Wpf.xml
+C:\Users\lsb\AppData\Local\Temp\Multica-Desktop-Publish-2026-10-09-team-09493f5068db4c1296f7cbe14985dfdf\Multica.exe

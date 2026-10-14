@@ -1,4 +1,4 @@
-﻿"""
+"""
 MJ 生图桥接服务（改造副本）—— 把本机 Midjourney 自动化包装成 OpenAI 兼容接口。
 
 来源: E:\codex\niannianai\zhuanhuiyuangong\infinite-canvas\tools\mj-bridge\server.py
@@ -41,6 +41,8 @@ import shutil
 import sys
 import time
 import uuid
+import threading
+from datetime import datetime
 from pathlib import Path
 
 import uvicorn
@@ -50,6 +52,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from batch_queue import BatchError, BatchManager, JobNotFound
+from workbench_params import prepare_request, request_fingerprint
+from workbench_assets import AssetLibrary, image_type
 
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE / "mj_run.js"
@@ -61,11 +65,12 @@ RESULTS_DIR = Path(os.environ.get("MJ_OUTPUT_DIR", str(HERE.parent / "output")))
 CONTROL_DIR = HERE.parent / "control"
 CONTROL_HTML = CONTROL_DIR / "index.html"
 CONTROL_BROWSER = HERE / "browser_control.js"
-CONTROL_STATE = HERE.parent / "run" / "control-browser.json"
+RUN_ROOT = Path(os.environ.get("MJ_RUN_DIR", str(HERE.parent / "run")))
+CONTROL_STATE = RUN_ROOT / "control-browser.json"
 CONTROL_STOP_FILE = CONTROL_STATE.with_suffix(".stop")
-CONTROL_LOG = HERE.parent / "run" / "logs" / "control-browser.log"
-SLOT_LOGIN_ROOT = HERE.parent / "run" / "slot-login"
-CONTROL_PAUSE = HERE.parent / "run" / "bridge-control-paused"
+CONTROL_LOG = RUN_ROOT / "logs" / "control-browser.log"
+SLOT_LOGIN_ROOT = RUN_ROOT / "slot-login"
+CONTROL_PAUSE = RUN_ROOT / "bridge-control-paused"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # 【2026-09-12.3】后台作业目录，必须与 mj_run.js 里的 run/jobs 完全一致，否则查不到结果。
@@ -84,7 +89,7 @@ MAX_N = int(os.environ.get("MJ_BRIDGE_MAX_N", "15"))
 # 【2026-09-12】构建标记。用途：外部只能通过 /health 判断"跑的是不是改过之后的代码"。
 # 上一版的 /health 新旧完全一致，导致无法确认重启是否成功（只能靠猜）。
 # 每次改完 server.py 都把这个号 +1，重启后 /health 的 bridge 字段会跟着变。
-BRIDGE_BUILD = "2026-10-03-portable-runtime-01"
+BRIDGE_BUILD = "2026.10.08.2"
 BRIDGE_ID = "multica-local-draw-bridge"
 INSTALL_ROOT = Path(os.environ.get("MULTICA_INSTALL_ROOT", str(HERE.parents[1]))).resolve()
 BUNDLED_NODE = INSTALL_ROOT / "runtime" / "node" / "node.exe"
@@ -105,7 +110,7 @@ BRIDGE_FEATURES = [
     "recover_dryrun",
     "user_autostart_no_admin",
     "safe_stop_for_selfheal",
-    "local_workbench",
+    "local_workbench", "validated_params", "durable_dispatch_intent", "asset_library", "explicit_phases",
 ]
 
 # 上游依赖位置，只用于 /health 自检展示
@@ -117,7 +122,7 @@ os.environ.setdefault("MJ_PYTHON", sys.executable)
 
 app = FastAPI(title="MJ Bridge", version="1.1")
 
-# 画布部署在别的域名下，必须放开跨域；本服务只监听 127.0.0.1，不承载敏感数据。
+# 保留画布 API 跨域契约；工作台私有接口另由 control_origin_guard 限制。
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -125,6 +130,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def control_origin_guard(request, call_next):
+    # Canvas generation API remains compatible; private workbench APIs are same-origin.
+    origin = request.headers.get("origin")
+    if request.url.path.startswith("/control/") and origin:
+        allowed = {f"http://{request.headers.get('host', '')}"}
+        if origin not in allowed:
+            return JSONResponse(status_code=403, content={"detail": "工作台接口仅允许本地页面同源访问"})
+    return await call_next(request)
 
 
 class GenerationRequest(BaseModel):
@@ -510,7 +526,7 @@ def read_job(job_id: str) -> dict:
         except OSError:
             log_tail = ""
 
-    if payload is not None:
+    if isinstance(payload, dict):
         status = "done"
     elif not log_file.exists() and not result_file.exists():
         status = "unknown"
@@ -522,19 +538,25 @@ def read_job(job_id: str) -> dict:
             status = "running"
 
     images: list[str] = []
-    if payload:
-        candidates = list(payload.get("images") or [])
+    if isinstance(payload, dict):
+        candidates = list(payload.get("images") or []) if isinstance(payload.get("images"), list) else []
         if payload.get("file"):
             candidates.append(payload["file"])
-        images = [str(item) for item in candidates if item and Path(str(item)).exists()]
+        images = [str(item) for item in candidates if isinstance(item, str) and image_type(Path(item))]
 
     result_payload = payload if isinstance(payload, dict) else {}
+    request_meta = _read_control_json(JOBS_DIR / "requests" / (job_id + ".json"))
+    progress = _read_control_json(JOBS_DIR / "progress" / (job_id + ".json"))
+    if status == "unknown" and request_meta:
+        status = "stale"
+    if progress.get("phase") == "result_pending" and not result_payload:
+        status = "stale"
     retry_allowed = result_payload.get("retryAllowed")
     if not isinstance(retry_allowed, bool):
         retry_allowed = result_payload.get("retry_allowed")
     if not isinstance(retry_allowed, bool):
         retry_allowed = None
-    submitted = result_payload.get("submitted")
+    submitted = result_payload.get("submitted", progress.get("submitted"))
     if not isinstance(submitted, bool):
         submitted = None
     billed = result_payload.get("billed")
@@ -556,36 +578,36 @@ def read_job(job_id: str) -> dict:
         "billed": billed,
         "chargeKnown": charge_known,
         "actualPointDeduction": deduction if isinstance(deduction, (int, float)) and not isinstance(deduction, bool) else None,
-        "ok": bool(payload and payload.get("ok")),
+        "ok": bool(result_payload.get("ok")),
         "resultFile": str(result_file),
         "logFile": str(log_file),
         "logTail": log_tail,
         "images": images,
-        "aspect": (payload or {}).get("aspect"),
-        "recordId": (payload or {}).get("recordId"),
-        "message": (payload or {}).get("message") or (payload or {}).get("error"),
+        "aspect": result_payload.get("aspect"),
+        "recordId": result_payload.get("recordId"),
+        "message": result_payload.get("message") or result_payload.get("error"),
         "result": payload,
+        "request": request_meta,
+        "phase": ("completed" if result_payload.get("ok") and images else "result_pending") if isinstance(payload, dict) else progress.get("phase"),
+        "phaseSource": "receipt" if isinstance(payload, dict) else ("runner" if progress else "missing"),
+        "phaseAt": progress.get("at"),
         "startedAt": result_file.stat().st_ctime if result_file.exists() else None,
     }
 
 
 def find_running_job(fingerprint: str, max_age_ms: int = 6 * 3600 * 1000) -> str | None:
-    """找同指纹、仍在跑、且不算太老的作业，避免同一条提示词被重复扣费。"""
-    newest = None
-    for candidate in JOBS_DIR.glob("*_" + fingerprint + "*.json"):
-        try:
-            if candidate.stat().st_size > 0:
-                continue          # 已有结果，不是「在跑」
-            age_ms = (time.time() - candidate.stat().st_mtime) * 1000
-        except OSError:
-            continue
-        if age_ms > max_age_ms:
+    """Reuse unresolved durable intents, including dispatch timeouts after restart."""
+    for candidate in sorted((JOBS_DIR / "requests").glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
+        meta = _read_control_json(candidate)
+        if meta.get("fingerprint") != fingerprint and not candidate.stem.endswith("_" + fingerprint):
             continue
         state = read_job(candidate.stem)
-        if state["status"] in ("running", "unknown"):
-            if newest is None or candidate.stat().st_mtime > newest[1]:
-                newest = (candidate.stem, candidate.stat().st_mtime)
-    return newest[0] if newest else None
+        if state["status"] != "done" or (state.get("submitted") is not False and not state.get("ok")):
+            return candidate.stem
+    return None
+
+
+JOB_DISPATCH_LOCK = threading.RLock()
 
 
 class JobRequest(BaseModel):
@@ -598,7 +620,7 @@ class JobRequest(BaseModel):
     output_dir: str | None = None
     profile: str | None = None
     params: dict | None = None
-    force: bool = False   # 显式要求「明知在跑也要再出一张」时才置 true（会再扣一次积分）
+    force: bool = False   # 兼容字段；不能绕过未决提交意图的去重保护
 
 
 @app.get("/v1/jobs")
@@ -622,6 +644,11 @@ def get_job(job_id: str):
 
 @app.post("/v1/jobs")
 def create_job(request: JobRequest):
+    with JOB_DISPATCH_LOCK:
+        return _create_job_locked(request)
+
+
+def _create_job_locked(request: JobRequest):
     """提交一次真实出图，立刻返回作业号（付费动作，约 6 积分/张）。"""
     prompt = (request.prompt or "").strip()
     if not prompt:
@@ -630,30 +657,34 @@ def create_job(request: JobRequest):
         raise HTTPException(status_code=500, detail=f"缺少 {RUNNER}")
 
     aspect = request.aspect or size_to_aspect(request.size)
-    fingerprint = prompt_fingerprint(prompt)
+    try:
+        prepared = prepare_request(prompt, aspect, request.version or DEFAULT_VERSION, request.params)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    fingerprint = request_fingerprint(prepared, Path(request.profile or PROFILE_PATH).resolve())
 
-    if not request.force:
-        existing = find_running_job(fingerprint)
-        if existing:
-            return JSONResponse(
-                status_code=200,
-                content={
-                    "jobId": existing,
-                    "status": "already_running",
-                    "deduped": True,
-                    "aspect": aspect,
-                    "message": "同一条提示词已有作业在跑，直接复用，没有重复扣积分",
-                },
-            )
+    existing = find_running_job(fingerprint)
+    if not existing:
+        legacy_fingerprint = prompt_fingerprint(prompt)
+        for legacy in JOBS_DIR.glob("*_" + legacy_fingerprint + ".json"):
+            old = read_job(legacy.stem)
+            if old["status"] != "done" or (not old.get("ok") and old.get("submitted") is not False):
+                existing = legacy.stem
+                break
+    if existing:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "jobId": existing,
+                "status": "already_running",
+                "deduped": True,
+                "aspect": aspect,
+                "message": "已有相同或历史未决作业，复用作业号；本次没有重新提交",
+            },
+        )
 
-    stamp = time.strftime("%Y%m%d-%H%M%S")
-    if request.label:
-        # 作业号里必须留住指纹尾巴（去重靠它），所以先把标签截短再拼，
-        # 不能先拼后截 —— 否则长标签会把指纹截掉，去重就失效了。
-        label = safe_job_id(request.label)[:56]
-        job_id = safe_job_id(label + "_" + fingerprint)
-    else:
-        job_id = f"mj_{stamp}_{fingerprint}"
+    label = safe_job_id(request.label or "mj")[:30]
+    job_id = f"{label}_{uuid.uuid4().hex[:12]}_{fingerprint}"
 
     output_dir = Path(request.output_dir or RESULTS_DIR).expanduser()
     if not output_dir.is_absolute():
@@ -663,7 +694,7 @@ def create_job(request: JobRequest):
     except OSError as exc:
         raise HTTPException(status_code=400, detail=f"输出目录不可用：{exc}")
 
-    profile = None
+    profile = PROFILE_PATH.resolve()
     if request.profile:
         candidate = Path(request.profile).expanduser().resolve()
         slot_root = BATCH_SLOT_ROOT.resolve()
@@ -683,7 +714,11 @@ def create_job(request: JobRequest):
         "--mode",
         "bg:" + job_id,
         "--prompt",
+        prepared["effectivePrompt"],
+        "--source-prompt",
         prompt,
+        "--params-json",
+        json.dumps(prepared["params"], ensure_ascii=False),
         "--aspect",
         aspect,
         "--out-dir",
@@ -699,7 +734,17 @@ def create_job(request: JobRequest):
         "--timeout",
         str(DEFAULT_TIMEOUT_MS),
     ]
+    intent = {**prepared, "jobId": job_id, "fingerprint": fingerprint,
+              "outputDir": str(output_dir), "profile": str(profile), "name": request.output_name or request.label or "生成结果",
+              "createdAt": time.time(), "dispatchStatus": "intent_persisted"}
+    request_path = JOBS_DIR / "requests" / (job_id + ".json")
+    request_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = request_path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(intent, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(tmp, request_path)
     child_env = os.environ.copy()
+    child_env["MJ_JOBS_DIR"] = str(JOBS_DIR)
+    child_env["MJ_PROGRESS_FILE"] = str(JOBS_DIR / "progress" / (job_id + ".json"))
     if profile is not None:
         child_env["MXAI_PROFILE"] = str(profile)
         child_env["MXAI_LOCK_FILE"] = str(profile.parent / (profile.name + ".bridge.lock"))
@@ -707,8 +752,8 @@ def create_job(request: JobRequest):
         proc = subprocess.run(
             command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=90, env=child_env,
         )
-    except subprocess.TimeoutExpired:
-        raise HTTPException(status_code=504, detail={"status": "dispatch_timeout", "jobId": job_id, "message": "派发后台作业超时"})
+    except (subprocess.TimeoutExpired, OSError):
+        return JSONResponse(status_code=202, content={"status": "dispatch_uncertain", "jobId": job_id, "message": "后台派发状态不明，意图已持久保存；请核对回执，不要重复提交。"})
 
     dispatch = None
     try:
@@ -716,9 +761,9 @@ def create_job(request: JobRequest):
     except (json.JSONDecodeError, IndexError):
         dispatch = None
 
-    if not dispatch or dispatch.get("status") != "bg_started":
-        detail = (dispatch or {}).get("error") or (proc.stderr or "").strip()[-400:] or "后台作业派发失败"
-        raise HTTPException(status_code=502, detail={"status": "dispatch_failed", "jobId": job_id, "message": detail})
+    if not isinstance(dispatch, dict) or dispatch.get("status") != "bg_started":
+        detail = (dispatch if isinstance(dispatch, dict) else {}).get("error") or (proc.stderr or "").strip()[-400:] or "后台作业派发失败"
+        return JSONResponse(status_code=202, content={"status": "dispatch_uncertain", "jobId": job_id, "message": "派发结果不明，已保留作业号；请核对回执，禁止重复提交。"})
 
     return JSONResponse(
         status_code=202,
@@ -746,7 +791,7 @@ def _slot_login_state_path(batch_id: str, slot: int) -> Path:
 def _slot_login_snapshot(batch_id: str, slot: int) -> dict:
     state = _read_control_json(_slot_login_state_path(batch_id, slot))
     pid = state.get("pid")
-    running = bool(state.get("running")) and _pid_running(pid)
+    running = bool(state.get("running")) and _browser_state_fresh(state) and _pid_running(pid)
     return {
         "running": running,
         "loggedIn": bool(state.get("loggedIn")) if running else False,
@@ -929,7 +974,8 @@ def generate(request: GenerationRequest):
 
 def _read_control_json(path_value: Path) -> dict:
     try:
-        return json.loads(path_value.read_text(encoding="utf-8", errors="replace"))
+        value = json.loads(path_value.read_text(encoding="utf-8-sig", errors="replace"))
+        return value if isinstance(value, dict) else {}
     except (OSError, json.JSONDecodeError):
         return {}
 
@@ -942,8 +988,8 @@ def _pid_running(pid: int | None) -> bool:
     except (ValueError, TypeError):
         return False
     if os.name == "nt":
-        # Windows ? os.kill(pid, 0) ????????????????
-        # ? tasklist ?????????? PID ????????????
+        # Windows uses tasklist for a read-only PID probe.
+        # Never probe Windows processes through termination APIs.
         try:
             probe = subprocess.run(
                 ["tasklist", "/FI", f"PID eq {pid_int}", "/NH"],
@@ -959,13 +1005,31 @@ def _pid_running(pid: int | None) -> bool:
         return False
 
 
+def _browser_state_fresh(state: dict) -> bool:
+    # The controller writes a heartbeat every second. A surviving/reused PID
+    # cannot turn a persisted login observation into current evidence.
+    try:
+        stamp = datetime.fromisoformat(str(state.get("updatedAt") or "").replace("Z", "+00:00"))
+        if stamp.tzinfo is None:
+            return False
+        age = time.time() - stamp.timestamp()
+        limit = 120 if state.get("status") == "starting" else 30
+        return 0 <= age <= limit
+    except (ValueError, TypeError, OverflowError, OSError):
+        return False
+
+
 def _control_browser_state() -> dict:
     state = _read_control_json(CONTROL_STATE)
-    pid = state.get("pid")
-    state["pid"] = pid
-    state["running"] = bool(state.get("running")) and _pid_running(pid)
+    fresh = _browser_state_fresh(state)
+    was_running = bool(state.get("running"))
+    state["running"] = was_running and fresh and _pid_running(state.get("pid"))
     if not state["running"]:
         state["loggedIn"] = False
+        # Keep the just-verified shared login only when our own controller
+        # explicitly closed to release its profile lock for the runner.
+        if not (fresh and not was_running and state.get("status") == "stopped_by_console"):
+            state["loginState"] = "unknown"
         if state.get("status") in {"starting", "logged_in", "not_logged_in", "watching"}:
             state["status"] = "stopped"
     return state
@@ -1003,6 +1067,76 @@ def control_batch_ui():
     return FileResponse(script, media_type="application/javascript", headers={"Cache-Control": "no-store"})
 
 
+asset_library = AssetLibrary(JOBS_DIR, BATCHES_DIR,
+    Path(os.environ.get("MJ_RECEIPTS_DIR", str(HERE.parent / "receipts"))) / "mxai-tasks.jsonl",
+    RUN_ROOT / "library-annotations.json")
+
+
+def _asset_call(call, *args):
+    try:
+        return call(*args)
+    except KeyError as exc:
+        raise HTTPException(404, detail=str(exc)) from exc
+    except (ValueError, OSError) as exc:
+        raise HTTPException(422, detail=str(exc)) from exc
+
+
+@app.get("/control/storage")
+def get_storage():
+    return _asset_call(asset_library.storage, RESULTS_DIR)
+
+
+@app.patch("/control/storage")
+def set_storage(payload: dict):
+    return _asset_call(asset_library.configure_storage, payload, RESULTS_DIR)
+
+
+@app.post("/control/assets/deliver")
+def deliver_assets(payload: dict):
+    if set(payload) != {"ids"}:
+        raise HTTPException(422, detail="只接受图库图片编号")
+    return _asset_call(asset_library.deliver, payload["ids"], RESULTS_DIR)
+
+
+@app.get("/control/assets")
+def list_assets():
+    rows = _asset_call(asset_library.index)
+    return {"ok": True, "total": len(rows), "items": rows}
+
+
+@app.get("/control/assets/{asset_id}/image")
+def asset_image(asset_id: str, download: bool = False):
+    asset = _asset_call(asset_library.get, asset_id)
+    return FileResponse(asset["path"], media_type=asset["mime"],
+        filename=Path(asset["path"]).name if download else None,
+        headers={"X-Content-Type-Options": "nosniff", "Cache-Control": "private, max-age=60"})
+
+
+@app.patch("/control/assets/{asset_id}")
+def annotate_asset(asset_id: str, payload: dict):
+    return _asset_call(asset_library.annotate, asset_id, payload)
+
+
+@app.post("/control/assets/{asset_id}/open")
+def open_asset(asset_id: str):
+    asset = _asset_call(asset_library.get, asset_id)
+    if os.name == "nt":
+        subprocess.Popen(["explorer.exe", "/select,", asset["path"]])
+    else:
+        subprocess.Popen(["xdg-open", str(Path(asset["path"]).parent)])
+    return {"ok": True, "path": asset["path"]}
+
+
+@app.get("/control/gallery-logic.js")
+def gallery_script():
+    return FileResponse(CONTROL_DIR / "gallery-logic.js", media_type="application/javascript", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/control/workbench.css")
+def control_styles():
+    return FileResponse(CONTROL_DIR / "workbench.css", media_type="text/css", headers={"Cache-Control": "no-store"})
+
+
 def _batch_call(callable_obj, *args, **kwargs):
     try:
         return callable_obj(*args, **kwargs)
@@ -1010,14 +1144,21 @@ def _batch_call(callable_obj, *args, **kwargs):
         raise HTTPException(status_code=exc.status_code, detail=exc.detail or exc.message) from exc
 
 
+def _batch_output(payload):
+    # A persisted batch keeps its own outputDir; a new blank draft follows the current default.
+    if not payload.get("outputDir") and not payload.get("output_dir"):
+        payload = {**payload, "outputDir": _asset_call(asset_library.storage, RESULTS_DIR)["outputDir"]}
+    return payload
+
+
 @app.post("/control/batches/validate")
 def validate_batch(payload: dict):
-    return batch_manager.validate(payload)
+    return batch_manager.validate(_batch_output(payload))
 
 
 @app.post("/control/batches")
 def create_batch(payload: dict):
-    return _batch_call(batch_manager.create, payload)
+    return _batch_call(batch_manager.create, _batch_output(payload))
 
 
 @app.get("/control/batches")
@@ -1027,12 +1168,16 @@ def list_batches():
 
 @app.get("/control/batches/{batch_id}")
 def get_batch(batch_id: str):
-    return _batch_call(batch_manager.get_state, batch_id)
+    state = _batch_call(batch_manager.get_state, batch_id)
+    for item in state.get("items", []):
+        if item.get("currentJobId"):
+            item["liveJob"] = read_job(safe_job_id(item["currentJobId"]))
+    return state
 
 
 @app.post("/control/batches/{batch_id}/start")
 def start_batch(batch_id: str, payload: dict | None = None):
-    return _batch_call(batch_manager.start, batch_id, bool((payload or {}).get("paid_confirmed")))
+    return _batch_call(batch_manager.start, batch_id, (payload or {}).get("paid_confirmed") is True)
 
 
 @app.post("/control/batches/{batch_id}/pause")
@@ -1042,7 +1187,7 @@ def pause_batch(batch_id: str, payload: dict | None = None):
 
 @app.post("/control/batches/{batch_id}/resume")
 def resume_batch(batch_id: str, payload: dict | None = None):
-    return _batch_call(batch_manager.resume, batch_id, bool((payload or {}).get("paid_confirmed")))
+    return _batch_call(batch_manager.resume, batch_id, (payload or {}).get("paid_confirmed") is True)
 
 
 @app.get("/control/batches/{batch_id}/items/{item_id}/login")
@@ -1064,7 +1209,7 @@ def batch_item_login_start(batch_id: str, item_id: str):
         raise HTTPException(status_code=409, detail="\u6b64\u4efb\u52a1\u5f53\u524d\u4e0d\u9700\u8981\u5de5\u4f5c\u4f4d\u767b\u5f55")
     if item.get("profile") and Path(str(item["profile"])).resolve() == PROFILE_PATH.resolve():
         result = control_browser_start()
-        return {**result, "slot": 1, "profile": str(PROFILE_PATH.resolve()), "message": "已打开 Multica 共享登录槽位；登录一次即可供三路并发使用。"}
+        return {**result, "slot": 1, "profile": str(PROFILE_PATH.resolve()), "message": "已打开 Multica 共享登录槽位；登录一次供单路可靠运行。"}
     slot = int(item["slot"])
     if any(row.get("status") == "running" and row.get("slot") == slot for row in state.get("items", [])):
         raise HTTPException(status_code=409, detail="\u8be5\u5de5\u4f5c\u4f4d\u4ecd\u6709\u4efb\u52a1\u8fd0\u884c\uff0c\u6682\u4e0d\u80fd\u6253\u5f00\u767b\u5f55\u7a97\u53e3")
@@ -1074,7 +1219,7 @@ def batch_item_login_start(batch_id: str, item_id: str):
     profile = (BATCH_SLOT_ROOT / f"{batch_id}-slot-{slot}").resolve()
     profile.parent.mkdir(parents=True, exist_ok=True)
     control_state = _slot_login_state_path(batch_id, slot)
-    log_path = HERE.parent / "run" / "logs" / f"login-{safe_job_id(batch_id)}-slot-{slot}.log"
+    log_path = RUN_ROOT / "logs" / f"login-{safe_job_id(batch_id)}-slot-{slot}.log"
     log_path.parent.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env["MXAI_PROFILE"] = str(profile)
@@ -1109,7 +1254,7 @@ def skip_batch_item(batch_id: str, item_id: str):
 @app.post("/control/batches/{batch_id}/items/{item_id}/resubmit")
 def resubmit_batch_item(batch_id: str, item_id: str, payload: dict | None = None):
     body = payload or {}
-    return _batch_call(batch_manager.resubmit, batch_id, item_id, bool(body.get("paid_confirmed")), bool(body.get("confirm_repeat_charge")))
+    return _batch_call(batch_manager.resubmit, batch_id, item_id, body.get("paid_confirmed") is True, body.get("confirm_repeat_charge") is True)
 
 
 @app.post("/control/batches/{batch_id}/items/{item_id}/open-output")
@@ -1135,16 +1280,7 @@ def open_batch_output(batch_id: str, item_id: str):
 @app.get("/control/state")
 def control_state():
     state = _control_browser_state()
-    watch_process = False
-    try:
-        import subprocess as _sp
-        probe = _sp.run(
-            ["powershell.exe", "-NoProfile", "-Command", "@(Get-CimInstance Win32_Process | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -like '*mj-automation\\scripts\\watchdog_loop.ps1*' }).Count"],
-            capture_output=True, text=True, timeout=5,
-        )
-        watch_process = int((probe.stdout or "0").strip() or "0") > 0
-    except Exception:
-        watch_process = False
+    watch_process = None  # Not probed on each refresh; unknown is represented as null.
     return {
         "ok": True,
         "health": health(),
@@ -1191,10 +1327,10 @@ def control_browser_stop():
     if not pid or not current.get("running"):
         return {"ok": True, "status": "already_stopped", "message": "登录浏览器当前未运行。"}
     try:
-        if os.name == "nt":
-            subprocess.run(["taskkill", "/PID", str(int(pid)), "/T", "/F"], capture_output=True, timeout=15)
-        else:
-            os.kill(int(pid), 15)
+        # Only our controller consumes this file. Never terminate a process
+        # based on a persisted PID: Windows may have reused it for another app.
+        CONTROL_STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
+        CONTROL_STOP_FILE.write_text("stop\n", encoding="utf-8")
     except (OSError, ValueError) as exc:
         raise HTTPException(status_code=500, detail=f"关闭浏览器失败：{exc}")
     return {"ok": True, "status": "stopping", "message": "已请求关闭登录浏览器。"}

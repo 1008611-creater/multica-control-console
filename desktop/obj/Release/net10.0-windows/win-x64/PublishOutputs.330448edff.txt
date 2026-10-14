@@ -1,0 +1,5 @@
+E:\codex\multica\tmp\mj-repair-20261008\publish\Multica.pdb
+E:\codex\multica\tmp\mj-repair-20261008\publish\Microsoft.Web.WebView2.Core.xml
+E:\codex\multica\tmp\mj-repair-20261008\publish\Microsoft.Web.WebView2.WinForms.xml
+E:\codex\multica\tmp\mj-repair-20261008\publish\Microsoft.Web.WebView2.Wpf.xml
+E:\codex\multica\tmp\mj-repair-20261008\publish\Multica.exe

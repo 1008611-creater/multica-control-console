@@ -1,0 +1,87 @@
+{
+  "batch_id": "whale30-20261008-wave1",
+  "name": "鲸歌计划30秒试片-视觉锚点6次",
+  "concurrency": 1,
+  "profileMode": "shared",
+  "output_dir": "E:\\Multica-Control-Console\\mj-automation\\output\\whale30-20261008",
+  "items": [
+    {
+      "id": "D01-V1",
+      "name": "幽暗海水与巨大远影-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An underwater extreme wide shot in unlocated abyssal water. A tiny sparse trail of suspended particles crosses the near foreground. Far behind it, one enormous indistinct asymmetrical dark mass fades into blue-black water. Its shape is unreadable, neither a recognizable whale nor a visible creature anatomy. No eye, jaw or mouth is revealed. Almost all of the frame is negative space, just enough diffuse silver backscatter to sense impossible scale. The mass is still distant, not passing the camera yet.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810801
+      }
+    },
+    {
+      "id": "D01-V2",
+      "name": "幽暗海水与巨大远影-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An underwater extreme wide shot in unlocated abyssal water. A tiny sparse trail of suspended particles crosses the near foreground. Far behind it, one enormous indistinct asymmetrical dark mass fades into blue-black water. Its shape is unreadable, neither a recognizable whale nor a visible creature anatomy. No eye, jaw or mouth is revealed. Almost all of the frame is negative space, just enough diffuse silver backscatter to sense impossible scale. The mass is still distant, not passing the camera yet.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810802
+      }
+    },
+    {
+      "id": "D02-V1",
+      "name": "兔子洞号监听船舱-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Inside the cramped research cabin of the vessel Rabbit Hole, an empty listening station occupies the left third, an aged steel desk with a compact acoustic receiver, wired over-ear headphones hanging at the desk edge and a small dark glass monitor. One circular porthole on the right shows dull grey water. Cold instrument glow and one dim amber task lamp, practical patched cabling, consistent human-scale geometry, view from the doorway at seated eye height. No readable screen content and no person, a reusable empty set plate.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 70,
+        "chaos": 3,
+        "seed": 810811
+      }
+    },
+    {
+      "id": "D02-V2",
+      "name": "兔子洞号监听船舱-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. Inside the cramped research cabin of the vessel Rabbit Hole, an empty listening station occupies the left third, an aged steel desk with a compact acoustic receiver, wired over-ear headphones hanging at the desk edge and a small dark glass monitor. One circular porthole on the right shows dull grey water. Cold instrument glow and one dim amber task lamp, practical patched cabling, consistent human-scale geometry, view from the doorway at seated eye height. No readable screen content and no person, a reusable empty set plate.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 70,
+        "chaos": 3,
+        "seed": 810812
+      }
+    },
+    {
+      "id": "D03-V1",
+      "name": "木卫二冰下探测器-方向1",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An extreme wide underwater view beneath the thick ice shell of Europa. A tiny unmarked scientific descent probe occupies the upper-right third, its one narrow cold-white searchlight reaches down into an immense empty black ocean. The underside of pale fractured ice forms a heavy roof across the upper edge. Fine illuminated particles near the beam and almost total darkness beyond it, no visible animal or structure. The probe has just entered the water and has not reached the abyss.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810821
+      }
+    },
+    {
+      "id": "D03-V2",
+      "name": "木卫二冰下探测器-方向2",
+      "prompt": "Photorealistic restrained science-fiction suspense film still, physically believable materials, cold steel-blue shadows, sparse silver highlights, deep readable blacks, subtle fine film grain, one continuous cinematic frame, no lettering, no logo, no border, no split screen. An extreme wide underwater view beneath the thick ice shell of Europa. A tiny unmarked scientific descent probe occupies the upper-right third, its one narrow cold-white searchlight reaches down into an immense empty black ocean. The underside of pale fractured ice forms a heavy roof across the upper edge. Fine illuminated particles near the beam and almost total darkness beyond it, no visible animal or structure. The probe has just entered the water and has not reached the abyss.",
+      "aspect": "16:9",
+      "version": "v8.2",
+      "params": {
+        "raw": true,
+        "stylize": 90,
+        "chaos": 5,
+        "seed": 810822
+      }
+    }
+  ]
+}

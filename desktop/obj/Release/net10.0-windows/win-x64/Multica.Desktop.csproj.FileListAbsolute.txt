@@ -288,3 +288,4 @@ E:\codex\multica\desktop\bin\Release\net10.0-windows\win-x64\Microsoft.Web.WebVi
 E:\codex\multica\desktop\bin\Release\net10.0-windows\win-x64\Microsoft.Web.WebView2.WinForms.xml
 E:\codex\multica\desktop\bin\Release\net10.0-windows\win-x64\Microsoft.Web.WebView2.Wpf.xml
 E:\codex\multica\desktop\obj\Release\net10.0-windows\win-x64\Multica.Desktop.csproj.AssemblyReference.cache
+E:\codex\multica\desktop\obj\Release\net10.0-windows\win-x64\Multica.Desktop.sourcelink.json
